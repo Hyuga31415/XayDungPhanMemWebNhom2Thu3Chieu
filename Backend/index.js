@@ -58,6 +58,10 @@ app.get('/api/users', async (req, res) => {
     }
 });
 
+app.get('/', (req, res) => {
+    res.send('Server đang chạy bình thường! Hãy truy cập /api/users để xem dữ liệu.');
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
