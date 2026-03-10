@@ -21,40 +21,28 @@ const pool = mysql.createPool({
     }
 });
 
-// Route kiểm tra kết nối Database
-app.get('/api/db-test', async (req, res) => {
+/// 1. Lấy tất cả users (BASE_API/users)
+app.get('/users', async (req, res) => {
     try {
-        // Thử chạy một câu lệnh MySQL cơ bản
-        const [rows, fields] = await pool.query('SELECT VERSION() AS db_version');
-        
-        res.status(200).json({
-            success: true,
-            message: "Kết nối TiDB thành công! 🎉",
-            version: rows[0].db_version
-        });
+        const [rows] = await pool.query('SELECT * FROM users');
+        res.status(200).json(rows); // Trả về mảng dữ liệu trực tiếp để dễ chấm điểm
     } catch (error) {
-        console.error("Lỗi kết nối DB:", error);
-        res.status(500).json({
-            success: false,
-            message: "Lỗi kết nối Database",
-            error: error.message
-        });
+        res.status(500).json({ error: error.message });
     }
 });
 
-// Route API danh sách nhân viên thực tế (sau này bạn sẽ lấy từ bảng employees)
-app.get('/api/users', async (req, res) => {
+// 2. Lấy user theo ID (BASE_API/users/1)
+app.get('/users/:id', async (req, res) => {
     try {
-        // Tạm thời vẫn dùng dữ liệu mẫu. 
-        // Khi bạn tạo bảng xong, thay bằng: const [users] = await pool.query('SELECT * FROM employees');
-        const users = [
-            { id: 1, name: "Nguyễn Văn A" },
-            { id: 2, name: "Trần Thị B" }
-        ];
+        const { id } = req.params;
+        const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
         
-        res.status(200).json({ success: true, data: users });
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "Không tìm thấy user" });
+        }
+        res.status(200).json(rows[0]);
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 

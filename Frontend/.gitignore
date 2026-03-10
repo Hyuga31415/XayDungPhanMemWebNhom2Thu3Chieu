@@ -1,0 +1,15 @@
+# Thư viện
+node_modules/
+
+# Thư mục chứa code sau khi build (Vercel sẽ tự build lại nên không cần push)
+dist/
+build/
+
+# Biến môi trường local
+.env
+.env.local
+.env.development.local
+
+# Các file rác của trình soạn thảo
+.vscode/
+.idea/
