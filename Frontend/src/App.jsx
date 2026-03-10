@@ -1,37 +1,16 @@
-import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import UserList from './UserList'; // Đảm bảo file này cùng thư mục
 
-function UserList() {
-  const [users, setUsers] = useState([]);
-  
-  // Kiểm tra xem biến môi trường có đúng không
-  const API_URL = import.meta.env.VITE_API_URL;
-
-  useEffect(() => {
-    fetch(`${API_URL}/users`) // Gọi đến đúng route /users của backend
-      .then(res => res.json())
-      .then(data => setUsers(data))
-      .catch(err => console.error("Lỗi fetch:", err));
-  }, []);
-
+function App() {
   return (
-    <div>
-      <h1>Danh sách Users</h1>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Tên</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(user => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<h1>Trang chủ - Hãy truy cập /users</h1>} />
+        {/* Đây là đường dẫn giáo viên sẽ chấm điểm */}
+        <Route path="/users" element={<UserList />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
+
+export default App;
