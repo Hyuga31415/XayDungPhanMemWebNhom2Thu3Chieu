@@ -1,20 +1,37 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import UserList from './pages/UserList';
+import { useEffect, useState } from 'react';
 
-function App() {
+function UserList() {
+  const [users, setUsers] = useState([]);
+  
+  // Kiểm tra xem biến môi trường có đúng không
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  useEffect(() => {
+    fetch(`${API_URL}/users`) // Gọi đến đúng route /users của backend
+      .then(res => res.json())
+      .then(data => setUsers(data))
+      .catch(err => console.error("Lỗi fetch:", err));
+  }, []);
+
   return (
-    <BrowserRouter>
-      <nav>
-        <Link style={{marginRight: '10px'}} to="/">Trang chủ</Link>
-        <Link to="/users">Danh sách Users</Link>
-      </nav>
-
-      <Routes>
-        <Route path="/" element={<h1>Chào mừng đến với App Nhân Sự</h1>} />
-        {/* Đường dẫn bắt buộc theo đề bài */}
-        <Route path="/users" element={<UserList />} />
-      </Routes>
-    </BrowserRouter>
+    <div>
+      <h1>Danh sách Users</h1>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map(user => (
+            <tr key={user.id}>
+              <td>{user.id}</td>
+              <td>{user.name}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
-export default App;
