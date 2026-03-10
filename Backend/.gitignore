@@ -1,0 +1,12 @@
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Biến môi trường local
+.env
+.env.test
+.env.production
+
+# Mac OS
+.DS_Store
