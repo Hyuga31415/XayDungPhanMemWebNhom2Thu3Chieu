@@ -21,7 +21,7 @@ const pool = mysql.createPool({
     }
 });
 
-// ĐÚNG THEO ĐỀ BÀI: Lấy toàn bộ users
+//Lấy toàn bộ users
 app.get('/users', async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT id, name FROM users');
@@ -31,7 +31,7 @@ app.get('/users', async (req, res) => {
     }
 });
 
-// ĐÚNG THEO ĐỀ BÀI: Lấy 1 user theo ID
+//Lấy 1 user theo ID
 app.get('/users/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -41,6 +41,58 @@ app.get('/users/:id', async (req, res) => {
             return res.status(404).json({ message: "Không tìm thấy user" });
         }
         res.json(rows[0]); // Trả về 1 đối tượng duy nhất
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// THÊM 1 USER
+app.post('/users', async (req, res) => {
+    try {
+        const { name } = req.body;
+        if (!name) {
+            return res.status(400).json({ message: "Tên user không được để trống" });
+        }
+        
+        const [result] = await pool.query('INSERT INTO users (name) VALUES (?)', [name]);
+        const newUser = { id: result.insertId, name };
+        res.status(201).json(newUser);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// SỬA 1 USER
+app.put('/users/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+
+        if (!name) {
+            return res.status(400).json({ message: "Tên user không được để trống" });
+        }
+
+        const [result] = await pool.query('UPDATE users SET name = ? WHERE id = ?', [name, id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Không tìm thấy user để cập nhật" });
+        }
+        res.json({ id: parseInt(id), name });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// XÓA 1 USER
+app.delete('/users/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const [result] = await pool.query('DELETE FROM users WHERE id = ?', [id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Không tìm thấy user để xóa" });
+        }
+        res.status(204).send(); // 204 No Content
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
