@@ -1,0 +1,31 @@
+# =================================================================
+# THƯ MỤC GỐC (ROOT)
+# =================================================================
+
+# Hệ điều hành (OS generated files)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Cấu hình IDE / Editor (VS Code, IntelliJ, Eclipse...)
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.iml
+
+# Các file nén hoặc log không cần thiết ở thư mục gốc
+*.zip
+*.tar.gz
+*.log
