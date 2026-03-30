@@ -6,6 +6,86 @@ import PayrollSettings from './PayrollSettings';
 import PayrollHistory from './PayrollHistory';
 import PayrollReports from './PayrollReports';
 
+const employeeData = {
+  name: 'Nguyễn Văn A',
+  id: 'NV-001',
+  position: 'Chuyên viên nhân sự',
+  department: 'Payroll',
+  period: 'Tháng 03/2026',
+  baseSalary: 18000000,
+  allowances: [
+    { label: 'Phụ cấp trách nhiệm', amount: 2500000 },
+    { label: 'Phụ cấp ăn trưa', amount: 800000 },
+    { label: 'Phụ cấp xăng', amount: 900000 },
+  ],
+  deductions: [
+    { label: 'Bảo hiểm xã hội', amount: 900000 },
+    { label: 'Thuế TNCN', amount: 650000 },
+    { label: 'Đi muộn 2 lần', amount: 150000 },
+  ],
+};
+
+const payrollList = [
+  {
+    id: 'NV-001',
+    name: 'Nguyễn Văn A',
+    period: '03/2026',
+    netSalary: 21500000,
+    status: 'Đã xác nhận',
+  },
+  {
+    id: 'NV-002',
+    name: 'Trần Thị B',
+    period: '03/2026',
+    netSalary: 19800000,
+    status: 'Chờ duyệt',
+  },
+  {
+    id: 'NV-003',
+    name: 'Lê Văn C',
+    period: '03/2026',
+    netSalary: 22500000,
+    status: 'Đã chuyển khoản',
+  },
+];
+
+const historyItems = [
+  { month: '02/2026', status: 'Hoàn thành', totalPaid: 19800000, employees: 23 },
+  { month: '01/2026', status: 'Hoàn thành', totalPaid: 21000000, employees: 22 },
+  { month: '12/2025', status: 'Chờ phê duyệt', totalPaid: 20500000, employees: 24 },
+  { month: '11/2025', status: 'Hoàn thành', totalPaid: 19350000, employees: 21 },
+];
+
+const reportData = [
+  { title: 'Tổng chi phí lương', value: 125000000, trend: '+8%', color: 'text-emerald-700' },
+  { title: 'Số nhân viên nhận lương', value: 320, trend: '+2%', color: 'text-sky-700' },
+  { title: 'Phụ cấp trung bình', value: 4200000, trend: '-1.5%', color: 'text-amber-700' },
+];
+
+const quickInsights = [
+  'Lương tháng này tăng 8% so với tháng trước.',
+  'Tỷ lệ phê duyệt bảng lương vượt 90%.',
+  'Phụ cấp trách nhiệm là mục chi lớn nhất.',
+];
+
+const initialSalaryLevels = [
+  { id: 1, level: 'Junior', monthly: 10000000 },
+  { id: 2, level: 'Senior', monthly: 18000000 },
+  { id: 3, level: 'Lead', monthly: 24000000 },
+];
+
+const initialAllowances = [
+  { id: 1, name: 'Phụ cấp trách nhiệm', rate: '15%' },
+  { id: 2, name: 'Phụ cấp xăng', rate: '5%' },
+  { id: 3, name: 'Phụ cấp ăn trưa', rate: '3%' },
+];
+
+const initialRules = [
+  { id: 1, name: 'Đi muộn 1 lần', penalty: '100,000 VND' },
+  { id: 2, name: 'Vắng không phép', penalty: '500,000 VND' },
+  { id: 3, name: 'Quá 2 ngày phép', penalty: '200,000 VND/ngày' },
+];
+
 const navItems = [
   { label: 'Trang chủ', path: '/' },
   { label: 'Lương chi tiết', path: '/payroll-detail' },
@@ -92,11 +172,11 @@ function App() {
                 </div>
               }
             />
-            <Route path="/payroll-detail" element={<PayrollDetail />} />
-            <Route path="/payroll-management" element={<PayrollManagement />} />
-            <Route path="/payroll-history" element={<PayrollHistory />} />
-            <Route path="/payroll-reports" element={<PayrollReports />} />
-            <Route path="/payroll-settings" element={<PayrollSettings />} />
+            <Route path="/payroll-detail" element={<PayrollDetail employee={employeeData} />} />
+            <Route path="/payroll-management" element={<PayrollManagement payrollList={payrollList} />} />
+            <Route path="/payroll-history" element={<PayrollHistory historyItems={historyItems} />} />
+            <Route path="/payroll-reports" element={<PayrollReports reportData={reportData} quickInsights={quickInsights} />} />
+            <Route path="/payroll-settings" element={<PayrollSettings initialSalaryLevels={initialSalaryLevels} initialAllowances={initialAllowances} initialRules={initialRules} />} />
             <Route path="/users" element={<UserList />} />
           </Routes>
         </main>

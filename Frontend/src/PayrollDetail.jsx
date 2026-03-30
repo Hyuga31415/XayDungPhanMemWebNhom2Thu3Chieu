@@ -1,7 +1,9 @@
 ﻿import React from 'react';
 
-const PayrollDetail = () => {
-  const employee = {
+const formatVnd = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+
+const PayrollDetail = ({ employee }) => {
+  const data = employee ?? {
     name: 'Nguyễn Văn A',
     id: 'NV-001',
     position: 'Chuyên viên nhân sự',
@@ -20,12 +22,10 @@ const PayrollDetail = () => {
     ],
   };
 
-  const totalAllowance = employee.allowances.reduce((sum, item) => sum + item.amount, 0);
-  const totalDeduction = employee.deductions.reduce((sum, item) => sum + item.amount, 0);
-  const grossSalary = employee.baseSalary + totalAllowance;
+  const totalAllowance = data.allowances.reduce((sum, item) => sum + item.amount, 0);
+  const totalDeduction = data.deductions.reduce((sum, item) => sum + item.amount, 0);
+  const grossSalary = data.baseSalary + totalAllowance;
   const netSalary = grossSalary - totalDeduction;
-
-  const formatVnd = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 
   return (
     <div className="space-y-8 px-4 py-6 sm:px-6 lg:px-8">
@@ -33,21 +33,21 @@ const PayrollDetail = () => {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Lương cá nhân</p>
-            <h1 className="mt-3 text-3xl font-semibold text-slate-900">{employee.name}</h1>
+            <h1 className="mt-3 text-3xl font-semibold text-slate-900">{data.name}</h1>
             <p className="mt-2 max-w-2xl text-sm text-slate-600">Chi tiết bảng lương tháng, phụ cấp và khấu trừ cho nhân viên.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="rounded-3xl bg-slate-50 p-4 text-center">
               <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Kỳ lương</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">{employee.period}</p>
+              <p className="mt-2 text-lg font-semibold text-slate-900">{data.period}</p>
             </div>
             <div className="rounded-3xl bg-slate-50 p-4 text-center">
               <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Phòng ban</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">{employee.department}</p>
+              <p className="mt-2 text-lg font-semibold text-slate-900">{data.department}</p>
             </div>
             <div className="rounded-3xl bg-slate-50 p-4 text-center">
               <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Chức vụ</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">{employee.position}</p>
+              <p className="mt-2 text-lg font-semibold text-slate-900">{data.position}</p>
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@ const PayrollDetail = () => {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-3xl bg-slate-50 p-6">
               <p className="text-sm text-slate-500">Lương cơ bản</p>
-              <p className="mt-3 text-3xl font-semibold text-slate-900">{formatVnd(employee.baseSalary)}</p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{formatVnd(data.baseSalary)}</p>
             </div>
             <div className="rounded-3xl bg-slate-50 p-6">
               <p className="text-sm text-slate-500">Tổng phụ cấp</p>
@@ -116,7 +116,7 @@ const PayrollDetail = () => {
           <div className="rounded-3xl bg-slate-50 p-6">
             <h3 className="text-lg font-semibold text-slate-900">Phụ cấp</h3>
             <div className="mt-4 space-y-3">
-              {employee.allowances.map((item) => (
+              {data.allowances.map((item) => (
                 <div key={item.label} className="flex items-center justify-between rounded-3xl bg-white px-4 py-4 shadow-sm">
                   <span className="font-medium text-slate-900">{item.label}</span>
                   <span className="text-slate-700">{formatVnd(item.amount)}</span>
@@ -128,7 +128,7 @@ const PayrollDetail = () => {
           <div className="rounded-3xl bg-slate-50 p-6">
             <h3 className="text-lg font-semibold text-slate-900">Khấu trừ</h3>
             <div className="mt-4 space-y-3">
-              {employee.deductions.map((item) => (
+              {data.deductions.map((item) => (
                 <div key={item.label} className="flex items-center justify-between rounded-3xl bg-white px-4 py-4 shadow-sm">
                   <span className="font-medium text-slate-900">{item.label}</span>
                   <span className="text-slate-700">{formatVnd(item.amount)}</span>

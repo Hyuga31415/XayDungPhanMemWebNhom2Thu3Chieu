@@ -1,20 +1,8 @@
-import React from 'react';
-
-const reportData = [
-  { title: 'Tổng chi phí lương', value: 125000000, trend: '+8%', color: 'text-emerald-700' },
-  { title: 'Số nhân viên nhận lương', value: 320, trend: '+2%', color: 'text-sky-700' },
-  { title: 'Phụ cấp trung bình', value: 4200000, trend: '-1.5%', color: 'text-amber-700' },
-];
-
-const quickInsights = [
-  'Lương tháng này tăng 8% so với tháng trước.',
-  'Tỷ lệ phê duyệt bảng lương vượt 90%.',
-  'Phụ cấp trách nhiệm là mục chi lớn nhất.',
-];
+﻿import React from 'react';
 
 const formatVnd = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 
-const PayrollReports = () => {
+const PayrollReports = ({ reportData, quickInsights }) => {
   return (
     <div className="space-y-8 px-4 py-6 sm:px-6 lg:px-8">
       <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">

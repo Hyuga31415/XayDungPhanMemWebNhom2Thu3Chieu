@@ -1,29 +1,11 @@
 ﻿import React, { useState } from 'react';
 
-const initialSalaryLevels = [
-  { id: 1, level: 'Junior', monthly: 10000000 },
-  { id: 2, level: 'Senior', monthly: 18000000 },
-  { id: 3, level: 'Lead', monthly: 24000000 },
-];
-
-const initialAllowances = [
-  { id: 1, name: 'Phụ cấp trách nhiệm', rate: '15%' },
-  { id: 2, name: 'Phụ cấp xăng', rate: '5%' },
-  { id: 3, name: 'Phụ cấp ăn trưa', rate: '3%' },
-];
-
-const initialRules = [
-  { id: 1, name: 'Đi muộn 1 lần', penalty: '100,000 VND' },
-  { id: 2, name: 'Vắng không phép', penalty: '500,000 VND' },
-  { id: 3, name: 'Quá 2 ngày phép', penalty: '200,000 VND/ngày' },
-];
-
 const formatVnd = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 
-const PayrollSettings = () => {
-  const [salaryLevels, setSalaryLevels] = useState(initialSalaryLevels);
-  const [allowances, setAllowances] = useState(initialAllowances);
-  const [rules, setRules] = useState(initialRules);
+const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules }) => {
+  const [salaryLevels, setSalaryLevels] = useState(initialSalaryLevels ?? []);
+  const [allowances, setAllowances] = useState(initialAllowances ?? []);
+  const [rules, setRules] = useState(initialRules ?? []);
 
   const [newSalaryLabel, setNewSalaryLabel] = useState('');
   const [newSalaryValue, setNewSalaryValue] = useState('');
@@ -35,11 +17,10 @@ const PayrollSettings = () => {
   const handleAddSalaryLevel = (e) => {
     e.preventDefault();
     if (!newSalaryLabel.trim() || !newSalaryValue) return;
-    setSalaryLevels([...salaryLevels, {
-      id: salaryLevels.length + 1,
-      level: newSalaryLabel,
-      monthly: Number(newSalaryValue),
-    }]);
+    setSalaryLevels((prev) => [
+      ...prev,
+      { id: prev.length + 1, level: newSalaryLabel, monthly: Number(newSalaryValue) },
+    ]);
     setNewSalaryLabel('');
     setNewSalaryValue('');
   };
@@ -47,11 +28,10 @@ const PayrollSettings = () => {
   const handleAddAllowance = (e) => {
     e.preventDefault();
     if (!newAllowanceLabel.trim() || !newAllowanceRate.trim()) return;
-    setAllowances([...allowances, {
-      id: allowances.length + 1,
-      name: newAllowanceLabel,
-      rate: newAllowanceRate,
-    }]);
+    setAllowances((prev) => [
+      ...prev,
+      { id: prev.length + 1, name: newAllowanceLabel, rate: newAllowanceRate },
+    ]);
     setNewAllowanceLabel('');
     setNewAllowanceRate('');
   };
@@ -59,11 +39,10 @@ const PayrollSettings = () => {
   const handleAddRule = (e) => {
     e.preventDefault();
     if (!newRuleName.trim() || !newRulePenalty.trim()) return;
-    setRules([...rules, {
-      id: rules.length + 1,
-      name: newRuleName,
-      penalty: newRulePenalty,
-    }]);
+    setRules((prev) => [
+      ...prev,
+      { id: prev.length + 1, name: newRuleName, penalty: newRulePenalty },
+    ]);
     setNewRuleName('');
     setNewRulePenalty('');
   };

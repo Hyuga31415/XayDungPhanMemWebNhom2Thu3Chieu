@@ -1,11 +1,4 @@
-import React, { useMemo, useState } from 'react';
-
-const historyItems = [
-  { month: '02/2026', status: 'Hoàn thành', totalPaid: 19800000, employees: 23 },
-  { month: '01/2026', status: 'Hoàn thành', totalPaid: 21000000, employees: 22 },
-  { month: '12/2025', status: 'Chờ phê duyệt', totalPaid: 20500000, employees: 24 },
-  { month: '11/2025', status: 'Hoàn thành', totalPaid: 19350000, employees: 21 },
-];
+﻿import React, { useMemo, useState } from 'react';
 
 const statusStyles = {
   'Hoàn thành': 'bg-emerald-100 text-emerald-800',
@@ -14,12 +7,12 @@ const statusStyles = {
 
 const formatVnd = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 
-const PayrollHistory = () => {
-  const [selectedMonth, setSelectedMonth] = useState(historyItems[0].month);
+const PayrollHistory = ({ historyItems }) => {
+  const [selectedMonth, setSelectedMonth] = useState(historyItems[0]?.month ?? '');
 
   const selectedItem = useMemo(
-    () => historyItems.find((item) => item.month === selectedMonth) || historyItems[0],
-    [selectedMonth]
+    () => historyItems.find((item) => item.month === selectedMonth) || historyItems[0] || {},
+    [selectedMonth, historyItems]
   );
 
   return (
@@ -53,7 +46,9 @@ const PayrollHistory = () => {
               >
                 <div className="flex items-center justify-between gap-4">
                   <span className="font-semibold text-slate-900">Kỳ {item.month}</span>
-                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[item.status]}`}>{item.status}</span>
+                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[item.status]}`}>
+                    {item.status}
+                  </span>
                 </div>
                 <p className="mt-2 text-sm text-slate-600">Tổng chi trả {formatVnd(item.totalPaid)} cho {item.employees} nhân viên.</p>
               </button>

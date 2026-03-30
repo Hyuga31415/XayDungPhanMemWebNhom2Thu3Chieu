@@ -1,38 +1,5 @@
 ﻿import React, { useMemo, useState } from 'react';
 
-const payrollList = [
-  {
-    id: 'NV-001',
-    name: 'Nguyễn Văn A',
-    period: '03/2026',
-    netSalary: 21500000,
-    status: 'Đã xác nhận',
-    base: 18000000,
-    allowance: 4200000,
-    deduction: 500000,
-  },
-  {
-    id: 'NV-002',
-    name: 'Trần Thị B',
-    period: '03/2026',
-    netSalary: 19800000,
-    status: 'Chờ duyệt',
-    base: 17500000,
-    allowance: 3300000,
-    deduction: 500000,
-  },
-  {
-    id: 'NV-003',
-    name: 'Lê Văn C',
-    period: '03/2026',
-    netSalary: 22500000,
-    status: 'Đã chuyển khoản',
-    base: 18500000,
-    allowance: 4500000,
-    deduction: 500000,
-  },
-];
-
 const statusStyles = {
   'Đã xác nhận': 'bg-emerald-100 text-emerald-800',
   'Chờ duyệt': 'bg-amber-100 text-amber-800',
@@ -41,7 +8,7 @@ const statusStyles = {
 
 const formatVnd = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 
-const PayrollManagement = () => {
+const PayrollManagement = ({ payrollList }) => {
   const [query, setQuery] = useState('');
 
   const filteredPayrolls = useMemo(() => {
@@ -50,10 +17,17 @@ const PayrollManagement = () => {
       item.id.toLowerCase().includes(query.toLowerCase()) ||
       item.period.includes(query)
     );
-  }, [query]);
+  }, [query, payrollList]);
 
-  const totalPayroll = payrollList.reduce((sum, item) => sum + item.netSalary, 0);
-  const approvedCount = payrollList.filter((item) => item.status === 'Đã xác nhận' || item.status === 'Đã chuyển khoản').length;
+  const totalPayroll = useMemo(
+    () => payrollList.reduce((sum, item) => sum + item.netSalary, 0),
+    [payrollList]
+  );
+
+  const approvedCount = useMemo(
+    () => payrollList.filter((item) => item.status === 'Đã xác nhận' || item.status === 'Đã chuyển khoản').length,
+    [payrollList]
+  );
 
   return (
     <div className="space-y-8 px-4 py-6 sm:px-6 lg:px-8">
