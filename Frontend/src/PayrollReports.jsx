@@ -21,10 +21,12 @@ const PayrollReports = ({ reportData, quickInsights }) => {
 
       <section className="grid gap-6 lg:grid-cols-3">
         {reportData.map((item) => (
-          <article key={item.title} className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-sm uppercase tracking-[0.2em] text-slate-500">{item.title}</h2>
-            <p className="mt-4 text-3xl font-semibold text-slate-900">{formatVnd(item.value)}</p>
-            <p className={`mt-3 text-sm font-semibold ${item.color}`}>{item.trend} so với tháng trước</p>
+          <article key={item.title} className="card rounded-[2rem] bg-base-100 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title text-sm uppercase tracking-[0.2em] text-slate-500">{item.title}</h2>
+              <p className="mt-4 text-3xl font-semibold text-slate-900">{formatVnd(item.value)}</p>
+              <p className={`mt-3 text-sm font-semibold ${item.color}`}>{item.trend} so với tháng trước</p>
+            </div>
           </article>
         ))}
       </section>
@@ -45,7 +47,7 @@ const PayrollReports = ({ reportData, quickInsights }) => {
               <p className="mt-3 text-2xl font-semibold text-slate-900">{formatVnd(4200000)}</p>
             </div>
           </div>
-          <div className="mt-6 rounded-[1.5rem] bg-slate-50 p-6">
+          <div className="mt-6 rounded-[1.5rem] bg-base-100 p-6 shadow-sm">
             <p className="text-sm font-semibold text-slate-900">Xu hướng</p>
             <ul className="mt-4 space-y-3 text-sm text-slate-600">
               <li>• Số bảng lương xác nhận tăng nhẹ.</li>

@@ -99,13 +99,18 @@ const navItems = [
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-slate-50 text-slate-900">
-        <header className="border-b border-slate-200 bg-white/90 backdrop-blur-sm">
-          <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Payroll & Settings</p>
-              <h1 className="mt-2 text-3xl font-semibold text-slate-900">Hệ thống quản lý lương</h1>
-              <p className="mt-2 max-w-2xl text-sm text-slate-600">Giao diện HR chuyên nghiệp, rõ ràng và dễ theo dõi số liệu lương nhân viên.</p>
+      <div className="min-h-screen bg-base-200 text-base-content">
+        <header className="navbar bg-base-100 shadow-sm">
+          <div className="container mx-auto flex flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <span className="btn btn-ghost normal-case text-xl text-sky-600">Payroll & Settings</span>
+              </div>
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Payroll & Settings</p>
+                <h1 className="mt-2 text-3xl font-semibold text-slate-900">Hệ thống quản lý lương</h1>
+                <p className="mt-2 max-w-2xl text-sm text-slate-600">Giao diện HR chuyên nghiệp, rõ ràng và dễ theo dõi số liệu lương nhân viên.</p>
+              </div>
             </div>
             <nav className="flex flex-wrap items-center gap-3">
               {navItems.map((item) => (
@@ -113,7 +118,7 @@ function App() {
                   key={item.path}
                   to={item.path}
                   className={({ isActive }) =>
-                    `rounded-full px-4 py-2 text-sm font-medium transition ${isActive ? 'bg-sky-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`
+                    `btn btn-ghost btn-sm rounded-full text-slate-700 transition ${isActive ? 'bg-sky-600 text-white shadow-lg' : 'bg-base-200 hover:bg-base-300'}`
                   }
                 >
                   {item.label}
@@ -123,7 +128,7 @@ function App() {
           </div>
         </header>
 
-        <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <Routes>
             <Route
               path="/"
@@ -138,18 +143,18 @@ function App() {
                           Kiểm soát nhanh số liệu nhân viên, trạng thái bảng lương và cấu hình chi tiết trong cùng một giao diện.
                         </p>
                       </div>
-                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        <div className="rounded-[1.5rem] bg-white/10 p-5 backdrop-blur-sm">
-                          <p className="text-sm uppercase tracking-[0.2em] text-cyan-100/80">Tổng nhân viên</p>
-                          <p className="mt-3 text-3xl font-semibold">320</p>
+                      <div className="stats stats-vertical gap-4 rounded-[1.5rem] bg-white/10 p-4 text-white shadow-sm sm:stats-horizontal lg:stats-horizontal">
+                        <div className="stat rounded-3xl bg-white/10 p-5 shadow-sm">
+                          <div className="stat-title text-cyan-100/80">Tổng nhân viên</div>
+                          <div className="stat-value text-3xl">320</div>
                         </div>
-                        <div className="rounded-[1.5rem] bg-white/10 p-5 backdrop-blur-sm">
-                          <p className="text-sm uppercase tracking-[0.2em] text-cyan-100/80">Bảng lương</p>
-                          <p className="mt-3 text-3xl font-semibold">23</p>
+                        <div className="stat rounded-3xl bg-white/10 p-5 shadow-sm">
+                          <div className="stat-title text-cyan-100/80">Bảng lương</div>
+                          <div className="stat-value text-3xl">23</div>
                         </div>
-                        <div className="rounded-[1.5rem] bg-white/10 p-5 backdrop-blur-sm">
-                          <p className="text-sm uppercase tracking-[0.2em] text-cyan-100/80">Mức lương</p>
-                          <p className="mt-3 text-3xl font-semibold">12</p>
+                        <div className="stat rounded-3xl bg-white/10 p-5 shadow-sm">
+                          <div className="stat-title text-cyan-100/80">Mức lương</div>
+                          <div className="stat-value text-3xl">12</div>
                         </div>
                       </div>
                     </div>

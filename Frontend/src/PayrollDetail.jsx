@@ -29,25 +29,27 @@ const PayrollDetail = ({ employee }) => {
 
   return (
     <div className="space-y-8 px-4 py-6 sm:px-6 lg:px-8">
-      <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Lương cá nhân</p>
-            <h1 className="mt-3 text-3xl font-semibold text-slate-900">{data.name}</h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-600">Chi tiết bảng lương tháng, phụ cấp và khấu trừ cho nhân viên.</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-3xl bg-slate-50 p-4 text-center">
-              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Kỳ lương</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">{data.period}</p>
+      <section className="card card-side w-full bg-base-100 shadow-xl">
+        <div className="card-body">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Lương cá nhân</p>
+              <h1 className="mt-3 text-3xl font-semibold text-slate-900">{data.name}</h1>
+              <p className="mt-2 max-w-2xl text-sm text-slate-600">Chi tiết bảng lương tháng, phụ cấp và khấu trừ cho nhân viên.</p>
             </div>
-            <div className="rounded-3xl bg-slate-50 p-4 text-center">
-              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Phòng ban</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">{data.department}</p>
-            </div>
-            <div className="rounded-3xl bg-slate-50 p-4 text-center">
-              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Chức vụ</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">{data.position}</p>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="stat rounded-3xl bg-base-200 p-4 text-center">
+                <div className="stat-title text-slate-500">Kỳ lương</div>
+                <div className="stat-value text-lg text-slate-900">{data.period}</div>
+              </div>
+              <div className="stat rounded-3xl bg-base-200 p-4 text-center">
+                <div className="stat-title text-slate-500">Phòng ban</div>
+                <div className="stat-value text-lg text-slate-900">{data.department}</div>
+              </div>
+              <div className="stat rounded-3xl bg-base-200 p-4 text-center">
+                <div className="stat-title text-slate-500">Chức vụ</div>
+                <div className="stat-value text-lg text-slate-900">{data.position}</div>
+              </div>
             </div>
           </div>
         </div>
