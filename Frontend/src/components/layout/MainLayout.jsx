@@ -11,13 +11,13 @@ import '../../styles/layout.css';
 // ============================================================
 
 function MainLayout() {
-  const { isSidebarCollapsed, confirmDialog, closeConfirm } = useUIStore();
+  const { confirmDialog, closeConfirm } = useUIStore();
 
   return (
     <div className="app-wrapper">
       <Sidebar />
 
-      <div className={`main-area ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <div className="main-area">
         <Header />
         <main className="page-content">
           <Outlet />

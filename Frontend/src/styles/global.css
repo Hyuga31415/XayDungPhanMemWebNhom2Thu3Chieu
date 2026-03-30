@@ -40,9 +40,8 @@
   min-height: 100vh;
   overflow-x: hidden;
   
-  /* Applying resets locally */
-  * {
-    box-sizing: border-box;
+  /* Scoped reset - more surgical than * */
+  h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, blockquote, dl, dd {
     margin: 0;
     padding: 0;
   }
@@ -174,6 +173,7 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    display: inline-block;
   }
 
   .badge-dot {

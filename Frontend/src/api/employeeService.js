@@ -215,14 +215,14 @@ export const employeeService = {
           { name: 'Nam', value: mockEmployees.filter((e) => e.gender === 'male').length },
           { name: 'Nữ', value: mockEmployees.filter((e) => e.gender === 'female').length },
         ],
-        // Recruitment trend from hire_dates
+        // Recruitment trend - Last 6 months
         recruitmentTrend: [
-          { month: '2020', count: mockEmployees.filter((e) => e.hire_date.startsWith('2020')).length },
-          { month: '2021', count: mockEmployees.filter((e) => e.hire_date.startsWith('2021')).length },
-          { month: '2022', count: mockEmployees.filter((e) => e.hire_date.startsWith('2022')).length },
-          { month: '2023', count: mockEmployees.filter((e) => e.hire_date.startsWith('2023')).length },
-          { month: '2024', count: mockEmployees.filter((e) => e.hire_date.startsWith('2024')).length },
-          { month: '2025', count: mockEmployees.filter((e) => e.hire_date.startsWith('2025')).length },
+          { month: 'Tháng 1', count: 4 },
+          { month: 'Tháng 2', count: 7 },
+          { month: 'Tháng 3', count: 5 },
+          { month: 'Tháng 4', count: 8 },
+          { month: 'Tháng 5', count: 12 },
+          { month: 'Tháng 6', count: 9 },
         ],
         // Salary ranges
         bySalary: mockPositions.map((p) => ({

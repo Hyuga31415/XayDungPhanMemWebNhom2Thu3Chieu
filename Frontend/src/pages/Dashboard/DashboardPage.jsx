@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Users, Building2, UserPlus, TrendingUp, 
-  ArrowUpRight, ArrowDownRight, Calendar, Plus, Clock 
+  ArrowUpRight, ArrowDownRight, Calendar, Plus, Clock, 
+  Search, Bell, MoreHorizontal, CheckCircle2, AlertCircle, 
+  UserCheck, Briefcase, FileText, Zap, ChevronRight
 } from 'lucide-react';
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
@@ -32,38 +34,68 @@ function WelcomeHeader({ userName = 'Admin' }) {
   };
 
   const formatTime = (date) => {
-    return new Intl.DateTimeFormat('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    }).format(date);
+    return new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit' }).format(date);
   };
 
   return (
-    <div className="animate-fade-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'var(--space-2)' }}>
+    <div className="animate-fade-in" style={{ 
+      display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
+      marginBottom: 'var(--space-2)', background: 'var(--brand-gradient-soft)',
+      padding: 'var(--space-6)', borderRadius: 'var(--radius-lg)',
+      border: '1px solid var(--border-subtle)'
+    }}>
       <div>
-        <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-          Chào mừng trở lại, <span className="text-gradient">{userName}</span>! 👋
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--brand-primary)', marginBottom: 8, fontWeight: 700, fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <Zap size={14} fill="currentColor" />
+          <span>Hệ thống quản lý HRM Pro</span>
+        </div>
+        <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', marginBottom: 4 }}>
+          Chào buổi tối, <span className="text-gradient" style={{ animation: 'pulse-soft 3s infinite' }}>{userName}</span>
         </h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', marginTop: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-            <Calendar size={14} />
-            <span>{formatDate(time)}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--brand-primary)', fontSize: 'var(--font-size-sm)', fontWeight: 600 }}>
-            <Clock size={14} />
+        <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
+          Hôm nay là {formatDate(time)}. Chúc bạn một ngày làm việc hiệu quả!
+        </p>
+      </div>
+      
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+        <div style={{ textAlign: 'right', paddingRight: 'var(--space-4)', borderRight: '1px solid var(--border-normal)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-primary)', fontSize: 'var(--font-size-xl)', fontWeight: 800, justifyContent: 'flex-end' }}>
+            <Clock size={16} />
             <span>{formatTime(time)}</span>
           </div>
+          <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>Thời gian thực tế</span>
         </div>
+        <Button variant="primary" icon={Plus} onClick={() => navigate('/employees/add')}>
+          Thêm nhân sự
+        </Button>
       </div>
-      <Button 
-        variant="primary" 
-        icon={Plus} 
-        onClick={() => navigate('/employees/add')}
-        style={{ padding: '10px 20px' }}
-      >
-        Thêm nhân viên
-      </Button>
+    </div>
+  );
+}
+
+// ── Action Card ─────────────────────────────────────────────
+function ActionCard({ icon: Icon, title, desc, onClick, color }) {
+  return (
+    <div 
+      className="card-premium animate-fade-in" 
+      onClick={onClick}
+      style={{ 
+        padding: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 'var(--space-4)', 
+        cursor: 'pointer', borderLeft: `4px solid ${color}` 
+      }}
+    >
+      <div style={{ 
+        width: 40, height: 40, borderRadius: 'var(--radius-md)', 
+        background: `${color}10`, color: color,
+        display: 'flex', alignItems: 'center', justifyContent: 'center'
+      }}>
+        <Icon size={20} />
+      </div>
+      <div style={{ flex: 1 }}>
+        <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{title}</p>
+        <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{desc}</p>
+      </div>
+      <ChevronRight size={14} color="var(--text-muted)" />
     </div>
   );
 }
@@ -75,7 +107,7 @@ function StatCard({ icon: Icon, label, value, change, changeLabel, color, gradie
     <div className="card-premium animate-fade-in" style={{ padding: 'var(--space-6)', position: 'relative', overflow: 'hidden' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <p style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
             {label}
           </p>
           <p style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
@@ -97,29 +129,61 @@ function StatCard({ icon: Icon, label, value, change, changeLabel, color, gradie
           padding: '2px 8px', borderRadius: 'var(--radius-full)',
           background: isPositive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
           color: isPositive ? 'var(--color-success)' : 'var(--color-danger)',
-          fontSize: 'var(--font-size-xs)', fontWeight: 700
+          fontSize: 11, fontWeight: 700
         }}>
           {isPositive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
           {Math.abs(change)}%
         </div>
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{changeLabel}</span>
+        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{changeLabel}</span>
       </div>
     </div>
   );
 }
 
 // ── Chart Card ─────────────────────────────────────────────
-function ChartCard({ title, subtitle, children, icon: Icon }) {
+function ChartCard({ title, subtitle, children, icon: Icon, action }) {
   return (
-    <div className="card-premium animate-fade-in" style={{ padding: 'var(--space-6)' }}>
+    <div className="card-premium animate-fade-in" style={{ padding: 'var(--space-6)', height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-6)' }}>
         <div>
           <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 700, color: 'var(--text-primary)' }}>{title}</h3>
           {subtitle && <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 4 }}>{subtitle}</p>}
         </div>
-        {Icon && <div style={{ color: 'var(--text-muted)', opacity: 0.5 }}><Icon size={20} /></div>}
+        <div style={{ display: 'flex', gap: 8 }}>
+          {action}
+          {Icon && <div style={{ color: 'var(--text-muted)', opacity: 0.5 }}><Icon size={18} /></div>}
+        </div>
       </div>
-      {children}
+      <div style={{ flex: 1, minHeight: 0 }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ── Activity Item ──────────────────────────────────────────
+function ActivityItem({ type, text, time, isLast }) {
+  const icons = {
+    hire:   { icon: UserPlus,    color: 'var(--color-success)', bg: 'rgba(16, 185, 129, 0.1)' },
+    dept:   { icon: Building2,   color: 'var(--color-info)',    bg: 'rgba(59, 130, 246, 0.1)' },
+    leave:  { icon: Calendar,    color: 'var(--color-warning)', bg: 'rgba(245, 158, 11, 0.1)' },
+    system: { icon: AlertCircle, color: 'var(--color-danger)',  bg: 'rgba(239, 68, 68, 0.1)' },
+  };
+  const config = icons[type] || icons.hire;
+
+  return (
+    <div style={{ display: 'flex', gap: 12, position: 'relative', paddingBottom: isLast ? 0 : 20 }}>
+      {!isLast && <div style={{ position: 'absolute', left: 16, top: 24, bottom: 0, width: 1, background: 'var(--border-normal)' }} />}
+      <div style={{ 
+        width: 32, height: 32, borderRadius: '50%', background: config.bg, color: config.color,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1, flexShrink: 0
+      }}>
+        <config.icon size={14} />
+      </div>
+      <div style={{ flex: 1 }}>
+        <p style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 500, lineHeight: 1.4 }}>{text}</p>
+        <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{time}</p>
+      </div>
     </div>
   );
 }
@@ -130,13 +194,13 @@ const CustomTooltip = ({ active, payload, label }) => {
   return (
     <div style={{ 
       background: 'var(--bg-surface)', border: '1px solid var(--border-normal)',
-      borderRadius: 'var(--radius-md)', padding: '12px', boxShadow: 'var(--shadow-lg)',
+      borderRadius: 'var(--radius-md)', padding: '10px', boxShadow: 'var(--shadow-lg)',
     }}>
-      <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8, letterSpacing: '0.04em' }}>{label}</p>
+      <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 6, letterSpacing: '0.04em' }}>{label}</p>
       {payload.map((p) => (
         <div key={p.name} style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: '50%', background: p.color }} />
-          <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>
             {p.name}: <span style={{ fontWeight: 800 }}>{p.value}</span>
           </p>
         </div>
@@ -145,7 +209,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-const PIE_COLORS = ['var(--chart-1)', 'var(--chart-4)', 'var(--chart-2)', 'var(--chart-3)'];
+const PIE_COLORS = ['#6366f1', '#ec4899', '#0ea5e9'];
 
 function DashboardPage() {
   const { stats, fetchStats, employees, fetchEmployees } = useEmployeeStore();
@@ -165,10 +229,24 @@ function DashboardPage() {
   }
 
   const statCards = [
-    { icon: Users, label: 'Tổng nhân viên', value: stats.total, change: 5.2, changeLabel: 'so tháng trước', color: '#6366f1', gradient: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
+    { icon: Users, label: 'Tổng nhân sự', value: stats.total, change: 5.2, changeLabel: 'so tháng trước', color: '#6366f1', gradient: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
     { icon: Building2, label: 'Phòng ban', value: 5, change: 0, changeLabel: 'không đổi', color: '#06b6d4', gradient: 'linear-gradient(135deg, #06b6d4, #3b82f6)' },
     { icon: UserPlus, label: 'Mới tháng này', value: stats.newThisMonth, change: 50, changeLabel: 'so tháng trước', color: '#10b981', gradient: 'linear-gradient(135deg, #10b981, #059669)' },
-    { icon: TrendingUp, label: 'Tỷ lệ giữ chân', value: `${stats.retentionRate}%`, change: 1.8, changeLabel: 'so quý trước', color: '#f59e0b', gradient: 'linear-gradient(135deg, #f59e0b, #ef4444)' },
+    { icon: TrendingUp, label: 'Tỷ lệ ổn định', value: `${stats.retentionRate}%`, change: 1.8, changeLabel: 'so quý trước', color: '#f59e0b', gradient: 'linear-gradient(135deg, #f59e0b, #ef4444)' },
+  ];
+
+  const quickActions = [
+    { icon: UserCheck, title: 'Chấm công', desc: 'Ghi nhận giờ công', color: '#6366f1' },
+    { icon: Briefcase, title: 'Nghỉ phép', desc: 'Duyệt đơn nghỉ', color: '#10b981' },
+    { icon: FileText, title: 'Báo cáo', desc: 'Xuất dữ liệu nhân sự', color: '#3b82f6' },
+    { icon: AlertCircle, title: 'Khen thưởng', desc: 'Trao thưởng tháng', color: '#f59e0b' },
+  ];
+
+  const activities = [
+    { type: 'hire', text: 'Nguyễn Văn A vừa được thăng chức Giám đốc', time: '10 phút trước' },
+    { type: 'dept', text: 'Phòng IT vừa thêm 2 thành viên mới', time: '2 giờ trước' },
+    { type: 'leave', text: 'Trần Thị B đã gửi yêu cầu nghỉ phép năm', time: '4 giờ trước' },
+    { type: 'system', text: 'Cập nhật hệ thống HRM Pro v2.0 thành công', time: 'Hôm qua' },
   ];
 
   const recentEmployees = employees.slice(0, 5);
@@ -177,18 +255,39 @@ function DashboardPage() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
       <WelcomeHeader />
 
+      {/* Grid: Actions & Calendar */}
+      <div style={{ display: 'grid', gridTemplateColumns: '8fr 4fr', gap: 'var(--space-6)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--space-4)' }}>
+          {quickActions.map((action, i) => <ActionCard key={i} {...action} />)}
+        </div>
+        
+        <div className="card-premium" style={{ 
+          padding: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 'var(--space-4)',
+          background: 'var(--brand-primary)', color: 'white'
+        }}>
+          <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Calendar size={20} />
+          </div>
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 700 }}>Lịch làm việc</p>
+            <p style={{ fontSize: 11, opacity: 0.8 }}>3 sự kiện sắp tới trong hôm nay</p>
+          </div>
+          <ChevronRight size={14} style={{ marginLeft: 'auto' }} />
+        </div>
+      </div>
+
       {/* Stats Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
         {statCards.map((card) => <StatCard key={card.label} {...card} />)}
       </div>
 
       {/* Main Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-4)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
         
         {/* Recruitment Trend - Wide */}
         <div style={{ gridColumn: 'span 8' }}>
-          <ChartCard title="Xu hướng tuyển dụng" subtitle="Biến động nhân sự 6 tháng gần nhất" icon={TrendingUp}>
-            <ResponsiveContainer width="100%" height={260}>
+          <ChartCard title="Xu hướng biến động nhân sự" subtitle="Biển động tuyển dụng 2023 - 2024" icon={TrendingUp}>
+            <ResponsiveContainer width="100%" height={280}>
               <LineChart data={stats.recruitmentTrend} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
@@ -208,51 +307,49 @@ function DashboardPage() {
           </ChartCard>
         </div>
 
-        {/* Gender Distribution - Narrow */}
+        {/* Activity Feed */}
         <div style={{ gridColumn: 'span 4' }}>
-          <ChartCard title="Cơ cấu giới tính" subtitle="Tỷ lệ nam / nữ hiện tại" icon={Users}>
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart>
-                <Pie data={stats.byGender} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={8} dataKey="value" stroke="none">
-                  {stats.byGender.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-                <Legend verticalAlign="bottom" height={36} formatter={(value) => <span style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500 }}>{value}</span>} />
-              </PieChart>
-            </ResponsiveContainer>
+          <ChartCard title="Hoạt động gần đây" subtitle="Nhật ký hệ thống mới nhất" icon={Bell}>
+            <div style={{ padding: '4px 0' }}>
+              {activities.map((act, i) => (
+                <ActivityItem key={i} {...act} isLast={i === activities.length - 1} />
+              ))}
+            </div>
+            <button style={{ 
+              marginTop: 'auto', width: '100%', padding: '10px', 
+              background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)',
+              borderRadius: 'var(--radius-md)', fontSize: 12, fontWeight: 700, 
+              color: 'var(--text-primary)', cursor: 'pointer' 
+            }}>
+              Xem tất cả nhật ký
+            </button>
           </ChartCard>
         </div>
 
         {/* Department Distribution - Medium */}
         <div style={{ gridColumn: 'span 5' }}>
-          <ChartCard title="Nhân viên theo phòng ban" subtitle="Phân bổ nhân sự các khối" icon={Building2}>
+          <ChartCard title="Nhân sự theo phòng ban" subtitle="Tỉ lệ phân bổ các khối" icon={Building2}>
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={stats.byDepartment} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
-                <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--bg-elevated)', opacity: 0.4 }} />
-                <Bar dataKey="count" name="Nhân viên" fill="url(#barGradient)" radius={[4, 4, 0, 0]} barSize={32} />
-                <defs>
-                  <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--brand-primary)" />
-                    <stop offset="100%" stopColor="var(--brand-primary)" stopOpacity={0.6} />
-                  </linearGradient>
-                </defs>
-              </BarChart>
+              <PieChart>
+                <Pie data={stats.byDepartment} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={2} dataKey="count" nameKey="name" stroke="none">
+                  {stats.byDepartment.map((_, i) => <Cell key={i} fill={i === 0 ? '#6366f1' : i === 1 ? '#0ea5e9' : '#10b981'} />)}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+                <Legend verticalAlign="bottom" align="center" iconType="circle" iconSize={8} formatter={(value) => <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{value}</span>} />
+              </PieChart>
             </ResponsiveContainer>
           </ChartCard>
         </div>
 
         {/* Recent Employees Table - Medium-Wide */}
         <div style={{ gridColumn: 'span 7' }}>
-          <ChartCard title="Nhân viên mới gia nhập" subtitle="Hồ sơ 5 nhân sự gần đây nhất">
+          <ChartCard title="Cập nhật nhân sự" subtitle="Hồ sơ nhân sự mới nhất">
             <div style={{ overflowX: 'auto', marginTop: -8 }}>
               <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px' }}>
                 <thead>
                   <tr>
-                    {['Họ tên', 'Phòng ban / Chức vụ', 'Ngày vào', 'Trạng thái'].map((h) => (
-                      <th key={h} style={{ padding: '0 12px 8px 12px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    {['Nhân viên', 'Vị trí', 'Trạng thái'].map((h) => (
+                      <th key={h} style={{ padding: '0 12px 8px 12px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                         {h}
                       </th>
                     ))}
@@ -262,34 +359,26 @@ function DashboardPage() {
                   {recentEmployees.map((emp) => {
                     const s = STATUS_MAP[emp.status] || { variant: 'default', label: emp.status };
                     return (
-                      <tr 
-                        key={emp.id} 
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => navigate(`/employees/edit/${emp.id}`)}
-                      >
-                        <td style={{ padding: '12px', background: 'var(--bg-elevated)', borderRadius: 'var(--radius-md) 0 0 var(--radius-md)' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <tr key={emp.id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/employees/edit/${emp.id}`)}>
+                        <td style={{ padding: '10px 12px', background: 'var(--bg-elevated)', borderRadius: 'var(--radius-md) 0 0 var(--radius-md)' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <div style={{ 
-                              width: 36, height: 36, borderRadius: 'var(--radius-md)', 
+                              width: 32, height: 32, borderRadius: 'var(--radius-md)', 
                               background: 'var(--brand-gradient)', display: 'flex', alignItems: 'center', 
-                              justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff' 
+                              justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#fff' 
                             }}>
-                              {emp.avatar || emp.fullName?.charAt(0)}
+                              {emp.fullName?.charAt(0)}
                             </div>
                             <div>
-                              <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{emp.fullName}</p>
-                              <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{emp.emp_code}</p>
+                              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{emp.fullName}</p>
+                              <p style={{ fontSize: 10, color: 'var(--text-muted)' }}>{emp.emp_code}</p>
                             </div>
                           </div>
                         </td>
-                        <td style={{ padding: '12px', background: 'var(--bg-elevated)' }}>
-                          <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>{emp.departmentName}</p>
-                          <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{emp.position}</p>
+                        <td style={{ padding: '10px 12px', background: 'var(--bg-elevated)', fontSize: 13, color: 'var(--text-secondary)' }}>
+                          {emp.position}
                         </td>
-                        <td style={{ padding: '12px', background: 'var(--bg-elevated)', fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-                          {emp.hire_date}
-                        </td>
-                        <td style={{ padding: '12px', background: 'var(--bg-elevated)', borderRadius: '0 var(--radius-md) var(--radius-md) 0' }}>
+                        <td style={{ padding: '10px 12px', background: 'var(--bg-elevated)', borderRadius: '0 var(--radius-md) var(--radius-md) 0' }}>
                           <Badge variant={s.variant}>{s.label}</Badge>
                         </td>
                       </tr>
@@ -298,6 +387,9 @@ function DashboardPage() {
                 </tbody>
               </table>
             </div>
+            <Button variant="secondary" size="sm" style={{ marginTop: 'auto' }} onClick={() => navigate('/employees')}>
+              Xem tất cả danh sách
+            </Button>
           </ChartCard>
         </div>
       </div>
