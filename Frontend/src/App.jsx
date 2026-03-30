@@ -1,31 +1,47 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import UserList from './UserList'; 
+import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import MainLayout from "./components/layout/MainLayout";
+import DashboardPage from './pages/Dashboard/DashboardPage';
+import EmployeeListPage from './pages/Employees/EmployeeListPage';
+import DepartmentListPage from './pages/Departments/DepartmentListPage';
+function NotFound() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', flexDirection: 'column', gap: 16 }}>
+      <span style={{ fontSize: 64, lineHeight: 1 }}>🔍</span>
+      <h2 style={{ fontSize: 'var(--font-size-xl)', color: 'var(--text-primary)' }}>Trang không tồn tại</h2>
+      <a href="/dashboard" style={{ color: 'var(--brand-primary)', fontSize: 'var(--font-size-sm)' }}>← Về Dashboard</a>
+    </div>
+  );
+}
 
+function ComingSoon({ title }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', flexDirection: 'column', gap: 16 }}>
+      <span style={{ fontSize: 64, lineHeight: 1 }}>🚧</span>
+      <h2 style={{ fontSize: 'var(--font-size-xl)', color: 'var(--text-primary)' }}>{title}</h2>
+      <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Tính năng đang được phát triển</p>
+    </div>
+  );
+}
 function App() {
   return (
-    <BrowserRouter>
-      {/* Thanh điều hướng (Navigation) xuất hiện ở mọi trang */}
-      <nav style={{ padding: '20px', backgroundColor: '#eee', marginBottom: '20px' }}>
-        <Link to="/" style={{ marginRight: '15px' }}>Trang chủ</Link>
-        <Link to="/users">Danh sách Users</Link>
-      </nav>
-
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
-        <Route path="/" element={
-          <div style={{ padding: '20px' }}>
-            <h1>Trang chủ - Hệ thống Quản lý</h1>
-            <p>Chào mừng bạn! Nhấn vào nút bên dưới để xem danh sách:</p>
-            {/* Thêm link ngay tại nội dung trang chủ */}
-            <Link to="/users">
-              <button style={{ padding: '10px 20px', cursor: 'pointer' }}>
-                Xem danh sách Users
-              </button>
-            </Link>
-          </div>
-        } />
-        
-        {/* Route danh sách users */}
-        <Route path="/users" element={<UserList />} />
+        <Route element={<MainLayout />}>
+          {/* Default redirect */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+          {/* Core pages */}
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/employees" element={<EmployeeListPage />} />
+          <Route path="/departments" element={<DepartmentListPage />} />
+
+          {/* Placeholder routes (cho FE members khác) */}
+          <Route path="/positions" element={<ComingSoon title="Quản lý chức vụ" />} />
+          <Route path="/analytics" element={<ComingSoon title="Phân tích & Báo cáo" />} />
+
+          {/* 404 */}
+          <Route path="*" element={<NotFound />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
