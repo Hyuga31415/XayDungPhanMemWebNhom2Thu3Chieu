@@ -78,7 +78,7 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
                 value={newSalaryLabel}
                 onChange={(e) => setNewSalaryLabel(e.target.value)}
                 placeholder="Junior, Senior..."
-                className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
               />
             </div>
             <div>
@@ -88,10 +88,10 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
                 value={newSalaryValue}
                 onChange={(e) => setNewSalaryValue(e.target.value)}
                 placeholder="18000000"
-                className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
               />
             </div>
-            <button className="w-full rounded-full bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-700">Thêm mức lương</button>
+            <button className="w-full rounded-lg bg-sky-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-sky-700 active:scale-95 shadow-sm">Thêm mức lương</button>
           </form>
         </article>
 
@@ -105,7 +105,7 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
                 value={newAllowanceLabel}
                 onChange={(e) => setNewAllowanceLabel(e.target.value)}
                 placeholder="Phụ cấp chuyên cần"
-                className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
               />
             </div>
             <div>
@@ -114,10 +114,10 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
                 value={newAllowanceRate}
                 onChange={(e) => setNewAllowanceRate(e.target.value)}
                 placeholder="10% hoặc 1,000,000"
-                className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
               />
             </div>
-            <button className="w-full rounded-full bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-700">Thêm phụ cấp</button>
+            <button className="w-full rounded-lg bg-sky-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-sky-700 active:scale-95 shadow-sm">Thêm phụ cấp</button>
           </form>
         </article>
 
@@ -131,7 +131,7 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
                 value={newRuleName}
                 onChange={(e) => setNewRuleName(e.target.value)}
                 placeholder="Đi muộn 1 lần"
-                className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
               />
             </div>
             <div>
@@ -140,10 +140,10 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
                 value={newRulePenalty}
                 onChange={(e) => setNewRulePenalty(e.target.value)}
                 placeholder="100,000 VND"
-                className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
               />
             </div>
-            <button className="w-full rounded-full bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-700">Thêm quy tắc</button>
+            <button className="w-full rounded-lg bg-sky-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-sky-700 active:scale-95 shadow-sm">Thêm quy tắc</button>
           </form>
         </article>
       </section>

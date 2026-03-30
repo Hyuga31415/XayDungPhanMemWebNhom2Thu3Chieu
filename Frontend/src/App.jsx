@@ -129,11 +129,11 @@ function App() {
               path="/"
               element={
                 <div className="grid gap-6">
-                  <section className="overflow-hidden rounded-[2rem] bg-gradient-to-r from-sky-600 to-cyan-500 p-8 text-white shadow-lg shadow-sky-200/20">
+                  <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-sky-500 to-cyan-400 p-12 text-white shadow-2xl">
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                       <div>
-                        <p className="text-sm uppercase tracking-[0.28em] text-cyan-100/80">Payroll dashboard</p>
-                        <h2 className="mt-3 text-3xl font-semibold">Quản lý lương trực quan cho HR</h2>
+                        <p className="text-xs uppercase tracking-widest font-bold text-blue-100">Dashboard Payroll</p>
+                        <h2 className="mt-4 text-4xl font-bold leading-tight max-w-lg">Quản lý lương chuyên nghiệp</h2>
                         <p className="mt-4 max-w-2xl text-sm leading-7 text-cyan-100/90">
                           Kiểm soát nhanh số liệu nhân viên, trạng thái bảng lương và cấu hình chi tiết trong cùng một giao diện.
                         </p>
@@ -156,17 +156,20 @@ function App() {
                   </section>
 
                   <section className="grid gap-6 lg:grid-cols-3">
-                    <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                      <h3 className="text-lg font-semibold text-slate-900">Lương chi tiết</h3>
-                      <p className="mt-2 text-sm text-slate-600">Xem chi tiết thu nhập, phụ cấp và khấu trừ cho từng nhân viên.</p>
+                    <article className="rounded-2xl border border-slate-100 bg-white p-8 shadow-md hover:shadow-xl transition-shadow">
+                      <div className="text-2xl mb-3">💼</div>
+                      <h3 className="text-lg font-bold text-slate-900">Lương chi tiết</h3>
+                      <p className="mt-2 text-sm text-slate-600 leading-relaxed">Xem chi tiết thu nhập, phụ cấp và khấu trừ cho từng nhân viên.</p>
                     </article>
-                    <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                      <h3 className="text-lg font-semibold text-slate-900">Bảng lương HR</h3>
-                      <p className="mt-2 text-sm text-slate-600">Tra cứu nhanh trạng thái lương và tổng chi trả trong tháng.</p>
+                    <article className="rounded-2xl border border-slate-100 bg-white p-8 shadow-md hover:shadow-xl transition-shadow">
+                      <div className="text-2xl mb-3">📊</div>
+                      <h3 className="text-lg font-bold text-slate-900">Bảng lương HR</h3>
+                      <p className="mt-2 text-sm text-slate-600 leading-relaxed">Tra cứu nhanh trạng thái lương và tổng chi trả trong tháng.</p>
                     </article>
-                    <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                      <h3 className="text-lg font-semibold text-slate-900">Cấu hình lương</h3>
-                      <p className="mt-2 text-sm text-slate-600">Thiết lập mức lương, phụ cấp và quy tắc chấm công chính xác.</p>
+                    <article className="rounded-2xl border border-slate-100 bg-white p-8 shadow-md hover:shadow-xl transition-shadow">
+                      <div className="text-2xl mb-3">⚙️</div>
+                      <h3 className="text-lg font-bold text-slate-900">Cấu hình lương</h3>
+                      <p className="mt-2 text-sm text-slate-600 leading-relaxed">Thiết lập mức lương, phụ cấp và quy tắc chấm công chính xác.</p>
                     </article>
                   </section>
                 </div>

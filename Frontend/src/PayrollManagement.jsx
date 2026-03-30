@@ -68,7 +68,7 @@ const PayrollManagement = ({ payrollList }) => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Tìm kiếm mã hoặc tên..."
-              className="w-full rounded-full border border-slate-200 bg-slate-50 px-12 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-200"
+              className="w-full rounded-xl border border-slate-300 bg-white px-12 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
             />
           </div>
         </div>
@@ -87,18 +87,18 @@ const PayrollManagement = ({ payrollList }) => {
             </thead>
             <tbody className="divide-y divide-slate-200 bg-white">
               {filteredPayrolls.map((item, index) => (
-                <tr key={item.id} className={index % 2 === 0 ? 'bg-slate-50' : ''}>
-                  <td className="px-4 py-4 font-medium text-slate-900">{item.id}</td>
-                  <td className="px-4 py-4">{item.name}</td>
-                  <td className="px-4 py-4">{item.period}</td>
-                  <td className="px-4 py-4">{formatVnd(item.netSalary)}</td>
+                <tr key={item.id} className="border-b border-slate-200 hover:bg-sky-50 transition">
+                  <td className="px-4 py-4 font-semibold text-slate-900">{item.id}</td>
+                  <td className="px-4 py-4 text-slate-900">{item.name}</td>
+                  <td className="px-4 py-4 text-slate-700">{item.period}</td>
+                  <td className="px-4 py-4 font-medium text-slate-900">{formatVnd(item.netSalary)}</td>
                   <td className="px-4 py-4">
-                    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[item.status] || 'bg-slate-100 text-slate-800'}`}>
+                    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${statusStyles[item.status] || 'bg-slate-100 text-slate-800'}`}>
                       {item.status}
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <button className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-100">
+                    <button className="rounded-lg border border-sky-300 bg-white px-3 py-2 text-xs font-bold text-sky-600 transition hover:bg-sky-50 active:scale-95 shadow-sm">
                       Xem chi tiết
                     </button>
                   </td>
