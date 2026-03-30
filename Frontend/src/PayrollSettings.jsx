@@ -7,15 +7,15 @@ const initialSalaryLevels = [
 ];
 
 const initialAllowances = [
-  { id: 1, name: 'Phụ cấp trách nhiệm', rate: '15%' },
-  { id: 2, name: 'Phụ cấp xăng', rate: '5%' },
-  { id: 3, name: 'Phụ cấp ăn trưa', rate: '3%' },
+  { id: 1, name: 'Phu cap trach nhiem', rate: '15%' },
+  { id: 2, name: 'Phu cap xang', rate: '5%' },
+  { id: 3, name: 'Phu cap an trua', rate: '3%' },
 ];
 
 const initialRules = [
-  { id: 1, name: 'Đi muộn 1 lần', penalty: '100,000 VND' },
-  { id: 2, name: 'Vắng không phép', penalty: '500,000 VND' },
-  { id: 3, name: 'Quá 2 ngày phép', penalty: '200,000 VND/ngày' },
+  { id: 1, name: 'Di muon 1 lan', penalty: '100,000 VND' },
+  { id: 2, name: 'Vang khong phep', penalty: '500,000 VND' },
+  { id: 3, name: 'Qua 2 ngay phep', penalty: '200,000 VND/ngay' },
 ];
 
 const formatVnd = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
@@ -70,27 +70,31 @@ const PayrollSettings = () => {
 
   return (
     <div className="space-y-8 px-4 py-6 sm:px-6 lg:px-8">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-medium text-slate-500">Cấu hình bảng lương</p>
-            <h1 className="mt-2 text-3xl font-semibold text-slate-900">Thiết lập lương & phụ cấp</h1>
-            <p className="mt-2 text-sm text-slate-600">Quản lý mức lương, loại phụ cấp và quy tắc chấm công.</p>
+            <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Cau hinh bang luong</p>
+            <h1 className="mt-3 text-3xl font-semibold text-slate-900">Thiet lap luong & phu cap</h1>
+            <p className="mt-2 text-sm text-slate-600">Quan ly muc luong, loai phu cap va quy tac cham cong.</p>
           </div>
-          <div className="rounded-3xl bg-slate-50 p-4 text-center">
-            <p className="text-sm text-slate-500">Mức lương hiện có</p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">{salaryLevels.length}</p>
+          <div className="rounded-[1.5rem] bg-slate-50 px-6 py-5 text-center">
+            <p className="text-sm text-slate-500">Muc luong hien co</p>
+            <p className="mt-3 text-3xl font-semibold text-slate-900">{salaryLevels.length}</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="grid gap-6 xl:grid-cols-3">
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-1">
-          <h2 className="text-xl font-semibold text-slate-900">Mức lương</h2>
-          <p className="mt-2 text-sm text-slate-500">Thêm / điều chỉnh cấp bậc lương.</p>
+      <section className="grid gap-6 xl:grid-cols-3">
+        <article className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-slate-900">Muc luong</h2>
+              <p className="mt-2 text-sm text-slate-500">Them cap bac va muc luong thang.</p>
+            </div>
+          </div>
           <form onSubmit={handleAddSalaryLevel} className="mt-6 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700">Cấp bậc</label>
+              <label className="block text-sm font-medium text-slate-700">Cap bac</label>
               <input
                 value={newSalaryLabel}
                 onChange={(e) => setNewSalaryLabel(e.target.value)}
@@ -99,7 +103,7 @@ const PayrollSettings = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">Lương tháng (VND)</label>
+              <label className="block text-sm font-medium text-slate-700">Luong thang (VND)</label>
               <input
                 type="number"
                 value={newSalaryValue}
@@ -108,51 +112,51 @@ const PayrollSettings = () => {
                 className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
               />
             </div>
-            <button className="w-full rounded-3xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-700">Thêm mức lương</button>
+            <button className="w-full rounded-3xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-700">Them muc luong</button>
           </form>
-        </section>
+        </article>
 
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-1">
-          <h2 className="text-xl font-semibold text-slate-900">Loại phụ cấp</h2>
-          <p className="mt-2 text-sm text-slate-500">Tạo phụ cấp mới và quản lý tỷ lệ.</p>
+        <article className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-900">Loai phu cap</h2>
+          <p className="mt-2 text-sm text-slate-500">Tao phu cap moi va quan ly ty le.</p>
           <form onSubmit={handleAddAllowance} className="mt-6 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700">Tên phụ cấp</label>
+              <label className="block text-sm font-medium text-slate-700">Ten phu cap</label>
               <input
                 value={newAllowanceLabel}
                 onChange={(e) => setNewAllowanceLabel(e.target.value)}
-                placeholder="Phụ cấp chuyên cần"
+                placeholder="Phu cap chuyen can"
                 className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">Tỷ lệ / số tiền</label>
+              <label className="block text-sm font-medium text-slate-700">Ty le / so tien</label>
               <input
                 value={newAllowanceRate}
                 onChange={(e) => setNewAllowanceRate(e.target.value)}
-                placeholder="10% hoặc 1,000,000"
+                placeholder="10% hoac 1,000,000"
                 className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
               />
             </div>
-            <button className="w-full rounded-3xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-700">Thêm phụ cấp</button>
+            <button className="w-full rounded-3xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-700">Them phu cap</button>
           </form>
-        </section>
+        </article>
 
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-1">
-          <h2 className="text-xl font-semibold text-slate-900">Quy tắc chấm công</h2>
-          <p className="mt-2 text-sm text-slate-500">Thiết lập mức phạt và quy tắc tính lương.</p>
+        <article className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-900">Quy tac cham cong</h2>
+          <p className="mt-2 text-sm text-slate-500">Thiet lap muc phat va quy tac tinh luong.</p>
           <form onSubmit={handleAddRule} className="mt-6 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700">Tên quy tắc</label>
+              <label className="block text-sm font-medium text-slate-700">Ten quy tac</label>
               <input
                 value={newRuleName}
                 onChange={(e) => setNewRuleName(e.target.value)}
-                placeholder="Đi muộn 1 lần"
+                placeholder="Di muon 1 lan"
                 className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">Mức phạt</label>
+              <label className="block text-sm font-medium text-slate-700">Muc phat</label>
               <input
                 value={newRulePenalty}
                 onChange={(e) => setNewRulePenalty(e.target.value)}
@@ -160,48 +164,48 @@ const PayrollSettings = () => {
                 className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
               />
             </div>
-            <button className="w-full rounded-3xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-700">Thêm quy tắc</button>
+            <button className="w-full rounded-3xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-700">Them quy tac</button>
           </form>
-        </section>
-      </div>
+        </article>
+      </section>
 
-      <div className="grid gap-6 xl:grid-cols-3">
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-1">
-          <h3 className="text-lg font-semibold text-slate-900">Danh sách mức lương</h3>
+      <section className="grid gap-6 xl:grid-cols-3">
+        <article className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-slate-900">Danh sach muc luong</h3>
           <div className="mt-5 space-y-3">
             {salaryLevels.map((item) => (
-              <div key={item.id} className="rounded-3xl bg-slate-50 p-4">
+              <div key={item.id} className="rounded-3xl bg-white p-4 shadow-sm">
                 <p className="font-semibold text-slate-900">{item.level}</p>
-                <p className="mt-1 text-sm text-slate-600">{formatVnd(item.monthly)} / tháng</p>
+                <p className="mt-1 text-sm text-slate-600">{formatVnd(item.monthly)} / thang</p>
               </div>
             ))}
           </div>
-        </section>
+        </article>
 
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-1">
-          <h3 className="text-lg font-semibold text-slate-900">Loại phụ cấp</h3>
+        <article className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-slate-900">Loai phu cap</h3>
           <div className="mt-5 space-y-3">
             {allowances.map((item) => (
-              <div key={item.id} className="rounded-3xl bg-slate-50 p-4">
+              <div key={item.id} className="rounded-3xl bg-white p-4 shadow-sm">
                 <p className="font-semibold text-slate-900">{item.name}</p>
                 <p className="mt-1 text-sm text-slate-600">{item.rate}</p>
               </div>
             ))}
           </div>
-        </section>
+        </article>
 
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-1">
-          <h3 className="text-lg font-semibold text-slate-900">Quy tắc chấm công</h3>
+        <article className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-slate-900">Quy tac cham cong</h3>
           <div className="mt-5 space-y-3">
             {rules.map((item) => (
-              <div key={item.id} className="rounded-3xl bg-slate-50 p-4">
+              <div key={item.id} className="rounded-3xl bg-white p-4 shadow-sm">
                 <p className="font-semibold text-slate-900">{item.name}</p>
                 <p className="mt-1 text-sm text-slate-600">{item.penalty}</p>
               </div>
             ))}
           </div>
-        </section>
-      </div>
+        </article>
+      </section>
     </div>
   );
 };
