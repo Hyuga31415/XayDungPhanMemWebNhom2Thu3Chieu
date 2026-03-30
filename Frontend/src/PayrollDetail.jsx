@@ -1,22 +1,22 @@
-import React from 'react';
+﻿import React from 'react';
 
 const PayrollDetail = () => {
   const employee = {
-    name: 'Nguyen Van A',
+    name: 'Nguyễn Văn A',
     id: 'NV-001',
-    position: 'Chuyen vien nhan su',
+    position: 'Chuyên viên nhân sự',
     department: 'Payroll',
-    period: 'Thang 03/2026',
+    period: 'Tháng 03/2026',
     baseSalary: 18000000,
     allowances: [
-      { label: 'Phu cap trach nhiem', amount: 2500000 },
-      { label: 'Phu cap an trua', amount: 800000 },
-      { label: 'Phu cap xang', amount: 900000 },
+      { label: 'Phụ cấp trách nhiệm', amount: 2500000 },
+      { label: 'Phụ cấp ăn trưa', amount: 800000 },
+      { label: 'Phụ cấp xăng', amount: 900000 },
     ],
     deductions: [
-      { label: 'Bao hiem xa hoi', amount: 900000 },
-      { label: 'Thue TNCN', amount: 650000 },
-      { label: 'Di muon 2 lan', amount: 150000 },
+      { label: 'Bảo hiểm xã hội', amount: 900000 },
+      { label: 'Thuế TNCN', amount: 650000 },
+      { label: 'Đi muộn 2 lần', amount: 150000 },
     ],
   };
 
@@ -32,21 +32,21 @@ const PayrollDetail = () => {
       <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Luong ca nhan</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Lương cá nhân</p>
             <h1 className="mt-3 text-3xl font-semibold text-slate-900">{employee.name}</h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-600">Chi tiet bang luong thang, phu cap va khau tru cho nhan vien.</p>
+            <p className="mt-2 max-w-2xl text-sm text-slate-600">Chi tiết bảng lương tháng, phụ cấp và khấu trừ cho nhân viên.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="rounded-3xl bg-slate-50 p-4 text-center">
-              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Ky luong</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Kỳ lương</p>
               <p className="mt-2 text-lg font-semibold text-slate-900">{employee.period}</p>
             </div>
             <div className="rounded-3xl bg-slate-50 p-4 text-center">
-              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Phong ban</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Phòng ban</p>
               <p className="mt-2 text-lg font-semibold text-slate-900">{employee.department}</p>
             </div>
             <div className="rounded-3xl bg-slate-50 p-4 text-center">
-              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Chuc vu</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Chức vụ</p>
               <p className="mt-2 text-lg font-semibold text-slate-900">{employee.position}</p>
             </div>
           </div>
@@ -57,28 +57,28 @@ const PayrollDetail = () => {
         <div className="space-y-6 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-3xl bg-slate-50 p-6">
-              <p className="text-sm text-slate-500">Luong co ban</p>
+              <p className="text-sm text-slate-500">Lương cơ bản</p>
               <p className="mt-3 text-3xl font-semibold text-slate-900">{formatVnd(employee.baseSalary)}</p>
             </div>
             <div className="rounded-3xl bg-slate-50 p-6">
-              <p className="text-sm text-slate-500">Tong phu cap</p>
+              <p className="text-sm text-slate-500">Tổng phụ cấp</p>
               <p className="mt-3 text-3xl font-semibold text-emerald-700">{formatVnd(totalAllowance)}</p>
             </div>
           </div>
 
           <div className="rounded-[1.5rem] bg-slate-50 p-6 text-center shadow-sm">
-            <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Luong thuc linh</p>
+            <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Lương thực lĩnh</p>
             <p className="mt-3 text-4xl font-semibold text-slate-900">{formatVnd(netSalary)}</p>
-            <p className="mt-2 text-sm text-slate-600">Sau khau tru bao hiem, thue va di muon.</p>
+            <p className="mt-2 text-sm text-slate-600">Sau khấu trừ bảo hiểm, thuế và đi muộn.</p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-3xl bg-white p-6 shadow-sm">
-              <p className="text-sm text-slate-500">Tong truoc khau tru</p>
+              <p className="text-sm text-slate-500">Tổng trước khấu trừ</p>
               <p className="mt-3 text-xl font-semibold text-slate-900">{formatVnd(grossSalary)}</p>
             </div>
             <div className="rounded-3xl bg-white p-6 shadow-sm">
-              <p className="text-sm text-slate-500">Khau tru</p>
+              <p className="text-sm text-slate-500">Khấu trừ</p>
               <p className="mt-3 text-xl font-semibold text-rose-600">{formatVnd(totalDeduction)}</p>
             </div>
           </div>
@@ -86,18 +86,18 @@ const PayrollDetail = () => {
 
         <aside className="space-y-6 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
           <div className="rounded-3xl bg-sky-50 p-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">Tong quan nhanh</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">Tổng quan nhanh</p>
             <ul className="mt-5 space-y-3 text-sm text-slate-600">
-              <li className="flex items-start gap-3"><span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />Phu cap duoc cong truc tiep vao luong co ban.</li>
-              <li className="flex items-start gap-3"><span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-amber-500" />Khau tru theo luong bao hiem va thue chuan.</li>
+              <li className="flex items-start gap-3"><span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />Phụ cấp được cộng trực tiếp vào lương cơ bản.</li>
+              <li className="flex items-start gap-3"><span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-amber-500" />Khấu trừ theo lương bảo hiểm và thuế chuẩn.</li>
             </ul>
           </div>
           <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-            <p className="text-sm text-slate-500">Tinh nang noi bat</p>
+            <p className="text-sm text-slate-500">Tính năng nổi bật</p>
             <div className="mt-4 space-y-3 text-sm text-slate-700">
-              <p>- Bao cao so lieu luong chi tiet cho tung nhan vien.</p>
-              <p>- De so sanh phu cap va khoan khau tru.</p>
-              <p>- Giao dien sach, doc so lieu nhanh.</p>
+              <p>- Báo cáo số liệu lương chi tiết cho từng nhân viên.</p>
+              <p>- Dễ so sánh phụ cấp và khoản khấu trừ.</p>
+              <p>- Giao diện sạch, đọc số liệu nhanh.</p>
             </div>
           </div>
         </aside>
@@ -106,15 +106,15 @@ const PayrollDetail = () => {
       <section className="space-y-6 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Chi tiet bang luong</p>
-            <h2 className="mt-2 text-2xl font-semibold text-slate-900">Phu cap va khau tru</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Chi tiết bảng lương</p>
+            <h2 className="mt-2 text-2xl font-semibold text-slate-900">Phụ cấp và khấu trừ</h2>
           </div>
-          <div className="rounded-full bg-slate-50 px-4 py-2 text-sm text-slate-700">Du lieu cap nhat theo ky luong</div>
+          <div className="rounded-full bg-slate-50 px-4 py-2 text-sm text-slate-700">Dữ liệu cập nhật theo kỳ lương</div>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-3xl bg-slate-50 p-6">
-            <h3 className="text-lg font-semibold text-slate-900">Phu cap</h3>
+            <h3 className="text-lg font-semibold text-slate-900">Phụ cấp</h3>
             <div className="mt-4 space-y-3">
               {employee.allowances.map((item) => (
                 <div key={item.label} className="flex items-center justify-between rounded-3xl bg-white px-4 py-4 shadow-sm">
@@ -126,7 +126,7 @@ const PayrollDetail = () => {
           </div>
 
           <div className="rounded-3xl bg-slate-50 p-6">
-            <h3 className="text-lg font-semibold text-slate-900">Khau tru</h3>
+            <h3 className="text-lg font-semibold text-slate-900">Khấu trừ</h3>
             <div className="mt-4 space-y-3">
               {employee.deductions.map((item) => (
                 <div key={item.label} className="flex items-center justify-between rounded-3xl bg-white px-4 py-4 shadow-sm">
