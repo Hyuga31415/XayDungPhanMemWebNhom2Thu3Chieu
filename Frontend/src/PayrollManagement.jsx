@@ -61,33 +61,31 @@ const PayrollManagement = ({ payrollList }) => {
             <h2 className="text-xl font-semibold text-slate-900">Danh sách bảng lương</h2>
             <p className="mt-2 text-sm text-slate-500">Tìm kiếm và theo dõi trạng thái chi tiết.</p>
           </div>
-          <div className="form-control w-full max-w-sm">
-            <label className="input-group">
-              <span>🔍</span>
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Tìm kiếm mã hoặc tên..."
-                className="input input-bordered w-full"
-              />
-            </label>
+          <div className="relative w-full max-w-sm">
+            <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">🔍</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Tìm kiếm mã hoặc tên..."
+              className="w-full rounded-full border border-slate-200 bg-slate-50 px-12 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-200"
+            />
           </div>
         </div>
 
         <div className="mt-6 overflow-x-auto">
-          <table className="table table-zebra w-full">
-            <thead>
+          <table className="min-w-full divide-y divide-slate-200 text-left text-sm text-slate-700">
+            <thead className="bg-slate-50 text-slate-600">
               <tr>
-                <th>Mã</th>
-                <th>Nhân viên</th>
-                <th>Kỳ lương</th>
-                <th>Thực lĩnh</th>
-                <th>Trạng thái</th>
-                <th>Hành động</th>
+                <th className="px-4 py-3">Mã</th>
+                <th className="px-4 py-3">Nhân viên</th>
+                <th className="px-4 py-3">Kỳ lương</th>
+                <th className="px-4 py-3">Thực lĩnh</th>
+                <th className="px-4 py-3">Trạng thái</th>
+                <th className="px-4 py-3">Hành động</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-200 bg-white">
               {filteredPayrolls.map((item, index) => (
                 <tr key={item.id} className={index % 2 === 0 ? 'bg-slate-50' : ''}>
                   <td className="px-4 py-4 font-medium text-slate-900">{item.id}</td>

@@ -99,26 +99,21 @@ const navItems = [
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-base-200 text-base-content">
-        <header className="navbar bg-base-100 shadow-sm">
-          <div className="container mx-auto flex flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <span className="btn btn-ghost normal-case text-xl text-sky-600">Payroll & Settings</span>
-              </div>
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Payroll & Settings</p>
-                <h1 className="mt-2 text-3xl font-semibold text-slate-900">Hệ thống quản lý lương</h1>
-                <p className="mt-2 max-w-2xl text-sm text-slate-600">Giao diện HR chuyên nghiệp, rõ ràng và dễ theo dõi số liệu lương nhân viên.</p>
-              </div>
+      <div className="min-h-screen bg-slate-50 text-slate-900">
+        <header className="border-b border-slate-200 bg-white shadow-sm">
+          <div className="mx-auto flex flex-col gap-4 px-4 py-5 sm:px-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Payroll & Settings</p>
+              <h1 className="mt-2 text-3xl font-semibold text-slate-900">Hệ thống quản lý lương</h1>
+              <p className="mt-2 max-w-2xl text-sm text-slate-600">Giao diện HR sạch, dễ theo dõi và không rối mắt.</p>
             </div>
-            <nav className="flex flex-wrap items-center gap-3">
+            <nav className="flex flex-wrap items-center gap-2">
               {navItems.map((item) => (
                 <NavLink
                   key={item.path}
                   to={item.path}
                   className={({ isActive }) =>
-                    `btn btn-ghost btn-sm rounded-full text-slate-700 transition ${isActive ? 'bg-sky-600 text-white shadow-lg' : 'bg-base-200 hover:bg-base-300'}`
+                    `rounded-full px-4 py-2 text-sm font-medium transition ${isActive ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`
                   }
                 >
                   {item.label}

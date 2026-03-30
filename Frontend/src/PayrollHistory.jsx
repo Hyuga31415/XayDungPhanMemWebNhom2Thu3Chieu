@@ -37,43 +37,43 @@ const PayrollHistory = ({ historyItems }) => {
           <p className="mt-2 text-sm text-slate-500">Xem nhanh các kỳ lương đã phát hành.</p>
           <div className="mt-6 space-y-4">
             {historyItems.map((item) => (
-              <button
+              <div
                 key={item.month}
                 onClick={() => setSelectedMonth(item.month)}
-                className={`btn btn-block justify-start rounded-3xl ${
-                  item.month === selectedMonth ? 'btn-primary text-white' : 'btn-ghost text-slate-900'
+                className={`cursor-pointer rounded-[1.5rem] border px-5 py-4 transition ${
+                  item.month === selectedMonth ? 'border-sky-500 bg-sky-50 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
-                <div className="flex w-full flex-col gap-2 text-left">
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="font-semibold">Kỳ {item.month}</span>
-                    <span className={`badge badge-sm ${statusStyles[item.status]}`}>{item.status}</span>
-                  </div>
-                  <p className="text-sm text-slate-600">Tổng chi trả {formatVnd(item.totalPaid)} cho {item.employees} nhân viên.</p>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-semibold text-slate-900">Kỳ {item.month}</span>
+                  <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[item.status]}`}>
+                    {item.status}
+                  </span>
                 </div>
-              </button>
+                <p className="mt-2 text-sm text-slate-600">Tổng chi trả {formatVnd(item.totalPaid)} cho {item.employees} nhân viên.</p>
+              </div>
             ))}
           </div>
         </div>
 
         <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-900">Tóm tắt kỳ lương</h2>
-          <div className="stats stats-vertical gap-4 sm:stats-horizontal">
-            <div className="stat rounded-3xl bg-base-100 shadow-sm p-6">
-              <div className="stat-title">Kỳ</div>
-              <div className="stat-value text-3xl">{selectedItem.month}</div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-[1.5rem] bg-white p-6 shadow-sm">
+              <p className="text-sm text-slate-500">Kỳ</p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{selectedItem.month}</p>
             </div>
-            <div className="stat rounded-3xl bg-base-100 shadow-sm p-6">
-              <div className="stat-title">Tổng nhân viên</div>
-              <div className="stat-value text-3xl">{selectedItem.employees}</div>
+            <div className="rounded-[1.5rem] bg-white p-6 shadow-sm">
+              <p className="text-sm text-slate-500">Tổng nhân viên</p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{selectedItem.employees}</p>
             </div>
-            <div className="stat rounded-3xl bg-base-100 shadow-sm p-6">
-              <div className="stat-title">Tổng chi trả</div>
-              <div className="stat-value text-3xl">{formatVnd(selectedItem.totalPaid)}</div>
+            <div className="rounded-[1.5rem] bg-white p-6 shadow-sm">
+              <p className="text-sm text-slate-500">Tổng chi trả</p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{formatVnd(selectedItem.totalPaid)}</p>
             </div>
-            <div className="stat rounded-3xl bg-base-100 shadow-sm p-6">
-              <div className="stat-title">Trạng thái</div>
-              <div className="stat-value text-slate-900">{selectedItem.status}</div>
+            <div className="rounded-[1.5rem] bg-white p-6 shadow-sm">
+              <p className="text-sm text-slate-500">Trạng thái</p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{selectedItem.status}</p>
             </div>
           </div>
 
