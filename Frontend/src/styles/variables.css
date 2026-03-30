@@ -1,51 +1,52 @@
 /* ============================================================
-   HRM Design Tokens – Dark Glassmorphism Theme
+   HRM Design Tokens – Premium Light Mesh Glassmorphism
    ============================================================ */
 
-:root {
+.hrm-dashboard-root {
   /* --- Brand Colors --- */
-  --brand-primary: #6366f1;
+  --brand-primary: #6366f1;      /* Vibrant Indigo */
   --brand-primary-hover: #4f46e5;
-  --brand-secondary: #8b5cf6;
-  --brand-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  --brand-gradient-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+  --brand-secondary: #0ea5e9;    /* Ocean Blue */
+  --brand-gradient: linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%);
+  --brand-gradient-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(14, 165, 233, 0.08) 100%);
 
   /* --- Backgrounds --- */
-  --bg-base: #0f0f1a;
-  --bg-surface: #161625;
-  --bg-elevated: #1e1e32;
-  --bg-glass: rgba(30, 30, 50, 0.7);
-  --bg-glass-hover: rgba(40, 40, 65, 0.85);
-  --bg-overlay: rgba(0, 0, 0, 0.6);
+  /* We use a transparent or very faint base because the mesh gradient will be behind it */
+  --bg-base: transparent;
+  --bg-surface: #ffffff;             /* Opaque white for better stability */
+  --bg-elevated: #f8fafc;            /* Soft slate for contrasts */
+  --bg-glass: rgba(255, 255, 255, 0.9);   /* More opaque frosted glass */
+  --bg-glass-hover: #ffffff;
+  --bg-overlay: rgba(15, 23, 42, 0.4);       /* Backdrop for modals */
 
   /* --- Text --- */
-  --text-primary: #f1f1f5;
-  --text-secondary: #a0a0b8;
-  --text-muted: #6b6b85;
-  --text-inverse: #0f0f1a;
+  --text-primary: #1e293b;       /* Crisp Charcoal */
+  --text-secondary: #475569;     /* Slate */
+  --text-muted: #64748b;         /* Muted Slate */
+  --text-inverse: #ffffff;
 
   /* --- Borders --- */
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-normal: rgba(255, 255, 255, 0.12);
-  --border-focus: rgba(99, 102, 241, 0.6);
+  --border-subtle: rgba(255, 255, 255, 0.6);   /* White highlight border for glass */
+  --border-normal: rgba(255, 255, 255, 0.8);
+  --border-focus: rgba(99, 102, 241, 0.4);
 
   /* --- Status Colors --- */
   --color-success: #10b981;
-  --color-success-bg: rgba(16, 185, 129, 0.12);
+  --color-success-bg: rgba(16, 185, 129, 0.15);
   --color-warning: #f59e0b;
-  --color-warning-bg: rgba(245, 158, 11, 0.12);
+  --color-warning-bg: rgba(245, 158, 11, 0.15);
   --color-danger: #ef4444;
-  --color-danger-bg: rgba(239, 68, 68, 0.12);
+  --color-danger-bg: rgba(239, 68, 68, 0.15);
   --color-info: #3b82f6;
-  --color-info-bg: rgba(59, 130, 246, 0.12);
+  --color-info-bg: rgba(59, 130, 246, 0.15);
 
-  /* --- Accent Colors for Charts --- */
+  /* --- Accent Colors for Charts (Luminous & legible) --- */
   --chart-1: #6366f1;
-  --chart-2: #8b5cf6;
-  --chart-3: #06b6d4;
+  --chart-2: #ec4899;
+  --chart-3: #0ea5e9;
   --chart-4: #10b981;
   --chart-5: #f59e0b;
-  --chart-6: #ef4444;
+  --chart-6: #8b5cf6;
 
   /* --- Spacing --- */
   --space-1: 4px;
@@ -59,16 +60,16 @@
   --space-12: 48px;
 
   /* --- Border Radius --- */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 9999px;
 
   /* --- Typography --- */
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-size-xs: 11px;
-  --font-size-sm: 13px;
+  --font-size-xs: 12px;
+  --font-size-sm: 13.5px;
   --font-size-base: 15px;
   --font-size-md: 16px;
   --font-size-lg: 18px;
@@ -76,20 +77,27 @@
   --font-size-2xl: 28px;
   --font-size-3xl: 36px;
 
-  /* --- Shadows --- */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-brand: 0 4px 20px rgba(99, 102, 241, 0.35);
-  --shadow-brand-lg: 0 8px 32px rgba(99, 102, 241, 0.45);
+  /* --- Shadows (Soft colorful shadows for 3D depth) --- */
+  --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --shadow-lg: 0 12px 32px rgba(31, 38, 135, 0.06), 0 4px 8px rgba(31, 38, 135, 0.03);
+  --shadow-brand: 0 8px 20px rgba(99, 102, 241, 0.25);
+  --shadow-brand-lg: 0 12px 28px rgba(99, 102, 241, 0.35);
 
   /* --- Sidebar --- */
   --sidebar-width: 260px;
   --sidebar-collapsed-width: 72px;
   --header-height: 64px;
 
+  /* --- Sidebar Navigation (Premium Blue/Indigo Style) --- */
+  --sidebar-active-bg: rgba(99, 102, 241, 0.1);   /* Soft Indigo Pill */
+  --sidebar-active-color: #4f46e5;
+  --sidebar-logo-gradient: linear-gradient(135deg, #4f46e5 0%, #0ea5e9 100%);
+  --sidebar-icon-color: #6366f1;
+  --sidebar-icon-active: #4f46e5;
+
   /* --- Transitions --- */
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-  --transition-slow: 400ms ease;
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
