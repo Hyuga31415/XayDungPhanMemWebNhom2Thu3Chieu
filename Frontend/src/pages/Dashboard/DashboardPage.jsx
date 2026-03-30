@@ -253,38 +253,47 @@ function DashboardPage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
-      <WelcomeHeader />
-
-      {/* Grid: Actions & Calendar */}
-      <div style={{ display: 'grid', gridTemplateColumns: '8fr 4fr', gap: 'var(--space-6)' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--space-4)' }}>
-          {quickActions.map((action, i) => <ActionCard key={i} {...action} />)}
-        </div>
-        
-        <div className="card-premium" style={{ 
-          padding: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 'var(--space-4)',
-          background: 'var(--brand-primary)', color: 'white'
-        }}>
-          <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Calendar size={20} />
-          </div>
-          <div>
-            <p style={{ fontSize: 13, fontWeight: 700 }}>Lịch làm việc</p>
-            <p style={{ fontSize: 11, opacity: 0.8 }}>3 sự kiện sắp tới trong hôm nay</p>
-          </div>
-          <ChevronRight size={14} style={{ marginLeft: 'auto' }} />
-        </div>
-      </div>
-
-      {/* Stats Cards */}
+      
+      {/* 1. Key Statistics (KPIs) - TOP PRIORITY */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
         {statCards.map((card) => <StatCard key={card.label} {...card} />)}
       </div>
 
-      {/* Main Grid Middle Section */}
+      {/* 2. Welcome & Global Status Row */}
+      <div style={{ display: 'grid', gridTemplateColumns: '7.5fr 4.5fr', gap: 'var(--space-6)', alignItems: 'stretch' }}>
+        <WelcomeHeader />
+        
+        <div className="card-premium animate-fade-in" style={{ 
+          padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 'var(--space-3)',
+          background: 'var(--brand-primary)', color: 'white'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+            <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Calendar size={20} />
+            </div>
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 700 }}>Lịch làm việc</p>
+              <p style={{ fontSize: 11, opacity: 0.8 }}>3 sự kiện sắp tới</p>
+            </div>
+            <ChevronRight size={14} style={{ marginLeft: 'auto' }} />
+          </div>
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', margin: 'var(--space-1) 0' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 11, fontWeight: 500 }}>
+             <Clock size={12} />
+             <span>Họp giao ban lúc 09:00 AM</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Quick Actions Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)' }}>
+        {quickActions.map((action, i) => <ActionCard key={i} {...action} />)}
+      </div>
+
+      {/* 4. Analytics Middle Section */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
         
-        {/* Recruitment Trend - Wide */}
+        {/* Recruitment Trend */}
         <div style={{ gridColumn: 'span 8' }}>
           <ChartCard title="Xu hướng biến động nhân sự" subtitle="Biển động tuyển dụng gần đây" icon={TrendingUp}>
             <ResponsiveContainer width="100%" height={280}>
@@ -327,10 +336,10 @@ function DashboardPage() {
         </div>
       </div>
 
-      {/* Main Grid Bottom Section */}
+      {/* 5. Distribution & Table Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
         
-        {/* Department Distribution - FE Team BarChart integration */}
+        {/* Department Distribution */}
         <div style={{ gridColumn: 'span 5' }}>
           <ChartCard title="Nhân viên theo phòng ban" subtitle="Phân bổ headcount hiện tại" icon={Building2}>
             <ResponsiveContainer width="100%" height={260}>
@@ -405,6 +414,7 @@ function DashboardPage() {
       </div>
     </div>
   );
+
 }
 
 export default DashboardPage;
