@@ -12,10 +12,11 @@ const PayrollManagement = ({ payrollList }) => {
   const [query, setQuery] = useState('');
 
   const filteredPayrolls = useMemo(() => {
+    const lowerQuery = query.toLowerCase();
     return payrollList.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase()) ||
-      item.id.toLowerCase().includes(query.toLowerCase()) ||
-      item.period.includes(query)
+      item.name.toLowerCase().includes(lowerQuery) ||
+      item.id.toLowerCase().includes(lowerQuery) ||
+      item.period.toLowerCase().includes(lowerQuery)
     );
   }, [query, payrollList]);
 

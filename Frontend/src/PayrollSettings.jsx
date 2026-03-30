@@ -6,6 +6,9 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
   const [salaryLevels, setSalaryLevels] = useState(initialSalaryLevels ?? []);
   const [allowances, setAllowances] = useState(initialAllowances ?? []);
   const [rules, setRules] = useState(initialRules ?? []);
+  const [maxSalaryId, setMaxSalaryId] = useState(Math.max(0, ...(initialSalaryLevels?.map(i => i.id) ?? [0])));
+  const [maxAllowanceId, setMaxAllowanceId] = useState(Math.max(0, ...(initialAllowances?.map(i => i.id) ?? [0])));
+  const [maxRuleId, setMaxRuleId] = useState(Math.max(0, ...(initialRules?.map(i => i.id) ?? [0])));
 
   const [newSalaryLabel, setNewSalaryLabel] = useState('');
   const [newSalaryValue, setNewSalaryValue] = useState('');
@@ -17,10 +20,13 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
   const handleAddSalaryLevel = (e) => {
     e.preventDefault();
     if (!newSalaryLabel.trim() || !newSalaryValue) return;
+    const salary = Number(newSalaryValue);
+    if (isNaN(salary) || salary <= 0) return;
     setSalaryLevels((prev) => [
       ...prev,
-      { id: prev.length + 1, level: newSalaryLabel, monthly: Number(newSalaryValue) },
+      { id: maxSalaryId + 1, level: newSalaryLabel, monthly: salary },
     ]);
+    setMaxSalaryId(maxSalaryId + 1);
     setNewSalaryLabel('');
     setNewSalaryValue('');
   };
@@ -30,8 +36,9 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
     if (!newAllowanceLabel.trim() || !newAllowanceRate.trim()) return;
     setAllowances((prev) => [
       ...prev,
-      { id: prev.length + 1, name: newAllowanceLabel, rate: newAllowanceRate },
+      { id: maxAllowanceId + 1, name: newAllowanceLabel, rate: newAllowanceRate },
     ]);
+    setMaxAllowanceId(maxAllowanceId + 1);
     setNewAllowanceLabel('');
     setNewAllowanceRate('');
   };
@@ -41,10 +48,23 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
     if (!newRuleName.trim() || !newRulePenalty.trim()) return;
     setRules((prev) => [
       ...prev,
-      { id: prev.length + 1, name: newRuleName, penalty: newRulePenalty },
+      { id: maxRuleId + 1, name: newRuleName, penalty: newRulePenalty },
     ]);
+    setMaxRuleId(maxRuleId + 1);
     setNewRuleName('');
     setNewRulePenalty('');
+  };
+
+  const handleDeleteSalaryLevel = (id) => {
+    setSalaryLevels((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleDeleteAllowance = (id) => {
+    setAllowances((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleDeleteRule = (id) => {
+    setRules((prev) => prev.filter((item) => item.id !== id));
   };
 
   return (
@@ -153,9 +173,17 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
           <h3 className="text-lg font-semibold text-slate-900">Danh sách mức lương</h3>
           <div className="mt-5 space-y-3">
             {salaryLevels.map((item) => (
-              <div key={item.id} className="rounded-3xl bg-white p-4 shadow-sm">
-                <p className="font-semibold text-slate-900">{item.level}</p>
-                <p className="mt-1 text-sm text-slate-600">{formatVnd(item.monthly)} / tháng</p>
+              <div key={item.id} className="flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
+                <div>
+                  <p className="font-semibold text-slate-900">{item.level}</p>
+                  <p className="mt-1 text-sm text-slate-600">{formatVnd(item.monthly)} / tháng</p>
+                </div>
+                <button
+                  onClick={() => handleDeleteSalaryLevel(item.id)}
+                  className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-100"
+                >
+                  Xóa
+                </button>
               </div>
             ))}
           </div>
@@ -165,9 +193,17 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
           <h3 className="text-lg font-semibold text-slate-900">Loại phụ cấp</h3>
           <div className="mt-5 space-y-3">
             {allowances.map((item) => (
-              <div key={item.id} className="rounded-3xl bg-white p-4 shadow-sm">
-                <p className="font-semibold text-slate-900">{item.name}</p>
-                <p className="mt-1 text-sm text-slate-600">{item.rate}</p>
+              <div key={item.id} className="flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
+                <div>
+                  <p className="font-semibold text-slate-900">{item.name}</p>
+                  <p className="mt-1 text-sm text-slate-600">{item.rate}</p>
+                </div>
+                <button
+                  onClick={() => handleDeleteAllowance(item.id)}
+                  className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-100"
+                >
+                  Xóa
+                </button>
               </div>
             ))}
           </div>
@@ -177,9 +213,17 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
           <h3 className="text-lg font-semibold text-slate-900">Quy tắc chấm công</h3>
           <div className="mt-5 space-y-3">
             {rules.map((item) => (
-              <div key={item.id} className="rounded-3xl bg-white p-4 shadow-sm">
-                <p className="font-semibold text-slate-900">{item.name}</p>
-                <p className="mt-1 text-sm text-slate-600">{item.penalty}</p>
+              <div key={item.id} className="flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
+                <div>
+                  <p className="font-semibold text-slate-900">{item.name}</p>
+                  <p className="mt-1 text-sm text-slate-600">{item.penalty}</p>
+                </div>
+                <button
+                  onClick={() => handleDeleteRule(item.id)}
+                  className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-100"
+                >
+                  Xóa
+                </button>
               </div>
             ))}
           </div>
