@@ -1,9 +1,9 @@
-﻿import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 const statusStyles = {
-  'Đã xác nhận': 'bg-emerald-100 text-emerald-800',
-  'Chờ duyệt': 'bg-amber-100 text-amber-800',
-  'Đã chuyển khoản': 'bg-sky-100 text-sky-800',
+  'Đã xác nhận': 'success',
+  'Chờ duyệt': 'warning',
+  'Đã chuyển khoản': 'info',
 };
 
 const formatVnd = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
@@ -31,87 +31,104 @@ const PayrollManagement = ({ payrollList }) => {
   );
 
   return (
-    <div className="space-y-8 px-4 py-6 sm:px-6 lg:px-8">
-      <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-        <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.24em] text-sky-600">Bảng lương HR</p>
-            <h1 className="mt-3 text-3xl font-semibold text-slate-900">Tổng quan lương</h1>
-            <p className="mt-2 text-sm text-slate-600">Cập nhật nhanh trạng thái duyệt, tổng chi trả và số lượng bảng lương.</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            <div className="rounded-3xl bg-slate-50 p-5 text-center">
-              <p className="text-sm text-slate-500">Bảng lương</p>
-              <p className="mt-3 text-3xl font-semibold text-slate-900">{payrollList.length}</p>
+    <div className="px-4 py-5">
+      <section className="card shadow-sm mb-4">
+        <div className="card-body">
+          <div className="row gy-3 align-items-center">
+            <div className="col-md">
+              <p className="text-uppercase fw-semibold small text-info mb-1">Bảng lương HR</p>
+              <h1 className="h4 mb-2">Tổng quan lương</h1>
+              <p className="text-secondary mb-0">Cập nhật nhanh trạng thái duyệt, tổng chi trả và số lượng bảng lương.</p>
             </div>
-            <div className="rounded-3xl bg-slate-50 p-5 text-center">
-              <p className="text-sm text-slate-500">Đã duyệt</p>
-              <p className="mt-3 text-3xl font-semibold text-emerald-700">{approvedCount}</p>
-            </div>
-            <div className="rounded-3xl bg-slate-50 p-5 text-center">
-              <p className="text-sm text-slate-500">Tổng chi trả</p>
-              <p className="mt-3 text-3xl font-semibold text-slate-900">{formatVnd(totalPayroll)}</p>
+
+            <div className="col-md-8">
+              <div className="row g-3">
+                <div className="col-md-4">
+                  <div className="card bg-light border-0 text-center shadow-sm h-100">
+                    <div className="card-body py-3">
+                      <p className="text-secondary mb-1">Bảng lương</p>
+                      <p className="h4 mb-0">{payrollList.length}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="card bg-light border-0 text-center shadow-sm h-100">
+                    <div className="card-body py-3">
+                      <p className="text-secondary mb-1">Đã duyệt</p>
+                      <p className="h4 mb-0 text-success">{approvedCount}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="card bg-light border-0 text-center shadow-sm h-100">
+                    <div className="card-body py-3">
+                      <p className="text-secondary mb-1">Tổng chi trả</p>
+                      <p className="h4 mb-0">{formatVnd(totalPayroll)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-slate-900">Danh sách bảng lương</h2>
-            <p className="mt-2 text-sm text-slate-500">Tìm kiếm và theo dõi trạng thái chi tiết.</p>
+      <section className="card shadow-sm">
+        <div className="card-body">
+          <div className="row align-items-center gy-3 mb-4">
+            <div className="col-md">
+              <h2 className="h5 mb-1">Danh sách bảng lương</h2>
+              <p className="text-secondary mb-0">Tìm kiếm và theo dõi trạng thái chi tiết.</p>
+            </div>
+            <div className="col-md-4">
+              <div className="input-group">
+                <span className="input-group-text">🔍</span>
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Tìm kiếm mã hoặc tên..."
+                  className="form-control"
+                />
+              </div>
+            </div>
           </div>
-          <div className="relative w-full max-w-sm">
-            <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">🔍</span>
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Tìm kiếm mã hoặc tên..."
-              className="w-full rounded-xl border border-slate-300 bg-white px-12 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
-            />
-          </div>
-        </div>
 
-        <div className="mt-6 overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-sm text-slate-700">
-            <thead className="bg-slate-50 text-slate-600">
-              <tr>
-                <th className="px-4 py-3">Mã</th>
-                <th className="px-4 py-3">Nhân viên</th>
-                <th className="px-4 py-3">Kỳ lương</th>
-                <th className="px-4 py-3">Thực lĩnh</th>
-                <th className="px-4 py-3">Trạng thái</th>
-                <th className="px-4 py-3">Hành động</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
-              {filteredPayrolls.map((item, index) => (
-                <tr key={item.id} className="border-b border-slate-200 hover:bg-sky-50 transition">
-                  <td className="px-4 py-4 font-semibold text-slate-900">{item.id}</td>
-                  <td className="px-4 py-4 text-slate-900">{item.name}</td>
-                  <td className="px-4 py-4 text-slate-700">{item.period}</td>
-                  <td className="px-4 py-4 font-medium text-slate-900">{formatVnd(item.netSalary)}</td>
-                  <td className="px-4 py-4">
-                    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${statusStyles[item.status] || 'bg-slate-100 text-slate-800'}`}>
-                      {item.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <button className="rounded-lg border border-sky-300 bg-white px-3 py-2 text-xs font-bold text-sky-600 transition hover:bg-sky-50 active:scale-95 shadow-sm">
-                      Xem chi tiết
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {filteredPayrolls.length === 0 && (
+          <div className="table-responsive">
+            <table className="table table-bordered table-hover align-middle mb-0">
+              <thead className="table-light">
                 <tr>
-                  <td className="px-4 py-6 text-center text-slate-500" colSpan="6">Không tìm thấy dữ liệu phù hợp.</td>
+                  <th>Mã</th>
+                  <th>Nhân viên</th>
+                  <th>Kỳ lương</th>
+                  <th>Thực lĩnh</th>
+                  <th>Trạng thái</th>
+                  <th>Hành động</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredPayrolls.map((item) => (
+                  <tr key={item.id}>
+                    <td className="fw-semibold">{item.id}</td>
+                    <td>{item.name}</td>
+                    <td>{item.period}</td>
+                    <td className="fw-semibold">{formatVnd(item.netSalary)}</td>
+                    <td>
+                      <span className={`badge bg-${statusStyles[item.status]} text-uppercase`}>{item.status}</span>
+                    </td>
+                    <td>
+                      <button className="btn btn-outline-primary btn-sm">Xem chi tiết</button>
+                    </td>
+                  </tr>
+                ))}
+                {filteredPayrolls.length === 0 && (
+                  <tr>
+                    <td className="text-center text-secondary" colSpan="6">Không tìm thấy dữ liệu phù hợp.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
     </div>

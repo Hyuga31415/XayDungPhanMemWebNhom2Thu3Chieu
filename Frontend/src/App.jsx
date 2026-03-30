@@ -1,4 +1,4 @@
-﻿import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import UserList from './UserList';
 import PayrollDetail from './PayrollDetail';
 import PayrollManagement from './PayrollManagement';
@@ -57,9 +57,9 @@ const historyItems = [
 ];
 
 const reportData = [
-  { title: 'Tổng chi phí lương', value: 125000000, trend: '+8%', color: 'text-emerald-700' },
-  { title: 'Số nhân viên nhận lương', value: 320, trend: '+2%', color: 'text-sky-700' },
-  { title: 'Phụ cấp trung bình', value: 4200000, trend: '-1.5%', color: 'text-amber-700' },
+  { title: 'Tổng chi phí lương', value: 125000000, trend: '+8%', color: 'success' },
+  { title: 'Số nhân viên nhận lương', value: 320, trend: '+2%', color: 'info' },
+  { title: 'Phụ cấp trung bình', value: 4200000, trend: '-1.5%', color: 'warning' },
 ];
 
 const quickInsights = [
@@ -99,80 +99,111 @@ const navItems = [
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-slate-50 text-slate-900">
-        <header className="border-b border-slate-200 bg-white shadow-sm">
-          <div className="mx-auto flex flex-col gap-4 px-4 py-5 sm:px-6 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Payroll & Settings</p>
-              <h1 className="mt-2 text-3xl font-semibold text-slate-900">Hệ thống quản lý lương</h1>
-              <p className="mt-2 max-w-2xl text-sm text-slate-600">Giao diện HR sạch, dễ theo dõi và không rối mắt.</p>
+      <div className="bg-light text-dark">
+        <header className="border-bottom bg-white shadow-sm">
+          <div className="container py-4">
+            <div className="row align-items-center gx-4">
+              <div className="col-md">
+                <p className="text-primary text-uppercase fw-semibold small mb-2">Payroll & Settings</p>
+                <h1 className="h2 mb-2">Hệ thống quản lý lương</h1>
+                <p className="text-muted mb-0">Giao diện HR sạch, dễ theo dõi và không rối mắt.</p>
+              </div>
+              <div className="col-md-auto mt-3 mt-md-0">
+                <ul className="nav nav-pills flex-wrap gap-2">
+                  {navItems.map((item) => (
+                    <li className="nav-item" key={item.path}>
+                      <NavLink
+                        to={item.path}
+                        className={({ isActive }) => `nav-link ${isActive ? 'active' : 'text-dark'}`}
+                      >
+                        {item.label}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <nav className="flex flex-wrap items-center gap-2">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  className={({ isActive }) =>
-                    `rounded-full px-4 py-2 text-sm font-medium transition ${isActive ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              ))}
-            </nav>
           </div>
         </header>
 
-        <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        <main className="container py-5">
           <Routes>
             <Route
               path="/"
               element={
-                <div className="grid gap-6">
-                  <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-sky-500 to-cyan-400 p-12 text-white shadow-2xl">
-                    <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                      <div>
-                        <p className="text-xs uppercase tracking-widest font-bold text-blue-100">Dashboard Payroll</p>
-                        <h2 className="mt-4 text-4xl font-bold leading-tight max-w-lg">Quản lý lương chuyên nghiệp</h2>
-                        <p className="mt-4 max-w-2xl text-sm leading-7 text-cyan-100/90">
-                          Kiểm soát nhanh số liệu nhân viên, trạng thái bảng lương và cấu hình chi tiết trong cùng một giao diện.
-                        </p>
-                      </div>
-                      <div className="stats stats-vertical gap-4 rounded-[1.5rem] bg-white/10 p-4 text-white shadow-sm sm:stats-horizontal lg:stats-horizontal">
-                        <div className="stat rounded-3xl bg-white/10 p-5 shadow-sm">
-                          <div className="stat-title text-cyan-100/80">Tổng nhân viên</div>
-                          <div className="stat-value text-3xl">320</div>
+                <>
+                  <section className="card text-white bg-primary mb-4 shadow card-shadow">
+                    <div className="card-body">
+                      <div className="row align-items-center g-4">
+                        <div className="col-lg-8">
+                          <p className="text-uppercase fw-bold small text-white-50">Dashboard Payroll</p>
+                          <h2 className="display-6 fw-bold">Quản lý lương chuyên nghiệp</h2>
+                          <p className="lead text-white-75">
+                            Kiểm soát nhanh số liệu nhân viên, trạng thái bảng lương và cấu hình chi tiết trong cùng một giao diện.
+                          </p>
                         </div>
-                        <div className="stat rounded-3xl bg-white/10 p-5 shadow-sm">
-                          <div className="stat-title text-cyan-100/80">Bảng lương</div>
-                          <div className="stat-value text-3xl">23</div>
-                        </div>
-                        <div className="stat rounded-3xl bg-white/10 p-5 shadow-sm">
-                          <div className="stat-title text-cyan-100/80">Mức lương</div>
-                          <div className="stat-value text-3xl">12</div>
+                        <div className="col-lg-4">
+                          <div className="row row-cols-1 g-3">
+                            <div className="col">
+                              <div className="card bg-white bg-opacity-10 border-0 shadow-sm">
+                                <div className="card-body text-center">
+                                  <p className="mb-1 text-white-50">Tổng nhân viên</p>
+                                  <p className="h3 mb-0">320</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col">
+                              <div className="card bg-white bg-opacity-10 border-0 shadow-sm">
+                                <div className="card-body text-center">
+                                  <p className="mb-1 text-white-50">Bảng lương</p>
+                                  <p className="h3 mb-0">23</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col">
+                              <div className="card bg-white bg-opacity-10 border-0 shadow-sm">
+                                <div className="card-body text-center">
+                                  <p className="mb-1 text-white-50">Mức lương</p>
+                                  <p className="h3 mb-0">12</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </section>
 
-                  <section className="grid gap-6 lg:grid-cols-3">
-                    <article className="rounded-2xl border border-slate-100 bg-white p-8 shadow-md hover:shadow-xl transition-shadow">
-                      <div className="text-2xl mb-3">💼</div>
-                      <h3 className="text-lg font-bold text-slate-900">Lương chi tiết</h3>
-                      <p className="mt-2 text-sm text-slate-600 leading-relaxed">Xem chi tiết thu nhập, phụ cấp và khấu trừ cho từng nhân viên.</p>
-                    </article>
-                    <article className="rounded-2xl border border-slate-100 bg-white p-8 shadow-md hover:shadow-xl transition-shadow">
-                      <div className="text-2xl mb-3">📊</div>
-                      <h3 className="text-lg font-bold text-slate-900">Bảng lương HR</h3>
-                      <p className="mt-2 text-sm text-slate-600 leading-relaxed">Tra cứu nhanh trạng thái lương và tổng chi trả trong tháng.</p>
-                    </article>
-                    <article className="rounded-2xl border border-slate-100 bg-white p-8 shadow-md hover:shadow-xl transition-shadow">
-                      <div className="text-2xl mb-3">⚙️</div>
-                      <h3 className="text-lg font-bold text-slate-900">Cấu hình lương</h3>
-                      <p className="mt-2 text-sm text-slate-600 leading-relaxed">Thiết lập mức lương, phụ cấp và quy tắc chấm công chính xác.</p>
-                    </article>
+                  <section className="row g-4">
+                    <div className="col-md-4">
+                      <div className="card h-100 shadow-sm">
+                        <div className="card-body">
+                          <div className="display-6 mb-3">💼</div>
+                          <h3 className="h5 fw-bold">Lương chi tiết</h3>
+                          <p className="text-muted">Xem chi tiết thu nhập, phụ cấp và khấu trừ cho từng nhân viên.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="card h-100 shadow-sm">
+                        <div className="card-body">
+                          <div className="display-6 mb-3">📊</div>
+                          <h3 className="h5 fw-bold">Bảng lương HR</h3>
+                          <p className="text-muted">Tra cứu nhanh trạng thái lương và tổng chi trả trong tháng.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="card h-100 shadow-sm">
+                        <div className="card-body">
+                          <div className="display-6 mb-3">⚙️</div>
+                          <h3 className="h5 fw-bold">Cấu hình lương</h3>
+                          <p className="text-muted">Thiết lập mức lương, phụ cấp và quy tắc chấm công chính xác.</p>
+                        </div>
+                      </div>
+                    </div>
                   </section>
-                </div>
+                </>
               }
             />
             <Route path="/payroll-detail" element={<PayrollDetail employee={employeeData} />} />

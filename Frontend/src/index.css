@@ -1,9 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 }
 
 html {
@@ -11,10 +7,20 @@ html {
 }
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+  background-color: #f4f6f9;
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 #root {
   min-height: 100vh;
+}
+
+.card-shadow {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.08);
+}
+
+.pointer-hover {
+  cursor: pointer;
 }

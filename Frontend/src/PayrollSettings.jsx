@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 
 const formatVnd = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 
@@ -6,9 +6,9 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
   const [salaryLevels, setSalaryLevels] = useState(initialSalaryLevels ?? []);
   const [allowances, setAllowances] = useState(initialAllowances ?? []);
   const [rules, setRules] = useState(initialRules ?? []);
-  const [maxSalaryId, setMaxSalaryId] = useState(Math.max(0, ...(initialSalaryLevels?.map(i => i.id) ?? [0])));
-  const [maxAllowanceId, setMaxAllowanceId] = useState(Math.max(0, ...(initialAllowances?.map(i => i.id) ?? [0])));
-  const [maxRuleId, setMaxRuleId] = useState(Math.max(0, ...(initialRules?.map(i => i.id) ?? [0])));
+  const [maxSalaryId, setMaxSalaryId] = useState(Math.max(0, ...(initialSalaryLevels?.map((i) => i.id) ?? [0])));
+  const [maxAllowanceId, setMaxAllowanceId] = useState(Math.max(0, ...(initialAllowances?.map((i) => i.id) ?? [0])));
+  const [maxRuleId, setMaxRuleId] = useState(Math.max(0, ...(initialRules?.map((i) => i.id) ?? [0])));
 
   const [newSalaryLabel, setNewSalaryLabel] = useState('');
   const [newSalaryValue, setNewSalaryValue] = useState('');
@@ -68,166 +68,177 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
   };
 
   return (
-    <div className="space-y-8 px-4 py-6 sm:px-6 lg:px-8">
-      <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Cấu hình bảng lương</p>
-            <h1 className="mt-3 text-3xl font-semibold text-slate-900">Thiết lập lương & phụ cấp</h1>
-            <p className="mt-2 text-sm text-slate-600">Quản lý mức lương, loại phụ cấp và quy tắc chấm công.</p>
-          </div>
-          <div className="rounded-[1.5rem] bg-slate-50 px-6 py-5 text-center">
-            <p className="text-sm text-slate-500">Mức lương hiện có</p>
-            <p className="mt-3 text-3xl font-semibold text-slate-900">{salaryLevels.length}</p>
+    <div className="px-4 py-5">
+      <section className="card shadow-sm mb-4">
+        <div className="card-body">
+          <div className="row align-items-center gy-3">
+            <div className="col-md">
+              <p className="text-uppercase fw-semibold small text-secondary mb-1">Cấu hình bảng lương</p>
+              <h1 className="h4 mb-2">Thiết lập lương & phụ cấp</h1>
+              <p className="text-secondary mb-0">Quản lý mức lương, loại phụ cấp và quy tắc chấm công.</p>
+            </div>
+            <div className="col-md-auto">
+              <div className="card bg-light border-0 shadow-sm text-center">
+                <div className="card-body py-3 px-4">
+                  <p className="text-secondary mb-1">Mức lương hiện có</p>
+                  <p className="h3 mb-0">{salaryLevels.length}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-3">
-        <article className="rounded-[1.5rem] bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-semibold text-slate-900">Mức lương</h2>
-              <p className="mt-2 text-sm text-slate-500">Thêm cấp bậc và mức lương tháng.</p>
+      <section className="row g-4 mb-4">
+        <div className="col-lg-4">
+          <div className="card shadow-sm h-100">
+            <div className="card-body">
+              <h2 className="h5">Mức lương</h2>
+              <p className="text-secondary">Thêm cấp bậc và mức lương tháng.</p>
+              <form onSubmit={handleAddSalaryLevel} className="mt-4">
+                <div className="mb-3">
+                  <label className="form-label">Cấp bậc</label>
+                  <input
+                    value={newSalaryLabel}
+                    onChange={(e) => setNewSalaryLabel(e.target.value)}
+                    placeholder="Junior, Senior..."
+                    className="form-control"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Lương tháng (VND)</label>
+                  <input
+                    type="number"
+                    value={newSalaryValue}
+                    onChange={(e) => setNewSalaryValue(e.target.value)}
+                    placeholder="18000000"
+                    className="form-control"
+                  />
+                </div>
+                <button className="btn btn-primary w-100">Thêm mức lương</button>
+              </form>
             </div>
           </div>
-          <form onSubmit={handleAddSalaryLevel} className="mt-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700">Cấp bậc</label>
-              <input
-                value={newSalaryLabel}
-                onChange={(e) => setNewSalaryLabel(e.target.value)}
-                placeholder="Junior, Senior..."
-                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700">Lương tháng (VND)</label>
-              <input
-                type="number"
-                value={newSalaryValue}
-                onChange={(e) => setNewSalaryValue(e.target.value)}
-                placeholder="18000000"
-                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
-              />
-            </div>
-            <button className="w-full rounded-lg bg-sky-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-sky-700 active:scale-95 shadow-sm">Thêm mức lương</button>
-          </form>
-        </article>
+        </div>
 
-        <article className="rounded-[1.5rem] bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-slate-900">Loại phụ cấp</h2>
-          <p className="mt-2 text-sm text-slate-500">Tạo phụ cấp mới và quản lý tỷ lệ.</p>
-          <form onSubmit={handleAddAllowance} className="mt-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700">Tên phụ cấp</label>
-              <input
-                value={newAllowanceLabel}
-                onChange={(e) => setNewAllowanceLabel(e.target.value)}
-                placeholder="Phụ cấp chuyên cần"
-                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
-              />
+        <div className="col-lg-4">
+          <div className="card shadow-sm h-100">
+            <div className="card-body">
+              <h2 className="h5">Loại phụ cấp</h2>
+              <p className="text-secondary">Tạo phụ cấp mới và quản lý tỷ lệ.</p>
+              <form onSubmit={handleAddAllowance} className="mt-4">
+                <div className="mb-3">
+                  <label className="form-label">Tên phụ cấp</label>
+                  <input
+                    value={newAllowanceLabel}
+                    onChange={(e) => setNewAllowanceLabel(e.target.value)}
+                    placeholder="Phụ cấp chuyên cần"
+                    className="form-control"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Tỷ lệ / số tiền</label>
+                  <input
+                    value={newAllowanceRate}
+                    onChange={(e) => setNewAllowanceRate(e.target.value)}
+                    placeholder="10% hoặc 1,000,000"
+                    className="form-control"
+                  />
+                </div>
+                <button className="btn btn-primary w-100">Thêm phụ cấp</button>
+              </form>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700">Tỷ lệ / số tiền</label>
-              <input
-                value={newAllowanceRate}
-                onChange={(e) => setNewAllowanceRate(e.target.value)}
-                placeholder="10% hoặc 1,000,000"
-                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
-              />
-            </div>
-            <button className="w-full rounded-lg bg-sky-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-sky-700 active:scale-95 shadow-sm">Thêm phụ cấp</button>
-          </form>
-        </article>
+          </div>
+        </div>
 
-        <article className="rounded-[1.5rem] bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-slate-900">Quy tắc chấm công</h2>
-          <p className="mt-2 text-sm text-slate-500">Thiết lập mức phạt và quy tắc tính lương.</p>
-          <form onSubmit={handleAddRule} className="mt-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700">Tên quy tắc</label>
-              <input
-                value={newRuleName}
-                onChange={(e) => setNewRuleName(e.target.value)}
-                placeholder="Đi muộn 1 lần"
-                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
-              />
+        <div className="col-lg-4">
+          <div className="card shadow-sm h-100">
+            <div className="card-body">
+              <h2 className="h5">Quy tắc chấm công</h2>
+              <p className="text-secondary">Thiết lập mức phạt và quy tắc tính lương.</p>
+              <form onSubmit={handleAddRule} className="mt-4">
+                <div className="mb-3">
+                  <label className="form-label">Tên quy tắc</label>
+                  <input
+                    value={newRuleName}
+                    onChange={(e) => setNewRuleName(e.target.value)}
+                    placeholder="Đi muộn 1 lần"
+                    className="form-control"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Mức phạt</label>
+                  <input
+                    value={newRulePenalty}
+                    onChange={(e) => setNewRulePenalty(e.target.value)}
+                    placeholder="100,000 VND"
+                    className="form-control"
+                  />
+                </div>
+                <button className="btn btn-primary w-100">Thêm quy tắc</button>
+              </form>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700">Mức phạt</label>
-              <input
-                value={newRulePenalty}
-                onChange={(e) => setNewRulePenalty(e.target.value)}
-                placeholder="100,000 VND"
-                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 hover:border-slate-400"
-              />
-            </div>
-            <button className="w-full rounded-lg bg-sky-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-sky-700 active:scale-95 shadow-sm">Thêm quy tắc</button>
-          </form>
-        </article>
+          </div>
+        </div>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-3">
-        <article className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-900">Danh sách mức lương</h3>
-          <div className="mt-5 space-y-3">
-            {salaryLevels.map((item) => (
-              <div key={item.id} className="flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
-                <div>
-                  <p className="font-semibold text-slate-900">{item.level}</p>
-                  <p className="mt-1 text-sm text-slate-600">{formatVnd(item.monthly)} / tháng</p>
-                </div>
-                <button
-                  onClick={() => handleDeleteSalaryLevel(item.id)}
-                  className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-100"
-                >
-                  Xóa
-                </button>
+      <section className="row g-4">
+        <div className="col-lg-4">
+          <div className="card shadow-sm h-100">
+            <div className="card-body">
+              <h3 className="h6">Danh sách mức lương</h3>
+              <div className="list-group list-group-flush mt-4">
+                {salaryLevels.map((item) => (
+                  <div key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <p className="mb-1 fw-semibold">{item.level}</p>
+                      <small className="text-secondary">{formatVnd(item.monthly)} / tháng</small>
+                    </div>
+                    <button onClick={() => handleDeleteSalaryLevel(item.id)} className="btn btn-sm btn-outline-danger">Xóa</button>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
-        </article>
+        </div>
 
-        <article className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-900">Loại phụ cấp</h3>
-          <div className="mt-5 space-y-3">
-            {allowances.map((item) => (
-              <div key={item.id} className="flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
-                <div>
-                  <p className="font-semibold text-slate-900">{item.name}</p>
-                  <p className="mt-1 text-sm text-slate-600">{item.rate}</p>
-                </div>
-                <button
-                  onClick={() => handleDeleteAllowance(item.id)}
-                  className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-100"
-                >
-                  Xóa
-                </button>
+        <div className="col-lg-4">
+          <div className="card shadow-sm h-100">
+            <div className="card-body">
+              <h3 className="h6">Loại phụ cấp</h3>
+              <div className="list-group list-group-flush mt-4">
+                {allowances.map((item) => (
+                  <div key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <p className="mb-1 fw-semibold">{item.name}</p>
+                      <small className="text-secondary">{item.rate}</small>
+                    </div>
+                    <button onClick={() => handleDeleteAllowance(item.id)} className="btn btn-sm btn-outline-danger">Xóa</button>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
-        </article>
+        </div>
 
-        <article className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-900">Quy tắc chấm công</h3>
-          <div className="mt-5 space-y-3">
-            {rules.map((item) => (
-              <div key={item.id} className="flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
-                <div>
-                  <p className="font-semibold text-slate-900">{item.name}</p>
-                  <p className="mt-1 text-sm text-slate-600">{item.penalty}</p>
-                </div>
-                <button
-                  onClick={() => handleDeleteRule(item.id)}
-                  className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-100"
-                >
-                  Xóa
-                </button>
+        <div className="col-lg-4">
+          <div className="card shadow-sm h-100">
+            <div className="card-body">
+              <h3 className="h6">Quy tắc chấm công</h3>
+              <div className="list-group list-group-flush mt-4">
+                {rules.map((item) => (
+                  <div key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <p className="mb-1 fw-semibold">{item.name}</p>
+                      <small className="text-secondary">{item.penalty}</small>
+                    </div>
+                    <button onClick={() => handleDeleteRule(item.id)} className="btn btn-sm btn-outline-danger">Xóa</button>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
-        </article>
+        </div>
       </section>
     </div>
   );
