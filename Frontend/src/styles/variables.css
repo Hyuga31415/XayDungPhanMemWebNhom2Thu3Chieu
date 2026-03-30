@@ -7,16 +7,16 @@
   --brand-primary: #6366f1;
   --brand-primary-hover: #4f46e5;
   --brand-secondary: #8b5cf6;
-  --brand-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  --brand-gradient-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+  --brand-gradient: #6366f1;
+  --brand-gradient-soft: #6366f11f;
 
   /* --- Backgrounds --- */
   --bg-base: #0f0f1a;
   --bg-surface: #161625;
   --bg-elevated: #1e1e32;
-  --bg-glass: rgba(30, 30, 50, 0.7);
-  --bg-glass-hover: rgba(40, 40, 65, 0.85);
-  --bg-overlay: rgba(0, 0, 0, 0.6);
+  --bg-glass: #1e1e32b3;
+  --bg-glass-hover: #282841d9;
+  --bg-overlay: #00000099;
 
   /* --- Text --- */
   --text-primary: #f1f1f5;
@@ -25,19 +25,19 @@
   --text-inverse: #0f0f1a;
 
   /* --- Borders --- */
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-normal: rgba(255, 255, 255, 0.12);
-  --border-focus: rgba(99, 102, 241, 0.6);
+  --border-subtle: #ffffff12;
+  --border-normal: #ffffff1f;
+  --border-focus: #6366f199;
 
   /* --- Status Colors --- */
   --color-success: #10b981;
-  --color-success-bg: rgba(16, 185, 129, 0.12);
+  --color-success-bg: #10b9811f;
   --color-warning: #f59e0b;
-  --color-warning-bg: rgba(245, 158, 11, 0.12);
+  --color-warning-bg: #f59e0b1f;
   --color-danger: #ef4444;
-  --color-danger-bg: rgba(239, 68, 68, 0.12);
+  --color-danger-bg: #ef44441f;
   --color-info: #3b82f6;
-  --color-info-bg: rgba(59, 130, 246, 0.12);
+  --color-info-bg: #3b82f61f;
 
   /* --- Accent Colors for Charts --- */
   --chart-1: #6366f1;
@@ -77,11 +77,11 @@
   --font-size-3xl: 36px;
 
   /* --- Shadows --- */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-brand: 0 4px 20px rgba(99, 102, 241, 0.35);
-  --shadow-brand-lg: 0 8px 32px rgba(99, 102, 241, 0.45);
+  --shadow-sm: 0 1px 3px #0000004d;
+  --shadow-md: 0 4px 16px #00000066;
+  --shadow-lg: 0 8px 32px #00000080;
+  --shadow-brand: 0 4px 20px #6366f159;
+  --shadow-brand-lg: 0 8px 32px #6366f173;
 
   /* --- Sidebar --- */
   --sidebar-width: 260px;

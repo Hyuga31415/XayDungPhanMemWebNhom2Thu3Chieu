@@ -1,17 +1,5 @@
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
-import MainLayout from "./components/layout/MainLayout";
-import DashboardPage from './pages/Dashboard/DashboardPage';
-import EmployeeListPage from './pages/Employees/EmployeeListPage';
-import DepartmentListPage from './pages/Departments/DepartmentListPage';
-function NotFound() {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', flexDirection: 'column', gap: 16 }}>
-      <span style={{ fontSize: 64, lineHeight: 1 }}>🔍</span>
-      <h2 style={{ fontSize: 'var(--font-size-xl)', color: 'var(--text-primary)' }}>Trang không tồn tại</h2>
-      <a href="/dashboard" style={{ color: 'var(--brand-primary)', fontSize: 'var(--font-size-sm)' }}>← Về Dashboard</a>
-    </div>
-  );
-}
+import AppRouter from './router/AppRouter';
+import { Toaster } from 'react-hot-toast';
 
 function ComingSoon({ title }) {
   return (
@@ -24,26 +12,10 @@ function ComingSoon({ title }) {
 }
 function App() {
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <Routes>
-        <Route element={<MainLayout />}>
-          {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
-          {/* Core pages */}
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/employees" element={<EmployeeListPage />} />
-          <Route path="/departments" element={<DepartmentListPage />} />
-
-          {/* Placeholder routes (cho FE members khác) */}
-          <Route path="/positions" element={<ComingSoon title="Quản lý chức vụ" />} />
-          <Route path="/analytics" element={<ComingSoon title="Phân tích & Báo cáo" />} />
-
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <>
+      <Toaster position="top-right" />
+      <AppRouter />
+    </>
   );
 }
 

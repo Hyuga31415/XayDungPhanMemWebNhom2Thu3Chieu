@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Building2, ChevronLeft, ChevronRight,
-  Settings, LogOut, Briefcase, BarChart3,
+  Settings, LogOut, Briefcase, BarChart3, Clock, Calendar,
 } from 'lucide-react';
 import useUIStore from '../../store/useUIStore';
 import '../../styles/layout.css';
@@ -25,6 +25,13 @@ const navItems = [
       { to: '/employees', icon: Users, label: 'Nhân viên' },
       { to: '/departments', icon: Building2, label: 'Phòng ban' },
       { to: '/positions', icon: Briefcase, label: 'Chức vụ' },
+    ],
+  },
+  {
+    section: 'Chấm công & Nghỉ phép',
+    items: [
+      { to: '/attendance', icon: Clock, label: 'Chấm công' },
+      { to: '/leave-requests', icon: Calendar, label: 'Nghỉ phép' },
     ],
   },
 ];

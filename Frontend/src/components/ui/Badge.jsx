@@ -9,8 +9,8 @@ const variants = {
   warning: { bg: 'var(--color-warning-bg)', color: 'var(--color-warning)', dot: '#f59e0b' },
   danger:  { bg: 'var(--color-danger-bg)',  color: 'var(--color-danger)',  dot: '#ef4444' },
   info:    { bg: 'var(--color-info-bg)',    color: 'var(--color-info)',    dot: '#3b82f6' },
-  default: { bg: 'rgba(255,255,255,0.08)',  color: 'var(--text-secondary)', dot: '#6b6b85' },
-  brand:   { bg: 'rgba(99,102,241,0.15)',   color: 'var(--brand-primary)', dot: '#6366f1' },
+  default: { bg: '#ffffff14',  color: 'var(--text-secondary)', dot: '#6b6b85' },
+  brand:   { bg: '#6366f126',   color: 'var(--brand-primary)', dot: '#6366f1' },
 };
 
 // Ánh xạ trực tiếp từ ENUM trong HRM.sql
@@ -22,6 +22,10 @@ export const STATUS_MAP = {
   active:   { variant: 'success', label: 'Đang làm' },
   on_leave: { variant: 'warning', label: 'Nghỉ phép' },
   inactive: { variant: 'danger',  label: 'Đã nghỉ'  },
+  // Leave request statuses
+  pending:  { variant: 'warning', label: 'Chờ duyệt' },
+  approved: { variant: 'success', label: 'Đã duyệt' },
+  rejected: { variant: 'danger',  label: 'Từ chối' },
 };
 
 export function Badge({ variant = 'default', children, dot = true, size = 'sm' }) {

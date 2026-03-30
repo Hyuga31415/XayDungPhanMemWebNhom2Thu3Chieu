@@ -128,7 +128,7 @@ function DashboardPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
               <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: '#ffffff0a' }} />
               <Bar dataKey="count" name="Nhân viên" fill="url(#barGrad)" radius={[6, 6, 0, 0]} />
               <defs>
                 <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
