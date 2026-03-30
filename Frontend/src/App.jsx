@@ -3,11 +3,15 @@ import UserList from './UserList';
 import PayrollDetail from './PayrollDetail';
 import PayrollManagement from './PayrollManagement';
 import PayrollSettings from './PayrollSettings';
+import PayrollHistory from './PayrollHistory';
+import PayrollReports from './PayrollReports';
 
 const navItems = [
   { label: 'Trang chủ', path: '/' },
   { label: 'Lương chi tiết', path: '/payroll-detail' },
   { label: 'Bảng lương HR', path: '/payroll-management' },
+  { label: 'Lịch sử lương', path: '/payroll-history' },
+  { label: 'Báo cáo', path: '/payroll-reports' },
   { label: 'Cấu hình lương', path: '/payroll-settings' },
   { label: 'Users', path: '/users' },
 ];
@@ -90,6 +94,8 @@ function App() {
             />
             <Route path="/payroll-detail" element={<PayrollDetail />} />
             <Route path="/payroll-management" element={<PayrollManagement />} />
+            <Route path="/payroll-history" element={<PayrollHistory />} />
+            <Route path="/payroll-reports" element={<PayrollReports />} />
             <Route path="/payroll-settings" element={<PayrollSettings />} />
             <Route path="/users" element={<UserList />} />
           </Routes>
