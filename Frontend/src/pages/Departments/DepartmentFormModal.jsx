@@ -91,7 +91,7 @@ function DepartmentFormModal({ isOpen, onClose, onSubmit, department, isSubmitti
                 outline: 'none', resize: 'vertical',
                 transition: 'border-color var(--transition-fast)',
               }}
-              onFocus={(e) => { e.target.style.borderColor = 'var(--border-focus)'; e.target.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.12)'; }}
+              onFocus={(e) => { e.target.style.borderColor = 'var(--border-focus)'; e.target.style.boxShadow = '0 0 0 3px #6366f11f'; }}
               onBlur={(e) => { e.target.style.borderColor = 'var(--border-normal)'; e.target.style.boxShadow = ''; }}
               {...register('description')}
             />

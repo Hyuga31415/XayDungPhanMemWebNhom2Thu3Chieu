@@ -178,8 +178,8 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
             <div style={{ gridColumn: '1 / -1' }}>
               <div style={{
                 padding: 'var(--space-3) var(--space-4)',
-                background: 'rgba(99,102,241,0.08)',
-                border: '1px solid rgba(99,102,241,0.2)',
+                background: '#6366f115',
+                border: '1px solid #6366f133',
                 borderRadius: 'var(--radius-md)',
                 display: 'flex', alignItems: 'center', gap: 10,
               }}>

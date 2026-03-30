@@ -4,6 +4,8 @@ import MainLayout from '../components/layout/MainLayout';
 import DashboardPage from '../pages/Dashboard/DashboardPage';
 import EmployeeListPage from '../pages/Employees/EmployeeListPage';
 import DepartmentListPage from '../pages/Departments/DepartmentListPage';
+import AttendancePage from '../pages/Attendance/AttendancePage';
+import LeaveRequestsPage from '../pages/LeaveRequests/LeaveRequestsPage';
 
 // ============================================================
 // App Router
@@ -41,6 +43,8 @@ function AppRouter() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/employees" element={<EmployeeListPage />} />
           <Route path="/departments" element={<DepartmentListPage />} />
+          <Route path="/attendance" element={<AttendancePage />} />
+          <Route path="/leave-requests" element={<LeaveRequestsPage />} />
 
           {/* Placeholder routes (cho FE members khác) */}
           <Route path="/positions" element={<ComingSoon title="Quản lý chức vụ" />} />

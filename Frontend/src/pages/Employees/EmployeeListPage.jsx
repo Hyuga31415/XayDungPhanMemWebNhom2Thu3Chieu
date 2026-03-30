@@ -101,7 +101,7 @@ function EmployeeListPage() {
             onClick={() => openEdit(row)}
             style={{ width: 30, height: 30, borderRadius: 'var(--radius-md)', background: 'var(--bg-glass)', border: '1px solid var(--border-subtle)', color: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all var(--transition-fast)' }}
             title="Chỉnh sửa"
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(99,102,241,0.15)'; }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#6366f126'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-glass)'; }}
           >
             <Pencil size={13} />

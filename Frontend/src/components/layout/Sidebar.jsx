@@ -2,13 +2,12 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Building2, ChevronLeft, ChevronRight,
-  Settings, LogOut, Briefcase, BarChart3, ShieldCheck
+  Settings, LogOut, Briefcase, BarChart3, ShieldCheck, Clock, Calendar
 } from 'lucide-react';
-import useUIStore from '../../store/useUIStore';
 import '../../styles/layout.css';
 
 // ============================================================
-// Sidebar Component
+// Sidebar Component – Merged with FE Team Nav Items
 // ============================================================
 
 const navItems = [
@@ -25,6 +24,13 @@ const navItems = [
       { to: '/employees', icon: Users, label: 'Nhân viên' },
       { to: '/departments', icon: Building2, label: 'Phòng ban' },
       { to: '/positions', icon: Briefcase, label: 'Chức vụ' },
+    ],
+  },
+  {
+    section: 'Chấm công & Nghỉ phép',
+    items: [
+      { to: '/attendance', icon: Clock, label: 'Chấm công' },
+      { to: '/leave-requests', icon: Calendar, label: 'Nghỉ phép' },
     ],
   },
 ];
@@ -72,7 +78,7 @@ function Sidebar() {
           <span>AD</span>
         </div>
         <div className="user-info">
-          <span className="user-name">Adminstrator</span>
+          <span className="user-name">Administrator</span>
           <span className="user-role">HR Manager</span>
         </div>
       </div>
@@ -89,7 +95,7 @@ function Sidebar() {
         
         <div 
           className="nav-item" 
-          style={{ color: 'var(--color-danger)' }}
+          style={{ color: 'var(--color-danger)', cursor: 'pointer' }}
         >
           <LogOut size={20} className="nav-icon" style={{ color: 'inherit' }} />
           <span className="nav-label">Đăng xuất</span>

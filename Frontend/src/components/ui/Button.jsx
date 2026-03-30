@@ -25,7 +25,7 @@ const variantStyles = {
   danger: {
     background: 'var(--color-danger-bg)',
     color: 'var(--color-danger)',
-    border: '1px solid rgba(239, 68, 68, 0.25)',
+    border: '1px solid #ef444440',
   },
   ghost: {
     background: 'transparent',
@@ -35,7 +35,7 @@ const variantStyles = {
   success: {
     background: 'var(--color-success-bg)',
     color: 'var(--color-success)',
-    border: '1px solid rgba(16, 185, 129, 0.25)',
+    border: '1px solid #10b98140',
   },
 };
 

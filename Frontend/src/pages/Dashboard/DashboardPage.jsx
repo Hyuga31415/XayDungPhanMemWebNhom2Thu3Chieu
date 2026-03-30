@@ -209,7 +209,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-const PIE_COLORS = ['#6366f1', '#ec4899', '#0ea5e9'];
+const PIE_COLORS = ['#6366f1', '#ec4899', '#0ea5e9', '#10b981', '#f59e0b'];
 
 function DashboardPage() {
   const { stats, fetchStats, employees, fetchEmployees } = useEmployeeStore();
@@ -230,7 +230,7 @@ function DashboardPage() {
 
   const statCards = [
     { icon: Users, label: 'Tổng nhân sự', value: stats.total, change: 5.2, changeLabel: 'so tháng trước', color: '#6366f1', gradient: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
-    { icon: Building2, label: 'Phòng ban', value: 5, change: 0, changeLabel: 'không đổi', color: '#06b6d4', gradient: 'linear-gradient(135deg, #06b6d4, #3b82f6)' },
+    { icon: Building2, label: 'Phòng ban', value: stats.byDepartment?.length || 0, change: 0, changeLabel: 'không đổi', color: '#06b6d4', gradient: 'linear-gradient(135deg, #06b6d4, #3b82f6)' },
     { icon: UserPlus, label: 'Mới tháng này', value: stats.newThisMonth, change: 50, changeLabel: 'so tháng trước', color: '#10b981', gradient: 'linear-gradient(135deg, #10b981, #059669)' },
     { icon: TrendingUp, label: 'Tỷ lệ ổn định', value: `${stats.retentionRate}%`, change: 1.8, changeLabel: 'so quý trước', color: '#f59e0b', gradient: 'linear-gradient(135deg, #f59e0b, #ef4444)' },
   ];
@@ -281,12 +281,12 @@ function DashboardPage() {
         {statCards.map((card) => <StatCard key={card.label} {...card} />)}
       </div>
 
-      {/* Main Grid */}
+      {/* Main Grid Middle Section */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
         
         {/* Recruitment Trend - Wide */}
         <div style={{ gridColumn: 'span 8' }}>
-          <ChartCard title="Xu hướng biến động nhân sự" subtitle="Biển động tuyển dụng 2023 - 2024" icon={TrendingUp}>
+          <ChartCard title="Xu hướng biến động nhân sự" subtitle="Biển động tuyển dụng gần đây" icon={TrendingUp}>
             <ResponsiveContainer width="100%" height={280}>
               <LineChart data={stats.recruitmentTrend} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
@@ -315,7 +315,7 @@ function DashboardPage() {
                 <ActivityItem key={i} {...act} isLast={i === activities.length - 1} />
               ))}
             </div>
-            <button style={{ 
+            <button className="btn-secondary-outline" style={{ 
               marginTop: 'auto', width: '100%', padding: '10px', 
               background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)',
               borderRadius: 'var(--radius-md)', fontSize: 12, fontWeight: 700, 
@@ -325,23 +325,33 @@ function DashboardPage() {
             </button>
           </ChartCard>
         </div>
+      </div>
 
-        {/* Department Distribution - Medium */}
+      {/* Main Grid Bottom Section */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
+        
+        {/* Department Distribution - FE Team BarChart integration */}
         <div style={{ gridColumn: 'span 5' }}>
-          <ChartCard title="Nhân sự theo phòng ban" subtitle="Tỉ lệ phân bổ các khối" icon={Building2}>
+          <ChartCard title="Nhân viên theo phòng ban" subtitle="Phân bổ headcount hiện tại" icon={Building2}>
             <ResponsiveContainer width="100%" height={260}>
-              <PieChart>
-                <Pie data={stats.byDepartment} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={2} dataKey="count" nameKey="name" stroke="none">
-                  {stats.byDepartment.map((_, i) => <Cell key={i} fill={i === 0 ? '#6366f1' : i === 1 ? '#0ea5e9' : '#10b981'} />)}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-                <Legend verticalAlign="bottom" align="center" iconType="circle" iconSize={8} formatter={(value) => <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{value}</span>} />
-              </PieChart>
+              <BarChart data={stats.byDepartment} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
+                <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
+                <Bar dataKey="count" name="Nhân viên" fill="url(#barGrad)" radius={[6, 6, 0, 0]} />
+                <defs>
+                  <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--brand-primary)" />
+                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.7} />
+                  </linearGradient>
+                </defs>
+              </BarChart>
             </ResponsiveContainer>
           </ChartCard>
         </div>
 
-        {/* Recent Employees Table - Medium-Wide */}
+        {/* Recent Employees Table */}
         <div style={{ gridColumn: 'span 7' }}>
           <ChartCard title="Cập nhật nhân sự" subtitle="Hồ sơ nhân sự mới nhất">
             <div style={{ overflowX: 'auto', marginTop: -8 }}>

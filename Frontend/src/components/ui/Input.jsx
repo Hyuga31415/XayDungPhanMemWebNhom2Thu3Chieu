@@ -42,7 +42,7 @@ export const Input = forwardRef(function Input(
           }}
           onFocus={(e) => {
             e.target.style.borderColor = 'var(--border-focus)';
-            e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.12)';
+            e.target.style.boxShadow = '0 0 0 3px #6366f11f';
           }}
           onBlur={(e) => {
             e.target.style.borderColor = error ? 'var(--color-danger)' : 'var(--border-normal)';

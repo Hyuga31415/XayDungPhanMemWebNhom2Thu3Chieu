@@ -43,7 +43,7 @@ function DepartmentCard({ dept, index, onEdit, onDelete }) {
           <div style={{
             width: 44, height: 44, borderRadius: 'var(--radius-lg)',
             background: gradient, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: `0 4px 16px rgba(0,0,0,0.3)`,
+            boxShadow: `0 4px 16px #0000004d`,
           }}>
             <Building2 size={20} color="white" />
           </div>
@@ -82,7 +82,7 @@ function DepartmentCard({ dept, index, onEdit, onDelete }) {
       {/* Stats */}
       <div style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 'var(--radius-md)', background: 'rgba(99,102,241,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 28, height: 28, borderRadius: 'var(--radius-md)', background: '#6366f11f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Users size={13} color="var(--brand-primary)" />
           </div>
           <div>
@@ -165,7 +165,7 @@ function DepartmentListPage() {
       {/* Page Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, #06b6d4, #3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 16px rgba(6,182,212,0.3)' }}>
+          <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: '#06b6d4', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 16px #06b6d44d' }}>
             <Building2 size={18} color="white" />
           </div>
           <div>
@@ -175,7 +175,7 @@ function DepartmentListPage() {
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
           <Button variant="secondary" icon={RefreshCw} onClick={fetchDepartments} size="sm">Làm mới</Button>
-          <Button icon={Plus} onClick={openAdd} style={{ background: 'linear-gradient(135deg, #06b6d4, #3b82f6)', boxShadow: '0 4px 16px rgba(6,182,212,0.3)' }}>
+          <Button icon={Plus} onClick={openAdd} style={{ background: '#06b6d4', boxShadow: '0 4px 16px #06b6d44d' }}>
             Thêm phòng ban
           </Button>
         </div>

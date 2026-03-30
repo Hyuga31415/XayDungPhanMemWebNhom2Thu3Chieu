@@ -13,6 +13,8 @@ const PAGE_META = {
   '/departments': { title: 'Phòng ban',     subtitle: 'Cơ cấu tổ chức doanh nghiệp' },
   '/positions':   { title: 'Chức vụ',      subtitle: 'Danh mục vị trí công việc' },
   '/analytics':   { title: 'Phân tích',    subtitle: 'Báo cáo và chỉ số nhân sự' },
+  '/attendance':  { title: 'Chấm công',    subtitle: 'Quản lý thời gian làm việc' },
+  '/leave-requests': { title: 'Nghỉ phép', subtitle: 'Yêu cầu và quản lý nghỉ phép' },
 };
 
 function Header() {
