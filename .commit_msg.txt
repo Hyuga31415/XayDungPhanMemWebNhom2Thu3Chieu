@@ -1,1 +1,1 @@
-fix(fe): phuc hoi CSS va router bi mat do xung dot branch
+fix(fe): cai dat thu vien react-hot-toast con thieu de Vercel build
