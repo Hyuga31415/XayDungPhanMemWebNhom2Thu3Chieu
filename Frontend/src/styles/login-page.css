@@ -1,0 +1,229 @@
+/* ============================================================
+   Login Page Styles
+   ============================================================ */
+
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Animated Background ───────────────────────────────────── */
+.login-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.gradient-orb {
+  position: absolute;
+  border-radius: var(--radius-full);
+  filter: blur(80px);
+  opacity: 0.4;
+}
+
+.gradient-1 {
+  width: 300px;
+  height: 300px;
+  background: var(--brand-primary);
+  top: -50px;
+  left: -100px;
+  animation: float 8s ease-in-out infinite;
+}
+
+.gradient-2 {
+  width: 250px;
+  height: 250px;
+  background: var(--brand-secondary);
+  bottom: -100px;
+  right: -50px;
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(30px, -30px);
+  }
+}
+
+/* ── Login Card ────────────────────────────────────────────── */
+.login-card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-8);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-normal);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+.login-header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.login-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--space-4);
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-brand);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.logo-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  border-radius: var(--radius-lg);
+  font-size: 28px;
+  box-shadow: var(--shadow-brand);
+}
+
+.login-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  margin-bottom: 4px;
+}
+
+.login-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Form ──────────────────────────────────────────────────── */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.login-form input {
+  transition: all var(--transition-fast);
+}
+
+.login-form input:focus {
+  transform: translateY(-2px);
+}
+
+/* ── Extras (Remember & Forgot) ────────────────────────────── */
+.login-extras {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  margin-top: 8px;
+}
+
+.remember-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  user-select: none;
+  transition: color var(--transition-fast);
+}
+
+.remember-checkbox:hover {
+  color: var(--text-primary);
+}
+
+.remember-checkbox input {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: var(--brand-primary);
+}
+
+.forgot-password {
+  color: var(--brand-primary);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+
+.forgot-password:hover {
+  opacity: 0.8;
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+.login-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: var(--space-6);
+  text-align: center;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .login-card {
+    margin: var(--space-4);
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+  }
+
+  .login-title {
+    font-size: var(--font-size-lg);
+  }
+
+  .gradient-1,
+  .gradient-2 {
+    filter: blur(40px);
+    opacity: 0.2;
+  }
+}
+
+/* ── Loading State ─────────────────────────────────────────── */
+.login-form button:disabled {
+  cursor: not-allowed;
+}
+
+/* ── Input Focus Enhancement ───────────────────────────────── */
+.login-form input:focus {
+  box-shadow: 0 0 0 3px var(--brand-gradient-soft) !important;
+}
+
+.login-form input:focus + button {
+  transform: translateY(-2px);
+}
