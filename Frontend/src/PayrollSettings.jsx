@@ -73,15 +73,15 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
         <div className="card-body">
           <div className="row align-items-center gy-3">
             <div className="col-md">
-              <p className="text-uppercase fw-semibold small text-secondary mb-1">Cấu hình bảng lương</p>
-              <h1 className="h4 mb-2">Thiết lập lương & phụ cấp</h1>
-              <p className="text-secondary mb-0">Quản lý mức lương, loại phụ cấp và quy tắc chấm công.</p>
+              <p className="text-uppercase fw-semibold small text-primary mb-1">Cấu hình bảng lương</p>
+              <h1 className="h4 mb-2 text-dark">Thiết lập lương & phụ cấp</h1>
+              <p className="text-muted mb-0">Quản lý mức lương, loại phụ cấp và quy tắc chấm công.</p>
             </div>
             <div className="col-md-auto">
               <div className="card bg-light border-0 shadow-sm text-center">
                 <div className="card-body py-3 px-4">
-                  <p className="text-secondary mb-1">Mức lương hiện có</p>
-                  <p className="h3 mb-0">{salaryLevels.length}</p>
+                  <p className="text-muted mb-1 small">Mức lương hiện có</p>
+                  <p className="h3 mb-0 text-dark fw-bold">{salaryLevels.length}</p>
                 </div>
               </div>
             </div>
@@ -93,8 +93,8 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
         <div className="col-lg-4">
           <div className="card shadow-sm h-100">
             <div className="card-body">
-              <h2 className="h5">Mức lương</h2>
-              <p className="text-secondary">Thêm cấp bậc và mức lương tháng.</p>
+                <h2 className="h5 text-dark">Mức lương</h2>
+                <p className="text-muted">Thêm cấp bậc và mức lương tháng.</p>
               <form onSubmit={handleAddSalaryLevel} className="mt-4">
                 <div className="mb-3">
                   <label className="form-label">Cấp bậc</label>
@@ -124,8 +124,8 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
         <div className="col-lg-4">
           <div className="card shadow-sm h-100">
             <div className="card-body">
-              <h2 className="h5">Loại phụ cấp</h2>
-              <p className="text-secondary">Tạo phụ cấp mới và quản lý tỷ lệ.</p>
+                <h2 className="h5 text-dark">Loại phụ cấp</h2>
+                <p className="text-muted">Tạo phụ cấp mới và quản lý tỷ lệ.</p>
               <form onSubmit={handleAddAllowance} className="mt-4">
                 <div className="mb-3">
                   <label className="form-label">Tên phụ cấp</label>
@@ -154,8 +154,8 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
         <div className="col-lg-4">
           <div className="card shadow-sm h-100">
             <div className="card-body">
-              <h2 className="h5">Quy tắc chấm công</h2>
-              <p className="text-secondary">Thiết lập mức phạt và quy tắc tính lương.</p>
+                <h2 className="h5 text-dark">Quy tắc chấm công</h2>
+                <p className="text-muted">Thiết lập mức phạt và quy tắc tính lương.</p>
               <form onSubmit={handleAddRule} className="mt-4">
                 <div className="mb-3">
                   <label className="form-label">Tên quy tắc</label>
@@ -191,8 +191,8 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
                 {salaryLevels.map((item) => (
                   <div key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                      <p className="mb-1 fw-semibold">{item.level}</p>
-                      <small className="text-secondary">{formatVnd(item.monthly)} / tháng</small>
+                      <p className="mb-1 fw-bold text-dark">{item.level}</p>
+                      <small className="text-muted">{formatVnd(item.monthly)} / tháng</small>
                     </div>
                     <button onClick={() => handleDeleteSalaryLevel(item.id)} className="btn btn-sm btn-outline-danger">Xóa</button>
                   </div>
@@ -210,8 +210,8 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
                 {allowances.map((item) => (
                   <div key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                      <p className="mb-1 fw-semibold">{item.name}</p>
-                      <small className="text-secondary">{item.rate}</small>
+                      <p className="mb-1 fw-bold text-dark">{item.name}</p>
+                      <small className="text-muted">{item.rate}</small>
                     </div>
                     <button onClick={() => handleDeleteAllowance(item.id)} className="btn btn-sm btn-outline-danger">Xóa</button>
                   </div>
@@ -229,8 +229,8 @@ const PayrollSettings = ({ initialSalaryLevels, initialAllowances, initialRules 
                 {rules.map((item) => (
                   <div key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                      <p className="mb-1 fw-semibold">{item.name}</p>
-                      <small className="text-secondary">{item.penalty}</small>
+                      <p className="mb-1 fw-bold text-dark">{item.name}</p>
+                      <small className="text-muted">{item.penalty}</small>
                     </div>
                     <button onClick={() => handleDeleteRule(item.id)} className="btn btn-sm btn-outline-danger">Xóa</button>
                   </div>

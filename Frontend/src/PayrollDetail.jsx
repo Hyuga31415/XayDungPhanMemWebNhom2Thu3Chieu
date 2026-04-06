@@ -40,33 +40,33 @@ const PayrollDetail = ({ employee }) => {
         <div className="card-body">
           <div className="row align-items-center gy-3">
             <div className="col-md">
-              <p className="text-uppercase fw-semibold small text-info">Lương cá nhân</p>
+              <p className="text-uppercase fw-semibold small text-primary">Lương cá nhân</p>
               <h1 className="mt-3 display-6 fw-bold text-dark">{data.name}</h1>
-              <p className="text-secondary">Chi tiết bảng lương tháng, phụ cấp và khấu trừ cho nhân viên.</p>
+              <p className="text-muted">Chi tiết bảng lương tháng, phụ cấp và khấu trừ cho nhân viên.</p>
             </div>
             <div className="col-md-6">
               <div className="row row-cols-1 row-cols-md-3 g-3">
                 <div className="col">
                   <div className="card bg-light border-0 text-center shadow-sm">
                     <div className="card-body py-3">
-                      <p className="text-secondary mb-1">Kỳ lương</p>
-                      <p className="mb-0 fw-semibold">{data.period}</p>
+                      <p className="text-muted mb-1 small">Kỳ lương</p>
+                      <p className="mb-0 fw-bold text-dark">{data.period}</p>
                     </div>
                   </div>
                 </div>
                 <div className="col">
                   <div className="card bg-light border-0 text-center shadow-sm">
                     <div className="card-body py-3">
-                      <p className="text-secondary mb-1">Phòng ban</p>
-                      <p className="mb-0 fw-semibold">{data.department}</p>
+                      <p className="text-muted mb-1 small">Phòng ban</p>
+                      <p className="mb-0 fw-bold text-dark">{data.department}</p>
                     </div>
                   </div>
                 </div>
                 <div className="col">
                   <div className="card bg-light border-0 text-center shadow-sm">
                     <div className="card-body py-3">
-                      <p className="text-secondary mb-1">Chức vụ</p>
-                      <p className="mb-0 fw-semibold">{data.position}</p>
+                      <p className="text-muted mb-1 small">Chức vụ</p>
+                      <p className="mb-0 fw-bold text-dark">{data.position}</p>
                     </div>
                   </div>
                 </div>
@@ -84,16 +84,16 @@ const PayrollDetail = ({ employee }) => {
                 <div className="col-md-6">
                   <div className="card bg-light border-0 shadow-sm">
                     <div className="card-body">
-                      <p className="text-secondary mb-1">Lương cơ bản</p>
-                      <p className="h3 mb-0">{formatVnd(baseSalary)}</p>
+                      <p className="text-muted mb-1 small">Lương cơ bản</p>
+                      <p className="h3 mb-0 text-dark fw-bold">{formatVnd(baseSalary)}</p>
                     </div>
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="card bg-light border-0 shadow-sm">
                     <div className="card-body">
-                      <p className="text-secondary mb-1">Tổng phụ cấp</p>
-                      <p className="h3 mb-0 text-success">{formatVnd(totalAllowance)}</p>
+                      <p className="text-muted mb-1 small">Tổng phụ cấp</p>
+                      <p className="h3 mb-0 text-success fw-bold">{formatVnd(totalAllowance)}</p>
                     </div>
                   </div>
                 </div>
@@ -101,9 +101,9 @@ const PayrollDetail = ({ employee }) => {
 
               <div className="card bg-light border-0 mb-4 shadow-sm">
                 <div className="card-body text-center py-4">
-                  <p className="text-uppercase small text-secondary mb-2">Lương thực lĩnh</p>
-                  <p className="display-6 fw-semibold mb-2">{formatVnd(netSalary)}</p>
-                  <p className="text-secondary mb-0">Sau khấu trừ bảo hiểm, thuế và đi muộn.</p>
+                  <p className="text-uppercase small text-muted mb-2">Lương thực lĩnh</p>
+                  <p className="display-5 fw-bold mb-2 text-info">{formatVnd(netSalary)}</p>
+                  <p className="text-muted mb-0 small">Sau khấu trừ bảo hiểm, thuế và đi muộn.</p>
                 </div>
               </div>
 
@@ -111,16 +111,16 @@ const PayrollDetail = ({ employee }) => {
                 <div className="col-md-6">
                   <div className="card border-0 shadow-sm">
                     <div className="card-body">
-                      <p className="text-secondary mb-1">Tổng trước khấu trừ</p>
-                      <p className="h5 mb-0">{formatVnd(grossSalary)}</p>
+                      <p className="text-muted mb-1 small">Tổng trước khấu trừ</p>
+                      <p className="h5 mb-0 text-dark fw-bold">{formatVnd(grossSalary)}</p>
                     </div>
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="card border-0 shadow-sm">
                     <div className="card-body">
-                      <p className="text-secondary mb-1">Khấu trừ</p>
-                      <p className="h5 mb-0 text-danger">{formatVnd(totalDeduction)}</p>
+                      <p className="text-muted mb-1 small">Khấu trừ</p>
+                      <p className="h5 mb-0 text-danger fw-bold">{formatVnd(totalDeduction)}</p>
                     </div>
                   </div>
                 </div>
@@ -134,15 +134,15 @@ const PayrollDetail = ({ employee }) => {
             <div className="card-body">
               <p className="text-uppercase fw-semibold small text-info mb-3">Tổng quan nhanh</p>
               <ul className="list-unstyled mb-0">
-                <li className="mb-2 text-secondary">• Phụ cấp được cộng trực tiếp vào lương cơ bản.</li>
-                <li className="text-secondary">• Khấu trừ theo lương bảo hiểm và thuế chuẩn.</li>
+                <li className="mb-2 text-dark">• Phụ cấp được cộng trực tiếp vào lương cơ bản.</li>
+                <li className="text-dark">• Khấu trừ theo lương bảo hiểm và thuế chuẩn.</li>
               </ul>
             </div>
           </div>
           <div className="card bg-light shadow-sm">
             <div className="card-body">
               <p className="text-secondary mb-2">Tính năng nổi bật</p>
-              <ul className="mb-0 text-secondary">
+              <ul className="mb-0 text-dark">
                 <li>Báo cáo số liệu lương chi tiết cho từng nhân viên.</li>
                 <li>Dễ so sánh phụ cấp và khoản khấu trừ.</li>
                 <li>Giao diện sạch, đọc số liệu nhanh.</li>
@@ -170,7 +170,7 @@ const PayrollDetail = ({ employee }) => {
                   {allowances.map((item, index) => (
                     <div key={`${item?.label ?? 'allowance'}-${index}`} className="d-flex justify-content-between align-items-center border-bottom py-3">
                       <span className="fw-semibold text-dark">{item.label}</span>
-                      <span className="text-secondary">{formatVnd(item.amount)}</span>
+                      <span className="text-success fw-bold">{formatVnd(item.amount)}</span>
                     </div>
                   ))}
                 </div>
@@ -183,7 +183,7 @@ const PayrollDetail = ({ employee }) => {
                   {deductions.map((item, index) => (
                     <div key={`${item?.label ?? 'deduction'}-${index}`} className="d-flex justify-content-between align-items-center border-bottom py-3">
                       <span className="fw-semibold text-dark">{item.label}</span>
-                      <span className="text-secondary">{formatVnd(item.amount)}</span>
+                      <span className="text-danger fw-bold">{formatVnd(item.amount)}</span>
                     </div>
                   ))}
                 </div>

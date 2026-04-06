@@ -36,9 +36,9 @@ const PayrollManagement = ({ payrollList }) => {
         <div className="card-body">
           <div className="row gy-3 align-items-center">
             <div className="col-md">
-              <p className="text-uppercase fw-semibold small text-info mb-1">Bảng lương HR</p>
-              <h1 className="h4 mb-2">Tổng quan lương</h1>
-              <p className="text-secondary mb-0">Cập nhật nhanh trạng thái duyệt, tổng chi trả và số lượng bảng lương.</p>
+              <p className="text-uppercase fw-semibold small text-primary mb-1">Bảng lương HR</p>
+              <h1 className="h4 mb-2 text-dark">Tổng quan bảng lương</h1>
+              <p className="text-muted mb-0">Cập nhật nhanh trạng thái duyệt, tổng chi trả và số lượng bảng lương.</p>
             </div>
 
             <div className="col-md-8">
@@ -46,24 +46,24 @@ const PayrollManagement = ({ payrollList }) => {
                 <div className="col-md-4">
                   <div className="card bg-light border-0 text-center shadow-sm h-100">
                     <div className="card-body py-3">
-                      <p className="text-secondary mb-1">Bảng lương</p>
-                      <p className="h4 mb-0">{payrollList.length}</p>
+                      <p className="text-muted mb-1 small">Bảng lương</p>
+                      <p className="h4 mb-0 text-dark fw-bold">{payrollList.length}</p>
                     </div>
                   </div>
                 </div>
                 <div className="col-md-4">
                   <div className="card bg-light border-0 text-center shadow-sm h-100">
                     <div className="card-body py-3">
-                      <p className="text-secondary mb-1">Đã duyệt</p>
-                      <p className="h4 mb-0 text-success">{approvedCount}</p>
+                      <p className="text-muted mb-1 small">Đã duyệt</p>
+                      <p className="h4 mb-0 text-success fw-bold">{approvedCount}</p>
                     </div>
                   </div>
                 </div>
                 <div className="col-md-4">
                   <div className="card bg-light border-0 text-center shadow-sm h-100">
                     <div className="card-body py-3">
-                      <p className="text-secondary mb-1">Tổng chi trả</p>
-                      <p className="h4 mb-0">{formatVnd(totalPayroll)}</p>
+                      <p className="text-muted mb-1 small">Tổng chi trả</p>
+                      <p className="h4 mb-0 text-success fw-bold">{formatVnd(totalPayroll)}</p>
                     </div>
                   </div>
                 </div>
@@ -77,8 +77,8 @@ const PayrollManagement = ({ payrollList }) => {
         <div className="card-body">
           <div className="row align-items-center gy-3 mb-4">
             <div className="col-md">
-              <h2 className="h5 mb-1">Danh sách bảng lương</h2>
-              <p className="text-secondary mb-0">Tìm kiếm và theo dõi trạng thái chi tiết.</p>
+              <h2 className="h5 mb-1 text-dark">Danh sách bảng lương</h2>
+              <p className="text-muted mb-0">Tìm kiếm và theo dõi trạng thái chi tiết.</p>
             </div>
             <div className="col-md-4">
               <div className="input-group">
