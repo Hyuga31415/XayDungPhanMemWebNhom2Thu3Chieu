@@ -1,6 +1,9 @@
 import React from 'react';
 
-const formatVnd = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+const formatVnd = (value) => {
+  const safeValue = Number.isFinite(Number(value)) ? Number(value) : 0;
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(safeValue);
+};
 
 const PayrollDetail = ({ employee }) => {
   const data = employee ?? {
@@ -22,9 +25,13 @@ const PayrollDetail = ({ employee }) => {
     ],
   };
 
-  const totalAllowance = data.allowances.reduce((sum, item) => sum + item.amount, 0);
-  const totalDeduction = data.deductions.reduce((sum, item) => sum + item.amount, 0);
-  const grossSalary = data.baseSalary + totalAllowance;
+  const allowances = Array.isArray(data.allowances) ? data.allowances : [];
+  const deductions = Array.isArray(data.deductions) ? data.deductions : [];
+  const baseSalary = Number.isFinite(Number(data.baseSalary)) ? Number(data.baseSalary) : 0;
+
+  const totalAllowance = allowances.reduce((sum, item) => sum + (Number(item?.amount) || 0), 0);
+  const totalDeduction = deductions.reduce((sum, item) => sum + (Number(item?.amount) || 0), 0);
+  const grossSalary = baseSalary + totalAllowance;
   const netSalary = grossSalary - totalDeduction;
 
   return (
@@ -78,7 +85,7 @@ const PayrollDetail = ({ employee }) => {
                   <div className="card bg-light border-0 shadow-sm">
                     <div className="card-body">
                       <p className="text-secondary mb-1">Lương cơ bản</p>
-                      <p className="h3 mb-0">{formatVnd(data.baseSalary)}</p>
+                      <p className="h3 mb-0">{formatVnd(baseSalary)}</p>
                     </div>
                   </div>
                 </div>
@@ -160,8 +167,8 @@ const PayrollDetail = ({ employee }) => {
               <div className="card bg-light border-0 shadow-sm h-100">
                 <div className="card-body">
                   <h3 className="h6">Phụ cấp</h3>
-                  {data.allowances.map((item) => (
-                    <div key={item.label} className="d-flex justify-content-between align-items-center border-bottom py-3">
+                  {allowances.map((item, index) => (
+                    <div key={`${item?.label ?? 'allowance'}-${index}`} className="d-flex justify-content-between align-items-center border-bottom py-3">
                       <span className="fw-semibold text-dark">{item.label}</span>
                       <span className="text-secondary">{formatVnd(item.amount)}</span>
                     </div>
@@ -173,8 +180,8 @@ const PayrollDetail = ({ employee }) => {
               <div className="card bg-light border-0 shadow-sm h-100">
                 <div className="card-body">
                   <h3 className="h6">Khấu trừ</h3>
-                  {data.deductions.map((item) => (
-                    <div key={item.label} className="d-flex justify-content-between align-items-center border-bottom py-3">
+                  {deductions.map((item, index) => (
+                    <div key={`${item?.label ?? 'deduction'}-${index}`} className="d-flex justify-content-between align-items-center border-bottom py-3">
                       <span className="fw-semibold text-dark">{item.label}</span>
                       <span className="text-secondary">{formatVnd(item.amount)}</span>
                     </div>
