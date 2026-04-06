@@ -10,6 +10,7 @@ const { getPositions } = require('../controllers/employeeController');
 // Import các Module Routes
 const employeeRoutes = require('./employeeRoutes');
 const departmentRoutes = require('./departmentRoutes');
+const payrollRoutes = require('./payrollRoutes');
 
 // ============================================================
 // PUBLIC ROUTES (Không cần đăng nhập)
@@ -27,5 +28,7 @@ router.get('/positions', getPositions);
 router.use('/employees', employeeRoutes);
 // Gắn toàn bộ departmentRoutes vào tiền tố /departments
 router.use('/departments', departmentRoutes);
+// Gắn toàn bộ payrollRoutes vào tiền tố /payroll
+router.use('/payroll', payrollRoutes);
 
 module.exports = router;
