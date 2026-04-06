@@ -2,12 +2,13 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Building2, ChevronLeft, ChevronRight,
-  Settings, LogOut, Briefcase, BarChart3, ShieldCheck, Clock, Calendar
+  Settings, LogOut, Briefcase, BarChart3, Clock, Calendar, Wallet,
 } from 'lucide-react';
+import useUIStore from '../../store/useUIStore';
 import '../../styles/layout.css';
 
 // ============================================================
-// Sidebar Component – Merged with FE Team Nav Items
+// Sidebar Component
 // ============================================================
 
 const navItems = [
@@ -33,73 +34,72 @@ const navItems = [
       { to: '/leave-requests', icon: Calendar, label: 'Nghỉ phép' },
     ],
   },
+  {
+    section: 'Payroll',
+    items: [
+      { to: '/payroll/management', icon: Wallet, label: 'Bang luong' },
+      { to: '/payroll/history', icon: Wallet, label: 'Lich su luong' },
+      { to: '/payroll/reports', icon: Wallet, label: 'Bao cao luong' },
+      { to: '/payroll/settings', icon: Wallet, label: 'Cau hinh luong' },
+      { to: '/payroll/detail', icon: Wallet, label: 'Chi tiet luong' },
+    ],
+  },
 ];
 
 function Sidebar() {
-  const location = useLocation();
+  const { isSidebarCollapsed, toggleSidebar } = useUIStore();
 
   return (
-    <aside className="sidebar">
-      {/* Logo Area */}
+    <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+      {/* Logo */}
       <div className="sidebar-logo">
         <div className="sidebar-logo-icon">
-          <ShieldCheck size={22} color="white" strokeWidth={2.5} />
+          <Users size={18} color="white" />
         </div>
         <div className="sidebar-logo-text">
-          <span className="sidebar-logo-title">HRM <span style={{ color: 'var(--brand-primary)' }}>Pro</span></span>
-          <span className="sidebar-logo-subtitle">Enterprise Suite</span>
+          <span className="sidebar-logo-title">HRM System</span>
+          <span className="sidebar-logo-subtitle">Quản lý nhân sự</span>
         </div>
       </div>
 
       {/* Navigation */}
       <nav className="sidebar-nav">
         {navItems.map((group) => (
-          <div key={group.section} style={{ marginBottom: 'var(--space-2)' }}>
+          <div key={group.section}>
             <div className="sidebar-section-title">{group.section}</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {group.items.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                >
-                  <item.icon className="nav-icon" size={20} />
-                  <span className="nav-label">{item.label}</span>
-                </NavLink>
-              ))}
-            </div>
+            {group.items.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                title={isSidebarCollapsed ? item.label : undefined}
+              >
+                <item.icon className="nav-icon" size={18} />
+                <span className="nav-label">{item.label}</span>
+              </NavLink>
+            ))}
           </div>
         ))}
       </nav>
 
-      {/* User Profile Section */}
-      <div className="sidebar-user">
-        <div className="user-avatar">
-          <span>AD</span>
+      {/* Footer */}
+      <div className="sidebar-footer">
+        <div className="nav-item" title={isSidebarCollapsed ? 'Cài đặt' : undefined}>
+          <Settings size={18} />
+          <span className="nav-label">Cài đặt</span>
         </div>
-        <div className="user-info">
-          <span className="user-name">Administrator</span>
-          <span className="user-role">HR Manager</span>
+        <div className="nav-item" style={{ color: 'var(--color-danger)' }} title={isSidebarCollapsed ? 'Đăng xuất' : undefined}>
+          <LogOut size={18} />
+          <span className="nav-label">Đăng xuất</span>
         </div>
       </div>
 
-      {/* Footer Actions */}
-      <div className="sidebar-footer">
-        <NavLink 
-          to="/settings" 
-          className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-        >
-          <Settings size={20} className="nav-icon" />
-          <span className="nav-label">Cài đặt</span>
-        </NavLink>
-        
-        <div 
-          className="nav-item" 
-          style={{ color: 'var(--color-danger)', cursor: 'pointer' }}
-        >
-          <LogOut size={20} className="nav-icon" style={{ color: 'inherit' }} />
-          <span className="nav-label">Đăng xuất</span>
-        </div>
+      {/* Collapse Toggle */}
+      <div style={{ padding: '0 var(--space-3) var(--space-3)' }}>
+        <button className="sidebar-collapse-btn" onClick={toggleSidebar}>
+          {isSidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          <span className="nav-label">Thu gọn</span>
+        </button>
       </div>
     </aside>
   );

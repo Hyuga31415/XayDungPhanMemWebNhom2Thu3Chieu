@@ -1,14 +1,26 @@
-/* Minimal reset – HRM styles are loaded via main.jsx imports */
-*, *::before, *::after {
-  box-sizing: border-box;
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  padding: 0;
+  background-color: #f4f6f9;
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 #root {
-  width: 100%;
   min-height: 100vh;
+}
+
+.card-shadow {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.08);
+}
+
+.pointer-hover {
+  cursor: pointer;
 }
