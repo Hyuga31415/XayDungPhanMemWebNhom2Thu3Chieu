@@ -32,7 +32,7 @@ const PayrollReports = ({ reportData, quickInsights }) => {
               <div className="card-body">
                 <p className="text-uppercase fw-semibold small text-secondary">{item.title}</p>
                 <p className="h3 fw-semibold mt-3">{formatVnd(item.value)}</p>
-                <span className={`badge bg-${item.color} mt-3`}>{item.trend} so với tháng trước</span>
+                <span className={`badge bg-${item.color} text-dark mt-3 fw-bold`}>{item.trend} so với tháng trước</span>
               </div>
             </div>
           </div>

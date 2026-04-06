@@ -53,7 +53,7 @@ const PayrollHistory = ({ historyItems }) => {
                   >
                     <div className="d-flex justify-content-between align-items-center">
                       <span className="fw-semibold">Kỳ {item.month}</span>
-                      <span className={`badge bg-${statusStyles[item.status]} text-uppercase`}>{item.status}</span>
+                      <span className={`badge bg-${statusStyles[item.status]} text-dark text-uppercase fw-bold`}>{item.status}</span>
                     </div>
                     <p className="mb-0 text-muted small">Tổng chi trả {formatVnd(item.totalPaid)} cho {item.employees} nhân viên.</p>
                   </button>

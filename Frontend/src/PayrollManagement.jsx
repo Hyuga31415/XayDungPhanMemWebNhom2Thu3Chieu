@@ -114,7 +114,7 @@ const PayrollManagement = ({ payrollList }) => {
                     <td>{item.period}</td>
                     <td className="fw-semibold">{formatVnd(item.netSalary)}</td>
                     <td>
-                      <span className={`badge bg-${statusStyles[item.status]} text-uppercase`}>{item.status}</span>
+                      <span className={`badge bg-${statusStyles[item.status]} text-dark text-uppercase fw-bold`}>{item.status}</span>
                     </td>
                     <td>
                       <button className="btn btn-outline-primary btn-sm">Xem chi tiết</button>
