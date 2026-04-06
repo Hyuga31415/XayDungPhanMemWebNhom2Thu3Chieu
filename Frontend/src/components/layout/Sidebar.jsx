@@ -2,13 +2,12 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Building2, ChevronLeft, ChevronRight,
-  Settings, LogOut, Briefcase, BarChart3, Clock, Calendar,
+  Settings, LogOut, Briefcase, BarChart3, ShieldCheck, Clock, Calendar
 } from 'lucide-react';
-import useUIStore from '../../store/useUIStore';
 import '../../styles/layout.css';
 
 // ============================================================
-// Sidebar Component
+// Sidebar Component – Merged with FE Team Nav Items
 // ============================================================
 
 const navItems = [
@@ -37,59 +36,70 @@ const navItems = [
 ];
 
 function Sidebar() {
-  const { isSidebarCollapsed, toggleSidebar } = useUIStore();
+  const location = useLocation();
 
   return (
-    <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
-      {/* Logo */}
+    <aside className="sidebar">
+      {/* Logo Area */}
       <div className="sidebar-logo">
         <div className="sidebar-logo-icon">
-          <Users size={18} color="white" />
+          <ShieldCheck size={22} color="white" strokeWidth={2.5} />
         </div>
         <div className="sidebar-logo-text">
-          <span className="sidebar-logo-title">HRM System</span>
-          <span className="sidebar-logo-subtitle">Quản lý nhân sự</span>
+          <span className="sidebar-logo-title">HRM <span style={{ color: 'var(--brand-primary)' }}>Pro</span></span>
+          <span className="sidebar-logo-subtitle">Enterprise Suite</span>
         </div>
       </div>
 
       {/* Navigation */}
       <nav className="sidebar-nav">
         {navItems.map((group) => (
-          <div key={group.section}>
+          <div key={group.section} style={{ marginBottom: 'var(--space-2)' }}>
             <div className="sidebar-section-title">{group.section}</div>
-            {group.items.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                title={isSidebarCollapsed ? item.label : undefined}
-              >
-                <item.icon className="nav-icon" size={18} />
-                <span className="nav-label">{item.label}</span>
-              </NavLink>
-            ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {group.items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                >
+                  <item.icon className="nav-icon" size={20} />
+                  <span className="nav-label">{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
           </div>
         ))}
       </nav>
 
-      {/* Footer */}
-      <div className="sidebar-footer">
-        <div className="nav-item" title={isSidebarCollapsed ? 'Cài đặt' : undefined}>
-          <Settings size={18} />
-          <span className="nav-label">Cài đặt</span>
+      {/* User Profile Section */}
+      <div className="sidebar-user">
+        <div className="user-avatar">
+          <span>AD</span>
         </div>
-        <div className="nav-item" style={{ color: 'var(--color-danger)' }} title={isSidebarCollapsed ? 'Đăng xuất' : undefined}>
-          <LogOut size={18} />
-          <span className="nav-label">Đăng xuất</span>
+        <div className="user-info">
+          <span className="user-name">Administrator</span>
+          <span className="user-role">HR Manager</span>
         </div>
       </div>
 
-      {/* Collapse Toggle */}
-      <div style={{ padding: '0 var(--space-3) var(--space-3)' }}>
-        <button className="sidebar-collapse-btn" onClick={toggleSidebar}>
-          {isSidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-          <span className="nav-label">Thu gọn</span>
-        </button>
+      {/* Footer Actions */}
+      <div className="sidebar-footer">
+        <NavLink 
+          to="/settings" 
+          className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+        >
+          <Settings size={20} className="nav-icon" />
+          <span className="nav-label">Cài đặt</span>
+        </NavLink>
+        
+        <div 
+          className="nav-item" 
+          style={{ color: 'var(--color-danger)', cursor: 'pointer' }}
+        >
+          <LogOut size={20} className="nav-icon" style={{ color: 'inherit' }} />
+          <span className="nav-label">Đăng xuất</span>
+        </div>
       </div>
     </aside>
   );
