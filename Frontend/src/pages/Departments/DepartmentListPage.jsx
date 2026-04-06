@@ -134,13 +134,16 @@ function DepartmentCard({ dept, index, onEdit, onDelete }) {
 
 function DepartmentListPage() {
   const { departments, isLoading, isSubmitting, fetchDepartments, createDepartment, updateDepartment, deleteDepartment } = useDepartmentStore();
-  const { employees } = useEmployeeStore();
+  const { employees, fetchEmployees } = useEmployeeStore();
   const { openConfirm } = useUIStore();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingDept, setEditingDept] = useState(null);
 
-  useEffect(() => { fetchDepartments(); }, []);
+  useEffect(() => {
+    fetchDepartments();
+    fetchEmployees();
+  }, []);
 
   const openAdd = () => { setEditingDept(null); setModalOpen(true); };
   const openEdit = (dept) => { setEditingDept(dept); setModalOpen(true); };
@@ -185,7 +188,7 @@ function DepartmentListPage() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--space-4)' }}>
         {[
           { label: 'Tổng phòng ban', value: departments.length, color: 'var(--brand-primary)' },
-          { label: 'Tổng nhân viên', value: departments.reduce((s, d) => s + d.employeeCount, 0), color: 'var(--color-success)' },
+          { label: 'Tổng nhân viên', value: departments.reduce((s, d) => s + (d.employeeCount || 0), 0), color: 'var(--color-success)' },
           { label: 'Phòng lớn nhất', value: Math.max(...departments.map((d) => d.employeeCount), 0), color: 'var(--color-warning)' },
         ].map((item) => (
           <div key={item.label} className="glass-card" style={{ padding: 'var(--space-4)', textAlign: 'center' }}>
