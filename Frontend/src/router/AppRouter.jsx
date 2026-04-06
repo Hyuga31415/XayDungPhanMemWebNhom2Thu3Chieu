@@ -1,11 +1,15 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
+import LoginLayout from '../components/layout/LoginLayout';
+import ProtectedRoute from '../components/ProtectedRoute';
+import LoginPage from '../pages/Login/LoginPage';
 import DashboardPage from '../pages/Dashboard/DashboardPage';
 import EmployeeListPage from '../pages/Employees/EmployeeListPage';
 import DepartmentListPage from '../pages/Departments/DepartmentListPage';
 import AttendancePage from '../pages/Attendance/AttendancePage';
 import LeaveRequestsPage from '../pages/LeaveRequests/LeaveRequestsPage';
+import ShiftsPage from '../pages/Shifts/ShiftsPage';
 
 // ============================================================
 // App Router
@@ -35,24 +39,33 @@ function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<MainLayout />}>
-          {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
-          {/* Core pages */}
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/employees" element={<EmployeeListPage />} />
-          <Route path="/departments" element={<DepartmentListPage />} />
-          <Route path="/attendance" element={<AttendancePage />} />
-          <Route path="/leave-requests" element={<LeaveRequestsPage />} />
-
-          {/* Placeholder routes (cho FE members khác) */}
-          <Route path="/positions" element={<ComingSoon title="Quản lý chức vụ" />} />
-          <Route path="/analytics" element={<ComingSoon title="Phân tích & Báo cáo" />} />
-
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
+        {/* ── Public Routes (Không cần xác thực) ──────────────── */}
+        <Route element={<LoginLayout />}>
+          <Route path="/login" element={<LoginPage />} />
         </Route>
+
+        {/* ── Protected Routes (Cần xác thực) ─────────────────── */}
+        {/* <Route element={<ProtectedRoute />}> */}
+          <Route element={<MainLayout />}>
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+            {/* Core pages */}
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/employees" element={<EmployeeListPage />} />
+            <Route path="/departments" element={<DepartmentListPage />} />
+            <Route path="/attendance" element={<AttendancePage />} />
+            <Route path="/leave-requests" element={<LeaveRequestsPage />} />
+            <Route path="/shifts" element={<ShiftsPage />} />
+
+            {/* Placeholder routes (cho FE members khác) */}
+            <Route path="/positions" element={<ComingSoon title="Quản lý chức vụ" />} />
+            <Route path="/analytics" element={<ComingSoon title="Phân tích & Báo cáo" />} />
+
+            {/* 404 */}
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        {/* </Route> */}
       </Routes>
     </BrowserRouter>
   );

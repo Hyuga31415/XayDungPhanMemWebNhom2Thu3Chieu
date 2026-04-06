@@ -35,6 +35,59 @@ const getMonthDays = (year, month) => {
   });
 };
 
+const WORK_START_MINUTES = 9 * 60;
+const WORK_END_MINUTES = 17 * 60 + 30;
+const OT_THRESHOLD_MINUTES = 18 * 60;
+
+const parseTimeToMinutes = (time) => {
+  if (!time) return null;
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours * 60 + minutes;
+};
+
+const getStatusBadge = (status) => {
+  if (status === 'present') return 'bg-success';
+  if (status === 'late') return 'bg-warning text-dark';
+  if (status === 'early') return 'bg-info text-dark';
+  if (status === 'ot') return 'bg-primary';
+  return 'bg-danger';
+};
+
+const getStatusText = (status) => {
+  if (status === 'present') return 'Đi làm';
+  if (status === 'late') return 'Đi trễ';
+  if (status === 'early') return 'Về sớm';
+  if (status === 'ot') return 'Tăng ca';
+  return 'Nghỉ không phép';
+};
+
+const getStatusShort = (status) => {
+  if (status === 'present') return 'P';
+  if (status === 'late') return 'L';
+  if (status === 'early') return 'E';
+  if (status === 'ot') return 'O';
+  return 'A';
+};
+
+const getDayRemark = (record) => {
+  if (!record || record.status === 'absent') return 'Nghỉ không phép';
+  const checkInMinutes = parseTimeToMinutes(record.checkIn);
+  const checkOutMinutes = parseTimeToMinutes(record.checkOut);
+  const remarks = [];
+
+  if (checkInMinutes && checkInMinutes > WORK_START_MINUTES) {
+    remarks.push('Đi muộn');
+  }
+  if (checkOutMinutes && checkOutMinutes < WORK_END_MINUTES) {
+    remarks.push('Về sớm');
+  }
+  if (checkOutMinutes && checkOutMinutes >= OT_THRESHOLD_MINUTES) {
+    remarks.push('Tăng ca');
+  }
+
+  return remarks.length > 0 ? remarks.join(' • ') : 'Bình thường';
+};
+
 function AttendancePage() {
   const [loading, setLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -122,6 +175,7 @@ function AttendancePage() {
 
     const now = new Date();
     const time = formatTime(now);
+    const checkOutMinutes = now.getHours() * 60 + now.getMinutes();
 
     setLoading(true);
 
@@ -130,6 +184,12 @@ function AttendancePage() {
         ...todayRecord,
         date: todayKey,
         checkOut: time,
+        status:
+          checkOutMinutes >= OT_THRESHOLD_MINUTES
+            ? 'ot'
+            : checkOutMinutes < WORK_END_MINUTES
+            ? 'early'
+            : todayRecord.status,
       };
 
       setTodayRecord(updated);
@@ -164,32 +224,20 @@ function AttendancePage() {
     return { status: 'absent', checkIn: null };
   };
 
-  const getStatusBadge = (status) => {
-    if (status === 'present') return 'bg-success';
-    if (status === 'late') return 'bg-warning text-dark';
-    return 'bg-danger';
-  };
-
-  const getStatusText = (status) => {
-    if (status === 'present') return 'Đi làm';
-    if (status === 'late') return 'Đi trễ';
-    return 'Vắng';
-  };
-
-  const getStatusShort = (status) => {
-    if (status === 'present') return 'P';
-    if (status === 'late') return 'L';
-    return 'A';
-  };
-
   return (
     <div className="attendance-page container py-4">
       <div className="page-header">
         <h2 className="mb-1">Chấm công</h2>
       </div>
 
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <div></div>
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
+        <div className="d-flex flex-wrap gap-2">
+          <span className="badge bg-warning text-dark">Đi muộn: {attendance.filter((item) => item.status === 'late').length}</span>
+          <span className="badge bg-info text-dark">Về sớm: {attendance.filter((item) => item.status === 'early').length}</span>
+          <span className="badge bg-danger">Nghỉ không phép: {attendance.filter((item) => item.status === 'absent').length}</span>
+          <span className="badge bg-primary">Tăng ca: {attendance.filter((item) => item.status === 'ot').length}</span>
+        </div>
+
         <span className="badge bg-secondary fs-6">
           Giờ hiện tại: {formatTime(clock)}
         </span>
@@ -253,9 +301,11 @@ function AttendancePage() {
               <h6>Ghi chú</h6>
               <ul className="small">
                 <li>Check-in trước 09:00 = đúng giờ</li>
-                <li>Sau 09:00 = trễ</li>
-                <li>Không check-in = vắng</li>
-                <li>P = Có mặt, L = Trễ, A = Vắng</li>
+                <li>Check-in sau 09:00 = đi trễ</li>
+                <li>Check-out trước 17:30 = về sớm</li>
+                <li>Check-out sau 18:00 = tăng ca</li>
+                <li>Không check-in = nghỉ không phép</li>
+                <li>P = Có mặt, L = Trễ, E = Về sớm, O = OT, A = Nghỉ không phép</li>
               </ul>
             </div>
           </div>
@@ -398,6 +448,10 @@ function AttendancePage() {
                 <p>
                   <strong>Check-out:</strong>{' '}
                   {selectedDetail?.checkOut || 'Chưa có'}
+                </p>
+                <p>
+                  <strong>Ghi chú:</strong>{' '}
+                  {getDayRemark(selectedDetail)}
                 </p>
               </div>
 

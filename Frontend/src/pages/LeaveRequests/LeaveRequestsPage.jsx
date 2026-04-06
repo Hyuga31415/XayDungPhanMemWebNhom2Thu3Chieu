@@ -8,7 +8,7 @@ const MOCK_LEAVE_REQUESTS = [
   { id: 3, employee: 'Lê Văn C', type: 'Nghỉ không lương', startDate: '2025-12-20', endDate: '2025-12-22', reason: 'Việc riêng', status: 'rejected' },
 ];
 
-const LEAVE_TYPES = ['Nghỉ phép năm', 'Nghỉ ốm', 'Nghỉ không lương'];
+const LEAVE_TYPES = ['Nghỉ phép năm', 'Nghỉ ốm', 'Nghỉ không lương', 'Nghỉ không phép'];
 
 function LeaveRequestsPage() {
   const [loading, setLoading] = useState(true);

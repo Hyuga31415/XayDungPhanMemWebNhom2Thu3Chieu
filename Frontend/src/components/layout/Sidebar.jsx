@@ -2,7 +2,8 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Building2, ChevronLeft, ChevronRight,
-  Settings, LogOut, Briefcase, BarChart3, Clock, Calendar,
+  Settings, LogOut, Briefcase, BarChart3, Clock, Calendar, Layers,
+  Menu,
 } from 'lucide-react';
 import useUIStore from '../../store/useUIStore';
 import '../../styles/layout.css';
@@ -32,6 +33,7 @@ const navItems = [
     items: [
       { to: '/attendance', icon: Clock, label: 'Chấm công' },
       { to: '/leave-requests', icon: Calendar, label: 'Nghỉ phép' },
+      { to: '/shifts', icon: Layers, label: 'Ca làm việc' },
     ],
   },
 ];
@@ -87,7 +89,7 @@ function Sidebar() {
       {/* Collapse Toggle */}
       <div style={{ padding: '0 var(--space-3) var(--space-3)' }}>
         <button className="sidebar-collapse-btn" onClick={toggleSidebar}>
-          {isSidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          {isSidebarCollapsed ? <ChevronRight size={16} /> : <Menu size={16} />}
           <span className="nav-label">Thu gọn</span>
         </button>
       </div>

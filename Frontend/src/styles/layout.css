@@ -150,8 +150,7 @@
 .sidebar.collapsed .nav-label,
 .sidebar.collapsed .sidebar-logo-text,
 .sidebar.collapsed .sidebar-section-title {
-  opacity: 0;
-  pointer-events: none;
+  display: none;
 }
 
 .sidebar-footer {
@@ -179,6 +178,11 @@
   background: var(--bg-elevated);
   color: var(--text-primary);
   border-color: var(--border-subtle);
+}
+
+.sidebar.collapsed .sidebar-collapse-btn {
+  justify-content: center;
+  gap: 0;
 }
 
 /* Main area */
