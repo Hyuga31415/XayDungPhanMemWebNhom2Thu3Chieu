@@ -1,7 +1,7 @@
 import axiosClient, { isMockMode } from './axiosClient';
 import { departments, employees, leaveRequests, positions } from './hrmData';
 
-const USE_MOCK = isMockMode;
+const USE_MOCK = false;
 const delay = (ms = 300) => new Promise((res) => setTimeout(res, ms));
 
 let mockEmployees = [...employees];

@@ -82,8 +82,13 @@ function EmployeeListPage() {
       render: (val) => <span style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>{val}</span>,
     },
     {
-      // hire_date trong SQL (không phải joinDate)
       key: 'hire_date', title: 'Ngày vào làm', width: 120,
+      render: (val) => {
+        if (!val) return '';
+        const date = new Date(val);
+        // toLocaleDateString('vi-VN') sẽ tự động xuất ra định dạng dd/mm/yyyy
+        return <span style={{ fontSize: 'var(--font-size-sm)' }}>{date.toLocaleDateString('vi-VN')}</span>;
+      }
     },
     {
       // status ENUM('Active', 'Resigned') từ HRM.sql

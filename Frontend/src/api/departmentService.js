@@ -1,7 +1,7 @@
 import axiosClient, { isMockMode } from './axiosClient';
 import { departments, employees } from './hrmData';
 
-const USE_MOCK = isMockMode;
+const USE_MOCK = false;
 const delay = (ms = 300) => new Promise((res) => setTimeout(res, ms));
 let mockDepartments = departments.map((d) => ({ ...d }));
 let nextDeptId = Math.max(...mockDepartments.map((d) => d.id), 0) + 1;
