@@ -1,51 +1,37 @@
-import axiosClient from './axiosClient';
+import axiosClient, { isMockMode } from './axiosClient';
+import { departments, employees } from './hrmData';
 
-const USE_MOCK = true;
+const USE_MOCK = isMockMode;
+const delay = (ms = 300) => new Promise((res) => setTimeout(res, ms));
+let mockDepartments = departments.map((d) => ({ ...d }));
+let nextDeptId = Math.max(...mockDepartments.map((d) => d.id), 0) + 1;
 
-// ============================================================
-// Mock data ánh xạ từ HRM.sql – bảng departments
-// ============================================================
-
-let mockDepartments = [
-  {
-    id: 1, name: 'Ban Giám Đốc',
-    code: 'BOD',
-    manager_id: 1, managerName: 'Nguyễn Văn A',
-    status: 1,
-    description: 'Điều hành và định hướng chiến lược công ty',
-    employeeCount: 1,
-    createdAt: '2020-01-01',
-  },
-  {
-    id: 2, name: 'Phòng Nhân Sự',
-    code: 'HR',
-    manager_id: 2, managerName: 'Trần Thị B',
-    status: 1,
-    description: 'Quản lý nguồn nhân lực, tuyển dụng và phúc lợi',
-    employeeCount: 2,
-    createdAt: '2021-03-15',
-  },
-  {
-    id: 3, name: 'Phòng Công Nghệ Thông Tin',
-    code: 'IT',
-    manager_id: 3, managerName: 'Lê Văn C',
-    status: 1,
-    description: 'Phát triển phần mềm và hạ tầng công nghệ',
-    employeeCount: 3,
-    createdAt: '2021-06-01',
-  },
-];
-
-let nextDeptId = 4;
-const delay = (ms = 400) => new Promise((res) => setTimeout(res, ms));
+const toUiDepartment = (dept) => {
+  const manager = employees.find((e) => e.id === dept.manager_id);
+  const employeeCount = employees.filter((e) => e.department_id === dept.id).length;
+  return {
+    ...dept,
+    managerId: dept.manager_id || '',
+    managerName: manager?.full_name || 'Chua co',
+    employeeCount,
+    code: dept.name
+      .split(' ')
+      .map((w) => w[0] || '')
+      .join('')
+      .toUpperCase(),
+    description: dept.description || '',
+  };
+};
 
 export const departmentService = {
   getAll: async () => {
     if (USE_MOCK) {
       await delay();
-      return mockDepartments;
+      return mockDepartments.map(toUiDepartment);
     }
-    return axiosClient.get('/departments');
+    const res = await axiosClient.get('/departments');
+    const list = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+    return list.map(toUiDepartment);
   },
 
   getById: async (id) => {
@@ -53,36 +39,48 @@ export const departmentService = {
       await delay(200);
       const dept = mockDepartments.find((d) => d.id === id);
       if (!dept) throw new Error('Không tìm thấy phòng ban');
-      return dept;
+      return toUiDepartment(dept);
     }
-    return axiosClient.get(`/departments/${id}`);
+    const res = await axiosClient.get(`/departments/${id}`);
+    return toUiDepartment(res?.data || res);
   },
 
   create: async (data) => {
+    const payload = {
+      name: data.name,
+      manager_id: data.manager_id ? Number(data.manager_id) : null,
+      status: Number(data.status || 1),
+      description: data.description || '',
+    };
     if (USE_MOCK) {
       await delay();
       const newDept = {
-        ...data,
         id: nextDeptId++,
-        employeeCount: 0,
-        status: 1,
-        createdAt: new Date().toISOString().split('T')[0],
+        ...payload,
       };
       mockDepartments.push(newDept);
-      return newDept;
+      return toUiDepartment(newDept);
     }
-    return axiosClient.post('/departments', data);
+    const res = await axiosClient.post('/departments', payload);
+    return toUiDepartment(res?.data || res);
   },
 
   update: async (id, data) => {
+    const payload = {
+      name: data.name,
+      manager_id: data.manager_id ? Number(data.manager_id) : null,
+      status: Number(data.status || 1),
+      description: data.description || '',
+    };
     if (USE_MOCK) {
       await delay();
       const idx = mockDepartments.findIndex((d) => d.id === id);
       if (idx === -1) throw new Error('Không tìm thấy phòng ban');
-      mockDepartments[idx] = { ...mockDepartments[idx], ...data };
-      return mockDepartments[idx];
+      mockDepartments[idx] = { ...mockDepartments[idx], ...payload };
+      return toUiDepartment(mockDepartments[idx]);
     }
-    return axiosClient.put(`/departments/${id}`, data);
+    const res = await axiosClient.put(`/departments/${id}`, payload);
+    return toUiDepartment(res?.data || res);
   },
 
   delete: async (id) => {

@@ -1,245 +1,187 @@
-import axiosClient from './axiosClient';
+import axiosClient, { isMockMode } from './axiosClient';
+import { departments, employees, leaveRequests, positions } from './hrmData';
 
-const USE_MOCK = true;
+const USE_MOCK = isMockMode;
+const delay = (ms = 300) => new Promise((res) => setTimeout(res, ms));
 
-// ============================================================
-// Mock data ánh xạ từ HRM.sql (hrm_system database)
-// Positions: id 1-6, Departments: id 1-3, Employees: id 1-6
-// ============================================================
+let mockEmployees = [...employees];
+let nextEmpId = Math.max(...mockEmployees.map((e) => e.id), 0) + 1;
 
-// ── Positions (Chức vụ) ─────────────────────────────────────
-export const mockPositions = [
-  { id: 1, title: 'Giám đốc',               base_salary: 50000000 },
-  { id: 2, title: 'Trưởng phòng HR',        base_salary: 30000000 },
-  { id: 3, title: 'Trưởng phòng IT',        base_salary: 35000000 },
-  { id: 4, title: 'Chuyên viên HR',         base_salary: 15000000 },
-  { id: 5, title: 'Lập trình viên Backend', base_salary: 20000000 },
-  { id: 6, title: 'Lập trình viên Frontend',base_salary: 20000000 },
-];
+const getDepartmentName = (departmentId) =>
+  departments.find((d) => d.id === Number(departmentId))?.name || '';
 
-// ── Departments (insert trước, manager cập nhật sau) ────────
-let mockDepartments = [
-  {
-    id: 1, name: 'Ban Giám Đốc',              manager_id: 1,
-    managerName: 'Nguyễn Văn A', status: 1,
-    description: 'Điều hành và định hướng chiến lược công ty',
-    employeeCount: 1,
-  },
-  {
-    id: 2, name: 'Phòng Nhân Sự',             manager_id: 2,
-    managerName: 'Trần Thị B',   status: 1,
-    description: 'Quản lý nguồn nhân lực, tuyển dụng và phúc lợi',
-    employeeCount: 2,
-  },
-  {
-    id: 3, name: 'Phòng Công Nghệ Thông Tin', manager_id: 3,
-    managerName: 'Lê Văn C',     status: 1,
-    description: 'Phát triển phần mềm và hạ tầng công nghệ',
-    employeeCount: 3,
-  },
-];
+const getPosition = (positionId) =>
+  positions.find((p) => p.id === Number(positionId)) || null;
 
-// ── Employees (từ INSERT INTO employees) ────────────────────
-// status: 'Active' | 'Resigned'  (theo ENUM trong SQL)
-// emp_code: BOD001, HR001, IT001, v.v.
-let mockEmployees = [
-  {
-    id: 1, emp_code: 'BOD001', fullName: 'Nguyễn Văn A',
-    email: 'nva@company.com',
-    department_id: 1, departmentName: 'Ban Giám Đốc',
-    position_id: 1, position: 'Giám đốc', base_salary: 50000000,
-    hire_date: '2020-01-01', status: 'Active',
-    gender: 'male', avatar: 'NA',
-  },
-  {
-    id: 2, emp_code: 'HR001', fullName: 'Trần Thị B',
-    email: 'ttb@company.com',
-    department_id: 2, departmentName: 'Phòng Nhân Sự',
-    position_id: 2, position: 'Trưởng phòng HR', base_salary: 30000000,
-    hire_date: '2021-03-15', status: 'Active',
-    gender: 'female', avatar: 'TB',
-  },
-  {
-    id: 3, emp_code: 'IT001', fullName: 'Lê Văn C',
-    email: 'lvc@company.com',
-    department_id: 3, departmentName: 'Phòng Công Nghệ Thông Tin',
-    position_id: 3, position: 'Trưởng phòng IT', base_salary: 35000000,
-    hire_date: '2021-06-01', status: 'Active',
-    gender: 'male', avatar: 'LC',
-  },
-  {
-    id: 4, emp_code: 'HR002', fullName: 'Phạm Thị D',
-    email: 'ptd@company.com',
-    department_id: 2, departmentName: 'Phòng Nhân Sự',
-    position_id: 4, position: 'Chuyên viên HR', base_salary: 15000000,
-    hire_date: '2022-08-10', status: 'Active',
-    gender: 'female', avatar: 'PD',
-  },
-  {
-    id: 5, emp_code: 'IT002', fullName: 'Hoàng Văn E',
-    email: 'hve@company.com',
-    department_id: 3, departmentName: 'Phòng Công Nghệ Thông Tin',
-    position_id: 5, position: 'Lập trình viên Backend', base_salary: 20000000,
-    hire_date: '2023-02-20', status: 'Active',
-    gender: 'male', avatar: 'HE',
-  },
-  {
-    id: 6, emp_code: 'IT003', fullName: 'Ngô Thị F',
-    email: 'ntf@company.com',
-    department_id: 3, departmentName: 'Phòng Công Nghệ Thông Tin',
-    position_id: 6, position: 'Lập trình viên Frontend', base_salary: 20000000,
-    hire_date: '2023-05-12', status: 'Active',  // Đang nghỉ ốm theo leave_requests nhưng status vẫn Active
-    gender: 'female', avatar: 'NF',
-  },
-];
+const makeAvatar = (fullName = '') =>
+  fullName
+    .split(' ')
+    .filter(Boolean)
+    .slice(-2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase();
 
-let nextEmpId = 7;
-const delay = (ms = 400) => new Promise((res) => setTimeout(res, ms));
+const toUiEmployee = (emp) => {
+  const pos = getPosition(emp.position_id);
+  return {
+    ...emp,
+    fullName: emp.full_name,
+    departmentName: getDepartmentName(emp.department_id),
+    position: pos?.title || '',
+    base_salary: pos?.base_salary || 0,
+    avatar: makeAvatar(emp.full_name),
+  };
+};
 
-// ============================================================
-// Employee Service
-// ============================================================
+const toApiPayload = (data) => ({
+  full_name: data.full_name || data.fullName,
+  email: data.email,
+  department_id: Number(data.department_id),
+  position_id: Number(data.position_id),
+  hire_date: data.hire_date,
+  status: data.status || 'Active',
+  gender: data.gender || 'male',
+});
+
+export const mockPositions = positions;
+
 export const employeeService = {
   getAll: async (params = {}) => {
     if (USE_MOCK) {
       await delay();
       let data = [...mockEmployees];
-
       if (params.search) {
         const q = params.search.toLowerCase();
         data = data.filter(
           (e) =>
-            e.fullName.toLowerCase().includes(q) ||
+            e.full_name.toLowerCase().includes(q) ||
             e.emp_code.toLowerCase().includes(q) ||
             e.email.toLowerCase().includes(q)
         );
       }
-      if (params.departmentId) {
-        data = data.filter((e) => e.department_id === Number(params.departmentId));
-      }
-      if (params.status) {
-        data = data.filter((e) => e.status === params.status);
-      }
+      if (params.departmentId) data = data.filter((e) => e.department_id === Number(params.departmentId));
+      if (params.status) data = data.filter((e) => e.status === params.status);
 
-      const page  = params.page  || 1;
-      const limit = params.limit || 8;
-      const total      = data.length;
-      const totalPages = Math.ceil(total / limit) || 1;
+      const page = Number(params.page) || 1;
+      const limit = Number(params.limit) || 8;
+      const total = data.length;
+      const totalPages = Math.max(1, Math.ceil(total / limit));
       const start = (page - 1) * limit;
-      const items = data.slice(start, start + limit);
-
-      return { data: items, total, page, totalPages };
+      return {
+        data: data.slice(start, start + limit).map(toUiEmployee),
+        total,
+        page,
+        totalPages,
+      };
     }
-    return axiosClient.get('/employees', { params });
+    const res = await axiosClient.get('/employees', { params });
+    const list = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+    return {
+      data: list.map(toUiEmployee),
+      total: res?.total || list.length,
+      page: res?.page || 1,
+      totalPages: res?.totalPages || 1,
+    };
   },
 
   getById: async (id) => {
     if (USE_MOCK) {
-      await delay(200);
-      const emp = mockEmployees.find((e) => e.id === id);
-      if (!emp) throw new Error('Không tìm thấy nhân viên');
-      return emp;
+      await delay(150);
+      const emp = mockEmployees.find((e) => e.id === Number(id));
+      if (!emp) throw new Error('Khong tim thay nhan vien');
+      return toUiEmployee(emp);
     }
-    return axiosClient.get(`/employees/${id}`);
+    const res = await axiosClient.get(`/employees/${id}`);
+    return toUiEmployee(res?.data || res);
   },
 
   create: async (data) => {
+    const payload = toApiPayload(data);
     if (USE_MOCK) {
       await delay();
-      const pos = mockPositions.find((p) => p.id === Number(data.position_id));
-      const dept = mockDepartments.find((d) => d.id === Number(data.department_id));
-      const initials = data.fullName.split(' ').slice(-2).map((w) => w[0]).join('').toUpperCase();
       const newEmp = {
-        ...data,
         id: nextEmpId++,
         emp_code: `EMP${String(nextEmpId - 1).padStart(3, '0')}`,
-        departmentName: dept?.name || '',
-        position: pos?.title || data.position || '',
-        base_salary: pos?.base_salary || 0,
-        avatar: initials,
+        ...payload,
       };
       mockEmployees.unshift(newEmp);
-      // Update employeeCount
-      if (dept) dept.employeeCount = (dept.employeeCount || 0) + 1;
-      return newEmp;
+      return toUiEmployee(newEmp);
     }
-    return axiosClient.post('/employees', data);
+    const res = await axiosClient.post('/employees', payload);
+    return toUiEmployee(res?.data || res);
   },
 
   update: async (id, data) => {
+    const payload = toApiPayload(data);
     if (USE_MOCK) {
       await delay();
-      const idx = mockEmployees.findIndex((e) => e.id === id);
-      if (idx === -1) throw new Error('Không tìm thấy nhân viên');
-      const pos  = mockPositions.find((p) => p.id === Number(data.position_id));
-      const dept = mockDepartments.find((d) => d.id === Number(data.department_id));
-      mockEmployees[idx] = {
-        ...mockEmployees[idx], ...data,
-        departmentName: dept?.name || mockEmployees[idx].departmentName,
-        position: pos?.title || data.position || mockEmployees[idx].position,
-        base_salary: pos?.base_salary ?? mockEmployees[idx].base_salary,
-      };
-      return mockEmployees[idx];
+      const idx = mockEmployees.findIndex((e) => e.id === Number(id));
+      if (idx === -1) throw new Error('Khong tim thay nhan vien');
+      mockEmployees[idx] = { ...mockEmployees[idx], ...payload };
+      return toUiEmployee(mockEmployees[idx]);
     }
-    return axiosClient.put(`/employees/${id}`, data);
+    const res = await axiosClient.put(`/employees/${id}`, payload);
+    return toUiEmployee(res?.data || res);
   },
 
   delete: async (id) => {
     if (USE_MOCK) {
-      await delay(300);
-      mockEmployees = mockEmployees.filter((e) => e.id !== id);
+      await delay(200);
+      mockEmployees = mockEmployees.filter((e) => e.id !== Number(id));
       return { success: true };
     }
     return axiosClient.delete(`/employees/${id}`);
   },
 
-  // Stats cho Dashboard
   getStats: async () => {
     if (USE_MOCK) {
-      await delay(300);
-      const total   = mockEmployees.length;
-      const active  = mockEmployees.filter((e) => e.status === 'Active').length;
-      const resigned= mockEmployees.filter((e) => e.status === 'Resigned').length;
-
+      await delay(200);
+      const total = mockEmployees.length;
+      const active = mockEmployees.filter((e) => e.status === 'Active').length;
+      const resigned = mockEmployees.filter((e) => e.status === 'Resigned').length;
+      const newThisMonth = mockEmployees.filter((e) => e.hire_date >= '2024-03-01').length;
       return {
         total,
         active,
         resigned,
-        newThisMonth: 1,       // Ngô Thị F hire_date 2023-05-12 (seed)
-        retentionRate: ((active / total) * 100).toFixed(1),
-        byDepartment: mockDepartments.map((d) => ({
-          name: d.name.replace('Phòng ', '').replace('Ban ', ''),
+        newThisMonth,
+        retentionRate: total ? ((active / total) * 100).toFixed(1) : '0.0',
+        byDepartment: departments.map((d) => ({
+          name: d.name,
           count: mockEmployees.filter((e) => e.department_id === d.id).length,
         })),
         byGender: [
           { name: 'Nam', value: mockEmployees.filter((e) => e.gender === 'male').length },
-          { name: 'Nữ', value: mockEmployees.filter((e) => e.gender === 'female').length },
+          { name: 'Nu', value: mockEmployees.filter((e) => e.gender === 'female').length },
         ],
-        // Recruitment trend - Last 6 months
         recruitmentTrend: [
-          { month: 'Tháng 1', count: 4 },
-          { month: 'Tháng 2', count: 7 },
-          { month: 'Tháng 3', count: 5 },
-          { month: 'Tháng 4', count: 8 },
-          { month: 'Tháng 5', count: 12 },
-          { month: 'Tháng 6', count: 9 },
+          { month: '2024-01', count: 2 },
+          { month: '2024-02', count: 1 },
+          { month: '2024-03', count: 3 },
+          { month: '2024-04', count: 2 },
+          { month: '2024-05', count: 1 },
+          { month: '2024-06', count: 2 },
         ],
-        // Salary ranges
-        bySalary: mockPositions.map((p) => ({
+        bySalary: positions.map((p) => ({
           title: p.title,
           salary: p.base_salary,
           count: mockEmployees.filter((e) => e.position_id === p.id).length,
         })),
+        leaveSummary: {
+          pending: leaveRequests.filter((l) => l.status === 'Pending').length,
+          approved: leaveRequests.filter((l) => l.status === 'Approved').length,
+          rejected: leaveRequests.filter((l) => l.status === 'Rejected').length,
+        },
       };
     }
     return axiosClient.get('/employees/stats');
   },
 
-  // Lấy danh sách positions
   getPositions: async () => {
     if (USE_MOCK) {
-      await delay(200);
-      return mockPositions;
+      await delay(120);
+      return positions;
     }
     return axiosClient.get('/positions');
   },

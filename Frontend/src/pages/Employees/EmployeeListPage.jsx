@@ -44,7 +44,7 @@ function EmployeeListPage() {
     openConfirm({
       title: 'Xóa nhân viên',
       // Dùng emp_code từ HRM.sql
-      message: `Bạn có chắc muốn xóa nhân viên "${emp.fullName}" (${emp.emp_code})? Hành động này không thể hoàn tác.`,
+      message: `Bạn có chắc muốn xóa nhân viên "${emp.full_name || emp.fullName}" (${emp.emp_code})? Hành động này không thể hoàn tác.`,
       onConfirm: () => deleteEmployee(emp.id),
     });
   };
@@ -59,7 +59,7 @@ function EmployeeListPage() {
   // Table columns – ánh xạ từ HRM.sql fields
   const columns = [
     {
-      key: 'fullName', title: 'Nhân viên', width: 220,
+      key: 'full_name', title: 'Nhân viên', width: 220,
       render: (val, row) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{

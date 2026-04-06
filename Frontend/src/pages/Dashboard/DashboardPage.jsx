@@ -386,10 +386,10 @@ function DashboardPage() {
                               background: 'var(--brand-gradient)', display: 'flex', alignItems: 'center', 
                               justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#fff' 
                             }}>
-                              {emp.fullName?.charAt(0)}
+                              {(emp.full_name || emp.fullName)?.charAt(0)}
                             </div>
                             <div>
-                              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{emp.fullName}</p>
+                              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{emp.full_name || emp.fullName}</p>
                               <p style={{ fontSize: 10, color: 'var(--text-muted)' }}>{emp.emp_code}</p>
                             </div>
                           </div>

@@ -1,14 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CalendarDays, CheckCircle, Clock, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-const initialMockAttendance = [
-  { date: '2025-12-01', checkIn: '08:30', checkOut: '17:45', status: 'present' },
-  { date: '2025-12-02', checkIn: '09:15', checkOut: '17:33', status: 'late' },
-  { date: '2025-12-03', checkIn: null, checkOut: null, status: 'absent' },
-  { date: '2025-12-04', checkIn: '08:05', checkOut: '17:40', status: 'present' },
-  { date: '2025-12-05', checkIn: '08:20', checkOut: '17:30', status: 'present' },
-];
+import attendanceService from '../../api/attendanceService';
 
 function formatDateKey(date) {
   return date.toISOString().split('T')[0];
@@ -37,19 +30,22 @@ function AttendancePage() {
   const [loading, setLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [attendance, setAttendance] = useState([]);
-  const [todayRecord, setTodayRecord] = useState({ checkIn: null, checkOut: null, status: 'absent' });
+  const [todayRecord, setTodayRecord] = useState({ checkIn: null, checkOut: null, status: 'Absent' });
   const [clock, setClock] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setAttendance(initialMockAttendance);
-      const todayKey = formatDateKey(new Date());
-      const today = initialMockAttendance.find((item) => item.date === todayKey);
-      setTodayRecord(today ?? { date: todayKey, checkIn: null, checkOut: null, status: 'absent' });
-      setLoading(false);
-    }, 700);
-
+      const load = async () => {
+        const rows = await attendanceService.getAll();
+        setAttendance(rows);
+        const todayKey = formatDateKey(new Date());
+        const today = rows.find((item) => item.date === todayKey);
+        setTodayRecord(today ?? { date: todayKey, checkIn: null, checkOut: null, status: 'Absent' });
+        setLoading(false);
+      };
+      load();
+    }, 200);
     return () => clearTimeout(timer);
   }, []);
 
@@ -67,30 +63,21 @@ function AttendancePage() {
     }
   }, [recordInList]);
 
-  const isCheckedIn = Boolean(todayRecord.checkIn);
+  const isCheckedIn = Boolean(todayRecord.checkIn || todayRecord.check_in);
   const isCheckedOut = Boolean(todayRecord.checkOut);
 
   const handleCheckIn = () => {
     if (isCheckedIn) return;
 
-    const now = new Date();
-    const checkInTime = formatTime(now);
-    const status = now.getHours() >= 9 ? 'late' : 'present';
-
     setLoading(true);
-    setTimeout(() => {
-      const updatedToday = {
-        ...todayRecord,
-        date: todaysKey,
-        checkIn: checkInTime,
-        status,
-      };
+    setTimeout(async () => {
+      const updatedToday = await attendanceService.checkIn(6, todaysKey);
       setTodayRecord(updatedToday);
       setAttendance((prev) => {
         const base = prev.filter((item) => item.date !== todaysKey);
         return [updatedToday, ...base];
       });
-      toast.success(`Check-in thành công lúc ${checkInTime}`);
+      toast.success(`Check-in thanh cong luc ${updatedToday.checkIn}`);
       setLoading(false);
     }, 700);
   };
@@ -98,23 +85,15 @@ function AttendancePage() {
   const handleCheckOut = () => {
     if (!isCheckedIn || isCheckedOut) return;
 
-    const now = new Date();
-    const checkOutTime = formatTime(now);
-
     setLoading(true);
-    setTimeout(() => {
-      const updatedToday = {
-        ...todayRecord,
-        date: todaysKey,
-        checkOut: checkOutTime,
-      };
-
+    setTimeout(async () => {
+      const updatedToday = await attendanceService.checkOut(6, todaysKey);
       setTodayRecord(updatedToday);
       setAttendance((prev) => {
         const base = prev.filter((item) => item.date !== todaysKey);
         return [updatedToday, ...base];
       });
-      toast.success(`Check-out thành công lúc ${checkOutTime}`);
+      toast.success(`Check-out thanh cong luc ${updatedToday.checkOut}`);
       setLoading(false);
     }, 700);
   };
@@ -154,8 +133,8 @@ function AttendancePage() {
 
               <div className="mb-3">
                 <strong>Trạng thái:</strong>{' '}
-                <span className={`badge ${todayRecord.status === 'present' ? 'bg-success' : todayRecord.status === 'late' ? 'bg-warning' : 'bg-danger'}`}>
-                  {todayRecord.status === 'present' ? 'Đi làm' : todayRecord.status === 'late' ? 'Đi trễ' : 'Vắng'}
+                <span className={`badge ${todayRecord.status === 'Present' ? 'bg-success' : todayRecord.status === 'Late' ? 'bg-warning' : 'bg-danger'}`}>
+                  {todayRecord.status === 'Present' ? 'Di lam' : todayRecord.status === 'Late' ? 'Di tre' : 'Vang'}
                 </span>
               </div>
 
@@ -217,7 +196,7 @@ function AttendancePage() {
                 {monthDays.map((day) => {
                   const key = formatDateKey(day);
                   const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
-                  const dayData = attendance.find((item) => item.date === key) ?? { status: 'absent', checkIn: null, checkOut: null };
+                  const dayData = attendance.find((item) => item.date === key) ?? { status: 'Absent', checkIn: null, checkOut: null };
                   const today = formatDateKey(new Date()) === key;
 
                   return (
@@ -231,9 +210,9 @@ function AttendancePage() {
                         <div className="d-flex justify-content-between align-items-start mb-1">
                           <span>{day.getDate()}</span>
                           <span
-                            className={`badge ${dayData.status === 'present' ? 'bg-success' : dayData.status === 'late' ? 'bg-warning text-dark' : 'bg-danger'}`}
+                            className={`badge ${dayData.status === 'Present' ? 'bg-success' : dayData.status === 'Late' ? 'bg-warning text-dark' : 'bg-danger'}`}
                           >
-                            {dayData.status === 'present' ? 'P' : dayData.status === 'late' ? 'L' : 'A'}
+                            {dayData.status === 'Present' ? 'P' : dayData.status === 'Late' ? 'L' : 'A'}
                           </span>
                         </div>
                       </button>
@@ -255,7 +234,7 @@ function AttendancePage() {
                 <button type="button" className="btn-close" onClick={() => setSelectedDate(null)}></button>
               </div>
               <div className="modal-body">
-                <p><strong>Trạng thái:</strong> {selectedDetail ? (selectedDetail.status === 'present' ? 'Đi làm' : selectedDetail.status === 'late' ? 'Đi trễ' : 'Vắng') : 'Vắng'}</p>
+                <p><strong>Trang thai:</strong> {selectedDetail ? (selectedDetail.status === 'Present' ? 'Di lam' : selectedDetail.status === 'Late' ? 'Di tre' : 'Vang') : 'Vang'}</p>
                 <p><strong>Check-in:</strong> {selectedDetail?.checkIn ?? 'Chưa có'}</p>
                 <p><strong>Check-out:</strong> {selectedDetail?.checkOut ?? 'Chưa có'}</p>
               </div>
