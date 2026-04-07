@@ -43,7 +43,7 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
   useEffect(() => {
     if (employee) {
       reset({
-        fullName:      employee.fullName,
+        full_name:     employee.full_name || employee.fullName,
         email:         employee.email,
         gender:        employee.gender || 'male',
         department_id: employee.department_id,
@@ -54,7 +54,7 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
       setSelectedPosition(mockPositions.find((p) => p.id === employee.position_id) || null);
     } else {
       reset({
-        fullName: '', email: '', gender: 'male',
+        full_name: '', email: '', gender: 'male',
         department_id: '', position_id: '', hire_date: '', status: 'Active',
       });
       setSelectedPosition(null);
@@ -84,7 +84,7 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
   const isEdit = !!employee;
   const title    = isEdit ? 'Chỉnh sửa nhân viên' : 'Thêm nhân viên mới';
   const subtitle = isEdit
-    ? `Cập nhật thông tin cho ${employee.fullName} (${employee.emp_code})`
+    ? `Cập nhật thông tin cho ${employee.full_name || employee.fullName} (${employee.emp_code})`
     : 'Điền đầy đủ thông tin nhân viên mới';
 
   return (
@@ -118,8 +118,8 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
               icon={User}
               required
               placeholder="Nguyễn Văn A"
-              error={errors.fullName?.message}
-              {...register('fullName', {
+              error={errors.full_name?.message}
+              {...register('full_name', {
                 required: 'Vui lòng nhập họ tên',
                 minLength: { value: 2, message: 'Ít nhất 2 ký tự' },
               })}

@@ -16,11 +16,11 @@ const pool = mysql.createPool({
 // Test connection
 pool.getConnection()
     .then(conn => {
-        console.log('✅ Database connection established successfully.');
+        console.log(' Database connection established successfully.');
         conn.release();
     })
     .catch(err => {
-        console.error('❌ Database connection failed:', err.message);
+        console.error(' Database connection failed:', err.message);
     });
 
 module.exports = pool;
