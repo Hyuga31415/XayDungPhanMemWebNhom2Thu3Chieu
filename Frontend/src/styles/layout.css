@@ -639,16 +639,37 @@
 .leave-requests-page .alert,
 .leave-requests-page .card,
 .leave-requests-page .table,
-.leave-requests-page .list-group-item {
+.leave-requests-page .list-group-item,
+.leave-requests-page .list-group-item-action {
   color: #f8fafc;
 }
 
-.leave-requests-page .list-group-item {
-  background: var(--bg-elevated);
-  border-color: var(--border-normal);
+.leave-requests-page .list-group-item,
+.leave-requests-page .list-group-item-action {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  cursor: default !important;
 }
 
-.leave-requests-page .list-group-item-action {
+.leave-requests-page .list-group-item-action:hover,
+.leave-requests-page .list-group-item-action:focus,
+.leave-requests-page .list-group-item-action:focus-visible,
+.leave-requests-page .list-group-item-action:active {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+  cursor: default !important;
+}
+
+.leave-requests-page .list-group-item h6,
+.leave-requests-page .list-group-item p,
+.leave-requests-page .list-group-item small,
+.leave-requests-page .list-group-item-action h6,
+.leave-requests-page .list-group-item-action p,
+.leave-requests-page .list-group-item-action small {
   color: #f8fafc;
 }
 
