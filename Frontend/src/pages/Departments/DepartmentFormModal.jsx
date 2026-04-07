@@ -18,10 +18,11 @@ function DepartmentFormModal({ isOpen, onClose, onSubmit, department, isSubmitti
         name: department.name,
         code: department.code,
         description: department.description,
-        managerId: department.managerId || '',
+        manager_id: department.manager_id || department.managerId || '',
+        status: department.status ?? 1,
       });
     } else {
-      reset({ name: '', code: '', description: '', managerId: '' });
+      reset({ name: '', code: '', description: '', manager_id: '', status: 1 });
     }
   }, [department, isOpen]);
 
@@ -66,12 +67,16 @@ function DepartmentFormModal({ isOpen, onClose, onSubmit, department, isSubmitti
           />
           <Select
             label="Trưởng phòng"
-            {...register('managerId')}
+            {...register('manager_id')}
           >
             <option value="">-- Chưa có --</option>
             {(managers || []).map((m) => (
-              <option key={m.id} value={m.id}>{m.fullName}</option>
+              <option key={m.id} value={m.id}>{m.full_name || m.fullName}</option>
             ))}
+          </Select>
+          <Select label="Trang thai" {...register('status')}>
+            <option value={1}>Dang hoat dong</option>
+            <option value={0}>Ngung hoat dong</option>
           </Select>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <label style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-secondary)' }}>
@@ -91,7 +96,7 @@ function DepartmentFormModal({ isOpen, onClose, onSubmit, department, isSubmitti
                 outline: 'none', resize: 'vertical',
                 transition: 'border-color var(--transition-fast)',
               }}
-              onFocus={(e) => { e.target.style.borderColor = 'var(--border-focus)'; e.target.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.12)'; }}
+              onFocus={(e) => { e.target.style.borderColor = 'var(--border-focus)'; e.target.style.boxShadow = '0 0 0 3px #6366f11f'; }}
               onBlur={(e) => { e.target.style.borderColor = 'var(--border-normal)'; e.target.style.boxShadow = ''; }}
               {...register('description')}
             />

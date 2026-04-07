@@ -43,7 +43,7 @@ function DepartmentCard({ dept, index, onEdit, onDelete }) {
           <div style={{
             width: 44, height: 44, borderRadius: 'var(--radius-lg)',
             background: gradient, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: `0 4px 16px rgba(0,0,0,0.3)`,
+            boxShadow: `0 4px 16px #0000004d`,
           }}>
             <Building2 size={20} color="white" />
           </div>
@@ -82,7 +82,7 @@ function DepartmentCard({ dept, index, onEdit, onDelete }) {
       {/* Stats */}
       <div style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 'var(--radius-md)', background: 'rgba(99,102,241,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 28, height: 28, borderRadius: 'var(--radius-md)', background: '#6366f11f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Users size={13} color="var(--brand-primary)" />
           </div>
           <div>
@@ -134,13 +134,16 @@ function DepartmentCard({ dept, index, onEdit, onDelete }) {
 
 function DepartmentListPage() {
   const { departments, isLoading, isSubmitting, fetchDepartments, createDepartment, updateDepartment, deleteDepartment } = useDepartmentStore();
-  const { employees } = useEmployeeStore();
+  const { employees, fetchEmployees } = useEmployeeStore();
   const { openConfirm } = useUIStore();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingDept, setEditingDept] = useState(null);
 
-  useEffect(() => { fetchDepartments(); }, []);
+  useEffect(() => {
+    fetchDepartments();
+    fetchEmployees();
+  }, []);
 
   const openAdd = () => { setEditingDept(null); setModalOpen(true); };
   const openEdit = (dept) => { setEditingDept(dept); setModalOpen(true); };
@@ -165,7 +168,7 @@ function DepartmentListPage() {
       {/* Page Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, #06b6d4, #3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 16px rgba(6,182,212,0.3)' }}>
+          <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: '#06b6d4', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 16px #06b6d44d' }}>
             <Building2 size={18} color="white" />
           </div>
           <div>
@@ -175,7 +178,7 @@ function DepartmentListPage() {
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
           <Button variant="secondary" icon={RefreshCw} onClick={fetchDepartments} size="sm">Làm mới</Button>
-          <Button icon={Plus} onClick={openAdd} style={{ background: 'linear-gradient(135deg, #06b6d4, #3b82f6)', boxShadow: '0 4px 16px rgba(6,182,212,0.3)' }}>
+          <Button icon={Plus} onClick={openAdd} style={{ background: '#06b6d4', boxShadow: '0 4px 16px #06b6d44d' }}>
             Thêm phòng ban
           </Button>
         </div>
@@ -185,7 +188,7 @@ function DepartmentListPage() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--space-4)' }}>
         {[
           { label: 'Tổng phòng ban', value: departments.length, color: 'var(--brand-primary)' },
-          { label: 'Tổng nhân viên', value: departments.reduce((s, d) => s + d.employeeCount, 0), color: 'var(--color-success)' },
+          { label: 'Tổng nhân viên', value: departments.reduce((s, d) => s + (d.employeeCount || 0), 0), color: 'var(--color-success)' },
           { label: 'Phòng lớn nhất', value: Math.max(...departments.map((d) => d.employeeCount), 0), color: 'var(--color-warning)' },
         ].map((item) => (
           <div key={item.label} className="glass-card" style={{ padding: 'var(--space-4)', textAlign: 'center' }}>

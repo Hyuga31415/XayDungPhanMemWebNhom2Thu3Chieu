@@ -44,7 +44,7 @@ function EmployeeListPage() {
     openConfirm({
       title: 'Xóa nhân viên',
       // Dùng emp_code từ HRM.sql
-      message: `Bạn có chắc muốn xóa nhân viên "${emp.fullName}" (${emp.emp_code})? Hành động này không thể hoàn tác.`,
+      message: `Bạn có chắc muốn xóa nhân viên "${emp.full_name || emp.fullName}" (${emp.emp_code})? Hành động này không thể hoàn tác.`,
       onConfirm: () => deleteEmployee(emp.id),
     });
   };
@@ -59,7 +59,7 @@ function EmployeeListPage() {
   // Table columns – ánh xạ từ HRM.sql fields
   const columns = [
     {
-      key: 'fullName', title: 'Nhân viên', width: 220,
+      key: 'full_name', title: 'Nhân viên', width: 220,
       render: (val, row) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{
@@ -82,8 +82,13 @@ function EmployeeListPage() {
       render: (val) => <span style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>{val}</span>,
     },
     {
-      // hire_date trong SQL (không phải joinDate)
       key: 'hire_date', title: 'Ngày vào làm', width: 120,
+      render: (val) => {
+        if (!val) return '';
+        const date = new Date(val);
+        // toLocaleDateString('vi-VN') sẽ tự động xuất ra định dạng dd/mm/yyyy
+        return <span style={{ fontSize: 'var(--font-size-sm)' }}>{date.toLocaleDateString('vi-VN')}</span>;
+      }
     },
     {
       // status ENUM('Active', 'Resigned') từ HRM.sql
@@ -101,7 +106,7 @@ function EmployeeListPage() {
             onClick={() => openEdit(row)}
             style={{ width: 30, height: 30, borderRadius: 'var(--radius-md)', background: 'var(--bg-glass)', border: '1px solid var(--border-subtle)', color: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all var(--transition-fast)' }}
             title="Chỉnh sửa"
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(99,102,241,0.15)'; }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#6366f126'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-glass)'; }}
           >
             <Pencil size={13} />

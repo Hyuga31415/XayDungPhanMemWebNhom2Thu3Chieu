@@ -1,129 +1,150 @@
 import { useEffect, useState } from 'react';
 
 const UserList = () => {
-    const [users, setUsers] = useState([]);
-    const [newUserName, setNewUserName] = useState('');
-    const [editingUser, setEditingUser] = useState(null); // Lưu user đang được sửa { id, name }
-    const API_URL = import.meta.env.VITE_API_URL + '/users';
+  const [users, setUsers] = useState([]);
+  const [newUserName, setNewUserName] = useState('');
+  const [editingUser, setEditingUser] = useState(null);
+  const API_URL = import.meta.env.VITE_API_URL + '/users';
 
-    // Lấy danh sách users ban đầu
-    useEffect(() => {
-        fetch(API_URL)
-            .then(res => res.json())
-            .then(data => setUsers(data))
-            .catch(err => console.log("Lỗi khi fetch users:", err));
-    }, [API_URL]);
+  useEffect(() => {
+    fetch(API_URL)
+      .then((res) => res.json())
+      .then((data) => setUsers(data))
+      .catch((err) => console.log('Lỗi khi fetch users:', err));
+  }, [API_URL]);
 
-    // Xử lý thêm user
-    const handleAddUser = (e) => {
-        e.preventDefault();
-        if (!newUserName.trim()) return;
+  const handleAddUser = (e) => {
+    e.preventDefault();
+    if (!newUserName.trim()) return;
 
-        fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: newUserName }),
-        })
-        .then(res => res.json())
-        .then(newUser => {
-            setUsers([...users, newUser]);
-            setNewUserName(''); // Reset input
-        })
-        .catch(err => console.log("Lỗi khi thêm user:", err));
-    };
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: newUserName }),
+    })
+      .then((res) => res.json())
+      .then((newUser) => {
+        setUsers([...users, newUser]);
+        setNewUserName('');
+      })
+      .catch((err) => console.log('Lỗi khi thêm user:', err));
+  };
 
-    // Xử lý xóa user
-    const handleDeleteUser = (id) => {
-        if (!window.confirm("Bạn có chắc muốn xóa user này?")) return;
+  const handleDeleteUser = (id) => {
+    if (!window.confirm('Bạn có chắc muốn xóa user này?')) return;
 
-        fetch(`${API_URL}/${id}`, { method: 'DELETE' })
-            .then(res => {
-                if (res.ok) {
-                    setUsers(users.filter(u => u.id !== id));
-                } else {
-                    throw new Error("Xóa không thành công");
-                }
-            })
-            .catch(err => console.log("Lỗi khi xóa user:", err));
-    };
+    fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+      .then((res) => {
+        if (res.ok) {
+          setUsers(users.filter((u) => u.id !== id));
+        } else {
+          throw new Error('Xóa không thành công');
+        }
+      })
+      .catch((err) => console.log('Lỗi khi xóa user:', err));
+  };
 
-    // Bắt đầu sửa user
-    const handleStartEditing = (user) => {
-        setEditingUser({ ...user }); // Copy user vào state để sửa
-    };
+  const handleStartEditing = (user) => {
+    setEditingUser({ ...user });
+  };
 
-    // Hủy sửa
-    const handleCancelEditing = () => {
+  const handleCancelEditing = () => {
+    setEditingUser(null);
+  };
+
+  const handleUpdateEditingName = (e) => {
+    setEditingUser({ ...editingUser, name: e.target.value });
+  };
+
+  const handleSaveEditing = () => {
+    if (!editingUser || !editingUser.name.trim()) return;
+
+    fetch(`${API_URL}/${editingUser.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: editingUser.name }),
+    })
+      .then((res) => res.json())
+      .then((updatedUser) => {
+        setUsers(users.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
         setEditingUser(null);
-    };
+      })
+      .catch((err) => console.log('Lỗi khi cập nhật user:', err));
+  };
 
-    // Cập nhật tên user đang sửa
-    const handleUpdateEditingName = (e) => {
-        setEditingUser({ ...editingUser, name: e.target.value });
-    };
+  return (
+    <div className="container py-5">
+      <div className="card shadow-sm">
+        <div className="card-body">
+          <h2 className="h4 mb-4">Danh sách Users</h2>
 
-    // Lưu thay đổi sau khi sửa
-    const handleSaveEditing = () => {
-        if (!editingUser || !editingUser.name.trim()) return;
+          <form className="row g-2 align-items-center mb-4" onSubmit={handleAddUser}>
+            <div className="col-sm">
+              <input
+                type="text"
+                value={newUserName}
+                onChange={(e) => setNewUserName(e.target.value)}
+                placeholder="Nhập tên user mới..."
+                className="form-control"
+              />
+            </div>
+            <div className="col-auto">
+              <button type="submit" className="btn btn-primary">
+                Thêm User
+              </button>
+            </div>
+          </form>
 
-        fetch(`${API_URL}/${editingUser.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: editingUser.name }),
-        })
-        .then(res => res.json())
-        .then(updatedUser => {
-            setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
-            setEditingUser(null); // Kết thúc sửa
-        })
-        .catch(err => console.log("Lỗi khi cập nhật user:", err));
-    };
-
-    return (
-        <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-            <h2>Danh sách Users</h2>
-
-            {/* Form thêm user */}
-            <form onSubmit={handleAddUser} style={{ marginBottom: '20px' }}>
-                <input
-                    type="text"
-                    value={newUserName}
-                    onChange={(e) => setNewUserName(e.target.value)}
-                    placeholder="Nhập tên user mới..."
-                    style={{ padding: '8px', marginRight: '10px' }}
-                />
-                <button type="submit" style={{ padding: '8px 15px' }}>Thêm User</button>
-            </form>
-
-            {/* Danh sách user */}
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-                {users.map(u => (
-                    <li key={u.id} style={{ marginBottom: '10px', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>
-                        {editingUser && editingUser.id === u.id ? (
-                            // Giao diện khi đang SỬA
-                            <div>
-                                <input
-                                    type="text"
-                                    value={editingUser.name}
-                                    onChange={handleUpdateEditingName}
-                                    style={{ padding: '8px', marginRight: '10px' }}
-                                />
-                                <button onClick={handleSaveEditing} style={{ padding: '8px 12px', marginRight: '5px' }}>Lưu</button>
-                                <button onClick={handleCancelEditing} style={{ padding: '8px 12px' }}>Hủy</button>
-                            </div>
-                        ) : (
-                            // Giao diện BÌNH THƯỜNG
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <span style={{ flexGrow: 1 }}>{u.id} - {u.name}</span>
-                                <button onClick={() => handleStartEditing(u)} style={{ padding: '5px 10px', marginRight: '5px' }}>Sửa</button>
-                                <button onClick={() => handleDeleteUser(u.id)} style={{ padding: '5px 10px', backgroundColor: 'salmon' }}>Xóa</button>
-                            </div>
-                        )}
-                    </li>
-                ))}
-            </ul>
+          <ul className="list-group">
+            {users.map((u) => (
+              <li key={u.id} className="list-group-item">
+                {editingUser && editingUser.id === u.id ? (
+                  <div className="row g-2 align-items-center">
+                    <div className="col-sm">
+                      <input
+                        type="text"
+                        value={editingUser.name}
+                        onChange={handleUpdateEditingName}
+                        className="form-control"
+                      />
+                    </div>
+                    <div className="col-auto">
+                      <button type="button" className="btn btn-success btn-sm me-2" onClick={handleSaveEditing}>
+                        Lưu
+                      </button>
+                      <button type="button" className="btn btn-secondary btn-sm" onClick={handleCancelEditing}>
+                        Hủy
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="row align-items-center">
+                    <div className="col-sm">
+                      <span className="fw-semibold">
+                        {u.id} - {u.name}
+                      </span>
+                    </div>
+                    <div className="col-auto">
+                      <button
+                        type="button"
+                        className="btn btn-outline-primary btn-sm me-2"
+                        onClick={() => handleStartEditing(u)}
+                      >
+                        Sửa
+                      </button>
+                      <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => handleDeleteUser(u.id)}>
+                        Xóa
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default UserList;
