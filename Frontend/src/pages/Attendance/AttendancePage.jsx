@@ -1,14 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CalendarDays, CheckCircle, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-const initialMockAttendance = [
-  { date: '2025-12-01', checkIn: '08:30', checkOut: '17:45', status: 'present' },
-  { date: '2025-12-02', checkIn: '09:15', checkOut: '17:33', status: 'late' },
-  { date: '2025-12-03', checkIn: null, checkOut: null, status: 'absent' },
-  { date: '2025-12-04', checkIn: '08:05', checkOut: '17:40', status: 'present' },
-  { date: '2025-12-05', checkIn: '08:20', checkOut: '17:30', status: 'present' },
-];
+import attendanceService from '../../api/attendanceService';
 
 const formatDateKey = (date) => {
   const year = date.getFullYear();
@@ -44,6 +37,12 @@ const parseTimeToMinutes = (time) => {
   const [hours, minutes] = time.split(':').map(Number);
   return hours * 60 + minutes;
 };
+
+const initialMockAttendance = [
+  { date: formatDateKey(new Date(Date.now() - 86400000)), checkIn: '09:10:00', checkOut: '17:25:00', status: 'late' },
+  { date: formatDateKey(new Date(Date.now() - 2 * 86400000)), checkIn: '09:05:00', checkOut: '18:05:00', status: 'ot' },
+  { date: formatDateKey(new Date(Date.now() - 3 * 86400000)), checkIn: null, checkOut: null, status: 'absent' },
+];
 
 const getStatusBadge = (status) => {
   if (status === 'present') return 'bg-success';

@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Building2, ChevronLeft, ChevronRight,
   Settings, LogOut, Briefcase, BarChart3, Clock, Calendar, Layers,
-  Menu,
+  Menu, Wallet,
 } from 'lucide-react';
 import useUIStore from '../../store/useUIStore';
 import '../../styles/layout.css';
@@ -34,6 +34,16 @@ const navItems = [
       { to: '/attendance', icon: Clock, label: 'Chấm công' },
       { to: '/leave-requests', icon: Calendar, label: 'Nghỉ phép' },
       { to: '/shifts', icon: Layers, label: 'Ca làm việc' },
+    ],
+  },
+  {
+    section: 'Payroll',
+    items: [
+      { to: '/payroll/management', icon: Wallet, label: 'Bang luong' },
+      { to: '/payroll/history', icon: Wallet, label: 'Lich su luong' },
+      { to: '/payroll/reports', icon: Wallet, label: 'Bao cao luong' },
+      { to: '/payroll/settings', icon: Wallet, label: 'Cau hinh luong' },
+      { to: '/payroll/detail', icon: Wallet, label: 'Chi tiet luong' },
     ],
   },
 ];

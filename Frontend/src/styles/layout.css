@@ -643,6 +643,15 @@
   color: #f8fafc;
 }
 
+.leave-requests-page .list-group-item {
+  background: var(--bg-elevated);
+  border-color: var(--border-normal);
+}
+
+.leave-requests-page .list-group-item-action {
+  color: #f8fafc;
+}
+
 .leave-requests-page .btn-outline-secondary {
   color: #f8fafc;
   border-color: #334155;

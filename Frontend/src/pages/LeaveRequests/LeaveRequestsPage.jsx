@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Check, X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import leaveRequestService from '../../api/leaveRequestService';
 
-const MOCK_LEAVE_REQUESTS = [
-  { id: 1, employee: 'Nguyễn Văn A', type: 'Nghỉ phép năm', startDate: '2025-12-01', endDate: '2025-12-03', reason: 'Du lịch', status: 'approved' },
-  { id: 2, employee: 'Trần Thị B', type: 'Nghỉ ốm', startDate: '2025-12-10', endDate: '2025-12-10', reason: 'Cảm cúm', status: 'pending' },
-  { id: 3, employee: 'Lê Văn C', type: 'Nghỉ không lương', startDate: '2025-12-20', endDate: '2025-12-22', reason: 'Việc riêng', status: 'rejected' },
-];
+
 
 const LEAVE_TYPES = ['Nghỉ phép năm', 'Nghỉ ốm', 'Nghỉ không lương', 'Nghỉ không phép'];
 
@@ -19,24 +16,25 @@ function LeaveRequestsPage() {
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setRequests(MOCK_LEAVE_REQUESTS);
+    const timer = setTimeout(async () => {
+      const data = await leaveRequestService.getAll();
+      setRequests(data);
       setLoading(false);
-    }, 700);
+    }, 250);
     return () => clearTimeout(timer);
   }, []);
 
   const statusBadgeClass = (status) => {
-    if (status === 'approved') return 'badge bg-success';
-    if (status === 'rejected') return 'badge bg-danger';
-    if (status === 'pending') return 'badge bg-warning text-dark';
+    if (status === 'Approved') return 'badge bg-success';
+    if (status === 'Rejected') return 'badge bg-danger';
+    if (status === 'Pending') return 'badge bg-warning text-dark';
     return 'badge bg-secondary';
   };
 
   const getStatusLabel = (status) => {
-    if (status === 'approved') return 'Đã duyệt';
-    if (status === 'rejected') return 'Từ chối';
-    if (status === 'pending') return 'Chờ duyệt';
+    if (status === 'Approved') return 'Da duyet';
+    if (status === 'Rejected') return 'Tu choi';
+    if (status === 'Pending') return 'Cho duyet';
     return 'Không xác định';
   };
 
@@ -55,15 +53,14 @@ function LeaveRequestsPage() {
     setFormLoading(true);
     setTimeout(() => {
       const newRequest = {
-        id: Date.now(),
-        employee: 'Bạn',
-        type: formData.type,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        reason: formData.reason,
-        status: 'pending',
+        emp_id: 6,
+        leave_type: formData.type,
+        start_date: formData.startDate,
+        end_date: formData.endDate,
       };
-      setRequests((prev) => [newRequest, ...prev]);
+      leaveRequestService.create(newRequest).then((row) => {
+        setRequests((prev) => [row, ...prev]);
+      });
       setFormData({ type: '', startDate: '', endDate: '', reason: '' });
       toast.success('Yêu cầu đã gửi, đang chờ phê duyệt.');
       setFormLoading(false);
@@ -76,14 +73,16 @@ function LeaveRequestsPage() {
 
     setActionLoadingId(id);
     setTimeout(() => {
-      setRequests((prev) => prev.map((item) => (item.id === id ? { ...item, status: newStatus } : item)));
-      toast.success(`Đã ${newStatus === 'approved' ? 'phê duyệt' : 'từ chối'} yêu cầu.`);
+      leaveRequestService.approveOrReject(id, newStatus, 3).then((row) => {
+        setRequests((prev) => prev.map((item) => (item.id === id ? row : item)));
+      });
+      toast.success(`Da ${newStatus === 'Approved' ? 'phe duyet' : 'tu choi'} yeu cau.`);
       setActionLoadingId(null);
     }, 700);
   };
 
-  const pendingRequests = requests.filter((item) => item.status === 'pending');
-  const myRequests = requests.filter((item) => item.employee === 'Bạn');
+  const pendingRequests = requests.filter((item) => item.status === 'Pending');
+  const myRequests = requests.filter((item) => item.emp_id === 6);
 
   return (
     <div className="leave-requests-page container py-4">
@@ -118,7 +117,11 @@ function LeaveRequestsPage() {
                     <label className="form-label">Loại nghỉ</label>
                     <select className="form-select" value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}>
                       <option value="">Chọn</option>
-                      {LEAVE_TYPES.map((type) => (<option key={type} value={type}>{type}</option>))}
+                      {LEAVE_TYPES.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
@@ -161,7 +164,7 @@ function LeaveRequestsPage() {
                           <div>
                             <h6>{item.type}</h6>
                             <small>{item.startDate} → {item.endDate}</small>
-                            <p className="mb-0">{item.reason}</p>
+                            <p className="mb-0">{item.type}</p>
                           </div>
                           <span className={statusBadgeClass(item.status)}>{getStatusLabel(item.status)}</span>
                         </div>
@@ -192,7 +195,7 @@ function LeaveRequestsPage() {
                       <th>Nhân viên</th>
                       <th>Loại</th>
                       <th>Thời gian</th>
-                      <th>Lý do</th>
+                      <th>Loai don</th>
                       <th>Trạng thái</th>
                       <th>Hành động</th>
                     </tr>
@@ -203,13 +206,13 @@ function LeaveRequestsPage() {
                         <td>{item.employee}</td>
                         <td>{item.type}</td>
                         <td>{item.startDate} → {item.endDate}</td>
-                        <td>{item.reason}</td>
+                        <td>{item.type}</td>
                         <td><span className={statusBadgeClass(item.status)}>{getStatusLabel(item.status)}</span></td>
                         <td>
-                          <button className="btn btn-sm btn-success me-1" onClick={() => handleAction(item.id, 'approved')} disabled={actionLoadingId === item.id}>
+                          <button className="btn btn-sm btn-success me-1" onClick={() => handleAction(item.id, 'Approved')} disabled={actionLoadingId === item.id}>
                             <Check size={14} /> Duyệt
                           </button>
-                          <button className="btn btn-sm btn-danger" onClick={() => handleAction(item.id, 'rejected')} disabled={actionLoadingId === item.id}>
+                          <button className="btn btn-sm btn-danger" onClick={() => handleAction(item.id, 'Rejected')} disabled={actionLoadingId === item.id}>
                             <X size={14} /> Từ chối
                           </button>
                         </td>
