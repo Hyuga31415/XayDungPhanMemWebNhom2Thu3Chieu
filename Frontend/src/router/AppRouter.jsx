@@ -42,27 +42,27 @@ function ComingSoon({ title }) {
 
 function AppRouter() {
   const payrollList = [
-    { id: 'PR-001', name: 'Nguyen Van A', period: '03/2026', netSalary: 22100000, status: 'Da xac nhan' },
-    { id: 'PR-002', name: 'Tran Thi B', period: '03/2026', netSalary: 19850000, status: 'Cho duyet' },
-    { id: 'PR-003', name: 'Le Van C', period: '03/2026', netSalary: 24500000, status: 'Da chuyen khoan' },
+    { id: 'PR-001', name: 'Nguyễn Văn A', period: '03/2026', netSalary: 22100000, status: 'Đã xác nhận' },
+    { id: 'PR-002', name: 'Trần Thị B', period: '03/2026', netSalary: 19850000, status: 'Chờ duyệt' },
+    { id: 'PR-003', name: 'Lê Văn C', period: '03/2026', netSalary: 24500000, status: 'Đã chuyển khoản' },
   ];
 
   const historyItems = [
-    { month: '01/2026', totalPaid: 425000000, employees: 58, status: 'Hoan thanh' },
-    { month: '02/2026', totalPaid: 438000000, employees: 60, status: 'Hoan thanh' },
-    { month: '03/2026', totalPaid: 452000000, employees: 61, status: 'Cho phe duyet' },
+    { month: '01/2026', totalPaid: 425000000, employees: 58, status: 'Hoàn thành' },
+    { month: '02/2026', totalPaid: 438000000, employees: 60, status: 'Hoàn thành' },
+    { month: '03/2026', totalPaid: 452000000, employees: 61, status: 'Chờ phê duyệt' },
   ];
 
   const reportData = [
-    { title: 'Tong quy luong', value: 452000000, color: 'success', trend: '+3.2%' },
-    { title: 'Tong phu cap', value: 79000000, color: 'info', trend: '+1.1%' },
-    { title: 'Tong khau tru', value: 25400000, color: 'warning', trend: '-0.5%' },
+    { title: 'Tổng quỹ lương', value: 452000000, color: 'success', trend: '+3.2%' },
+    { title: 'Tổng phụ cấp', value: 79000000, color: 'info', trend: '+1.1%' },
+    { title: 'Tổng khấu trừ', value: 25400000, color: 'warning', trend: '-0.5%' },
   ];
 
   const quickInsights = [
-    'Ti le phe duyet bang luong dat 98%.',
-    'Chi phi phu cap on dinh qua 3 ky gan nhat.',
-    'Nhom van hanh khuyen nghi chuan hoa quy tac di muon.',
+    'Tỷ lệ phê duyệt bảng lương đạt 98%.',
+    'Chi phí phụ cấp ổn định qua 3 kỳ gần nhất.',
+    'Nhóm vận hành khuyến nghị chuẩn hóa quy tắc đi muộn.',
   ];
 
   const initialSalaryLevels = [
@@ -72,13 +72,13 @@ function AppRouter() {
   ];
 
   const initialAllowances = [
-    { id: 1, name: 'An trua', rate: '800,000 VND' },
-    { id: 2, name: 'Di lai', rate: '700,000 VND' },
+    { id: 1, name: 'Ăn trưa', rate: '800,000 VND' },
+    { id: 2, name: 'Đi lại', rate: '700,000 VND' },
   ];
 
   const initialRules = [
-    { id: 1, name: 'Di muon 1 lan', penalty: '100,000 VND' },
-    { id: 2, name: 'Nghi khong phep', penalty: '300,000 VND/ngay' },
+    { id: 1, name: 'Đi muộn 1 lần', penalty: '100,000 VND' },
+    { id: 2, name: 'Nghỉ không phép', penalty: '300,000 VND/ngày' },
   ];
 
   return (

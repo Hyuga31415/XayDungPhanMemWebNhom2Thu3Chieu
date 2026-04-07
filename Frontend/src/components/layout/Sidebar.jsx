@@ -37,23 +37,13 @@ const navItems = [
     ],
   },
   {
-    section: 'Payroll',
+    section: 'Quản lý lương',
     items: [
-      { to: '/payroll/management', icon: Wallet, label: 'Bang luong' },
-      { to: '/payroll/history', icon: Wallet, label: 'Lich su luong' },
-      { to: '/payroll/reports', icon: Wallet, label: 'Bao cao luong' },
-      { to: '/payroll/settings', icon: Wallet, label: 'Cau hinh luong' },
-      { to: '/payroll/detail', icon: Wallet, label: 'Chi tiet luong' },
-    ],
-  },
-  {
-    section: 'Payroll',
-    items: [
-      { to: '/payroll/management', icon: Wallet, label: 'Bang luong' },
-      { to: '/payroll/history', icon: Wallet, label: 'Lich su luong' },
-      { to: '/payroll/reports', icon: Wallet, label: 'Bao cao luong' },
-      { to: '/payroll/settings', icon: Wallet, label: 'Cau hinh luong' },
-      { to: '/payroll/detail', icon: Wallet, label: 'Chi tiet luong' },
+      { to: '/payroll/management', icon: Wallet, label: 'Bảng lương' },
+      { to: '/payroll/history', icon: Wallet, label: 'Lịch sử lương' },
+      { to: '/payroll/reports', icon: Wallet, label: 'Báo cáo lương' },
+      { to: '/payroll/settings', icon: Wallet, label: 'Cấu hình lương' },
+      { to: '/payroll/detail', icon: Wallet, label: 'Chi tiết lương' },
     ],
   },
 ];
