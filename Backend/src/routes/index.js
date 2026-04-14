@@ -11,6 +11,9 @@ const { getPositions } = require('../controllers/employeeController');
 const employeeRoutes = require('./employeeRoutes');
 const departmentRoutes = require('./departmentRoutes');
 
+const attendanceRoutes = require('./attendanceRoutes');
+const leaveRoutes = require('./leaveRoutes');
+
 // ============================================================
 // PUBLIC ROUTES (Không cần đăng nhập)
 // ============================================================
@@ -27,5 +30,10 @@ router.get('/positions', getPositions);
 router.use('/employees', employeeRoutes);
 // Gắn toàn bộ departmentRoutes vào tiền tố /departments
 router.use('/departments', departmentRoutes);
+
+// Gắn attendanceRoutes
+router.use('/attendance', attendanceRoutes);
+// Gắn leaveRoutes
+router.use('/leave', leaveRoutes);
 
 module.exports = router;
