@@ -11,6 +11,13 @@ const getAllEmployees = async (req, res) => {
 
         let queryParams = [];
         let countParams = [];
+
+        // Nếu là Staff, ép buộc chỉ được lấy dữ liệu của chính mình
+        if (req.user.role === 'Staff') {
+            baseQuery += ` AND e.id = ?`;
+            queryParams.push(req.user.emp_id);
+            countParams.push(req.user.emp_id);
+        }
         
         let baseQuery = `
             FROM employees e

@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { User, Mail, Briefcase, Calendar, Building2, DollarSign } from 'lucide-react';
+import { User, Mail, Calendar, DollarSign } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 import Button from '../../components/ui/Button';
 import { Input, Select } from '../../components/ui/Input';
 import useDepartmentStore from '../../store/useDepartmentStore';
-import { mockPositions } from '../../api/employeeService';
+import { employeeService } from '../../api/employeeService'; // Import service để gọi API
 
 // ============================================================
-// Employee Form Modal – Add / Edit
-// Ánh xạ từ HRM.sql schema:
-//   emp_code, full_name, email, department_id, position_id, hire_date
-//   status ENUM('Active', 'Resigned')
+// Employee Form Modal – Gọi 100% dữ liệu thật
 // ============================================================
 
-// Status theo ENUM trong HRM.sql
 const STATUS_OPTIONS = [
   { value: 'Active',   label: 'Đang làm' },
   { value: 'Resigned', label: 'Đã nghỉ'  },
@@ -26,11 +22,15 @@ const GENDER_OPTIONS = [
 ];
 
 function formatSalary(n) {
+  if (!n) return '0 đ';
   return new Intl.NumberFormat('vi-VN').format(n) + ' đ';
 }
 
 function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }) {
   const { departments, fetchDepartments } = useDepartmentStore();
+  
+  // State quản lý danh sách chức vụ gọi từ API
+  const [positions, setPositions] = useState([]);
   const [selectedPosition, setSelectedPosition] = useState(null);
 
   const {
@@ -38,8 +38,21 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
     formState: { errors },
   } = useForm();
 
-  useEffect(() => { fetchDepartments(); }, []);
+  // Gọi API lấy departments và positions khi modal mở lần đầu
+  useEffect(() => {
+    fetchDepartments();
+    const fetchPositions = async () => {
+      try {
+        const data = await employeeService.getPositions();
+        setPositions(data);
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách chức vụ:', error);
+      }
+    };
+    fetchPositions();
+  }, []);
 
+  // Cập nhật giá trị form khi prop `employee` thay đổi (Edit mode)
   useEffect(() => {
     if (employee) {
       reset({
@@ -51,7 +64,8 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
         hire_date:     employee.hire_date,
         status:        employee.status,
       });
-      setSelectedPosition(mockPositions.find((p) => p.id === employee.position_id) || null);
+      // Set lại UI mức lương
+      setSelectedPosition(positions.find((p) => p.id === employee.position_id) || null);
     } else {
       reset({
         full_name: '', email: '', gender: 'male',
@@ -59,26 +73,19 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
       });
       setSelectedPosition(null);
     }
-  }, [employee, isOpen]);
+  }, [employee, isOpen, reset, positions]);
 
-  // Khi đổi position → hiển thị mức lương tương ứng
+  // Lắng nghe sự thay đổi của Select "Chức vụ" để hiển thị mức lương tương ứng
   const watchedPositionId = watch('position_id');
   useEffect(() => {
-    const pos = mockPositions.find((p) => p.id === Number(watchedPositionId));
-    setSelectedPosition(pos || null);
-  }, [watchedPositionId]);
+    if (positions.length > 0) {
+      const pos = positions.find((p) => p.id === Number(watchedPositionId));
+      setSelectedPosition(pos || null);
+    }
+  }, [watchedPositionId, positions]);
 
   const handleFormSubmit = (data) => {
-    const dept = departments.find((d) => d.id === Number(data.department_id));
-    const pos  = mockPositions.find((p) => p.id === Number(data.position_id));
-    onSubmit({
-      ...data,
-      department_id:  Number(data.department_id),
-      departmentName: dept?.name || '',
-      position_id:    Number(data.position_id),
-      position:       pos?.title || '',
-      base_salary:    pos?.base_salary || 0,
-    });
+    onSubmit(data); // Chuyển thẳng data ra ngoài page xử lý. Payload formatting đã được lo bên employeeService.js
   };
 
   const isEdit = !!employee;
@@ -111,7 +118,6 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
       <form id="employee-form" onSubmit={handleSubmit(handleFormSubmit)}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
 
-          {/* Họ tên – span full */}
           <div style={{ gridColumn: '1 / -1' }}>
             <Input
               label="Họ và tên"
@@ -126,7 +132,6 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
             />
           </div>
 
-          {/* Email */}
           <Input
             label="Email"
             icon={Mail}
@@ -140,14 +145,12 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
             })}
           />
 
-          {/* Giới tính */}
           <Select label="Giới tính" {...register('gender')}>
             {GENDER_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </Select>
 
-          {/* Phòng ban – ánh xạ department_id */}
           <Select
             label="Phòng ban"
             required
@@ -160,7 +163,6 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
             ))}
           </Select>
 
-          {/* Chức vụ – ánh xạ position_id từ bảng positions */}
           <Select
             label="Chức vụ"
             required
@@ -168,12 +170,12 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
             {...register('position_id', { required: 'Vui lòng chọn chức vụ' })}
           >
             <option value="">-- Chọn chức vụ --</option>
-            {mockPositions.map((p) => (
+            {positions.map((p) => (
               <option key={p.id} value={p.id}>{p.title}</option>
             ))}
           </Select>
 
-          {/* Hiển thị mức lương từ position */}
+          {/* Hiển thị mức lương từ API */}
           {selectedPosition && (
             <div style={{ gridColumn: '1 / -1' }}>
               <div style={{
@@ -194,9 +196,8 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
             </div>
           )}
 
-          {/* Ngày vào làm – hire_date */}
           <Input
-            label="Ngày vào làm (hire_date)"
+            label="Ngày vào làm"
             icon={Calendar}
             required
             type="date"
@@ -204,7 +205,6 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
             {...register('hire_date', { required: 'Vui lòng chọn ngày vào làm' })}
           />
 
-          {/* Trạng thái – ENUM('Active', 'Resigned') */}
           <Select label="Trạng thái" {...register('status')}>
             {STATUS_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>

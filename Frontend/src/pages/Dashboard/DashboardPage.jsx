@@ -3,16 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Users, Building2, UserPlus, TrendingUp, 
   ArrowUpRight, ArrowDownRight, Calendar, Plus, Clock, 
-  Search, Bell, MoreHorizontal, CheckCircle2, AlertCircle, 
-  UserCheck, Briefcase, FileText, Zap, ChevronRight
+  Bell, ChevronRight, Briefcase, FileText, AlertCircle, UserCheck, Mail
 } from 'lucide-react';
 import {
-  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+  BarChart, Bar, LineChart, Line,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import useEmployeeStore from '../../store/useEmployeeStore';
+import useAuthStore from '../../store/useAuthStore';
+import { employeeService } from '../../api/employeeService';
 import Badge, { STATUS_MAP } from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
+import '../../styles/layout.css';
 
 // ── Welcome Header ──────────────────────────────────────────
 function WelcomeHeader({ userName = 'Admin' }) {
@@ -45,12 +47,8 @@ function WelcomeHeader({ userName = 'Admin' }) {
       border: '1px solid var(--border-subtle)'
     }}>
       <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--brand-primary)', marginBottom: 8, fontWeight: 700, fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-          <Zap size={14} fill="currentColor" />
-          <span>Hệ thống quản lý HRM Pro</span>
-        </div>
         <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', marginBottom: 4 }}>
-          Chào buổi tối, <span className="text-gradient" style={{ animation: 'pulse-soft 3s infinite' }}>{userName}</span>
+          Chào buổi làm việc, <span className="text-gradient">{userName}</span>
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
           Hôm nay là {formatDate(time)}. Chúc bạn một ngày làm việc hiệu quả!
@@ -65,8 +63,8 @@ function WelcomeHeader({ userName = 'Admin' }) {
           </div>
           <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>Thời gian thực tế</span>
         </div>
-        <Button variant="primary" icon={Plus} onClick={() => navigate('/employees/add')}>
-          Thêm nhân sự
+        <Button variant="primary" icon={Plus} onClick={() => navigate('/employees')}>
+          Quản lý nhân sự
         </Button>
       </div>
     </div>
@@ -209,9 +207,10 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-const PIE_COLORS = ['#6366f1', '#ec4899', '#0ea5e9', '#10b981', '#f59e0b'];
-
-function DashboardPage() {
+// ============================================================
+// 1. COMPONENT DÀNH CHO ADMIN & HR (DASHBOARD TỔNG HỢP)
+// ============================================================
+function AdminDashboard({ userName }) {
   const { stats, fetchStats, employees, fetchEmployees } = useEmployeeStore();
   const navigate = useNavigate();
 
@@ -254,14 +253,12 @@ function DashboardPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
       
-      {/* 1. Key Statistics (KPIs) - TOP PRIORITY */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
         {statCards.map((card) => <StatCard key={card.label} {...card} />)}
       </div>
 
-      {/* 2. Welcome & Global Status Row */}
       <div style={{ display: 'grid', gridTemplateColumns: '7.5fr 4.5fr', gap: 'var(--space-6)', alignItems: 'stretch' }}>
-        <WelcomeHeader />
+        <WelcomeHeader userName={userName} />
         
         <div className="card-premium animate-fade-in" style={{ 
           padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 'var(--space-3)',
@@ -285,15 +282,11 @@ function DashboardPage() {
         </div>
       </div>
 
-      {/* 3. Quick Actions Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)' }}>
-        {quickActions.map((action, i) => <ActionCard key={i} {...action} />)}
+        {quickActions.map((action, i) => <ActionCard key={i} {...action} onClick={() => navigate(`/${action.title === 'Nghỉ phép' ? 'leave-requests' : 'attendance'}`)} />)}
       </div>
 
-      {/* 4. Analytics Middle Section */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
-        
-        {/* Recruitment Trend */}
         <div style={{ gridColumn: 'span 8' }}>
           <ChartCard title="Xu hướng biến động nhân sự" subtitle="Biển động tuyển dụng gần đây" icon={TrendingUp}>
             <ResponsiveContainer width="100%" height={280}>
@@ -316,7 +309,6 @@ function DashboardPage() {
           </ChartCard>
         </div>
 
-        {/* Activity Feed */}
         <div style={{ gridColumn: 'span 4' }}>
           <ChartCard title="Hoạt động gần đây" subtitle="Nhật ký hệ thống mới nhất" icon={Bell}>
             <div style={{ padding: '4px 0' }}>
@@ -336,10 +328,7 @@ function DashboardPage() {
         </div>
       </div>
 
-      {/* 5. Distribution & Table Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--space-6)' }}>
-        
-        {/* Department Distribution */}
         <div style={{ gridColumn: 'span 5' }}>
           <ChartCard title="Nhân viên theo phòng ban" subtitle="Phân bổ headcount hiện tại" icon={Building2}>
             <ResponsiveContainer width="100%" height={260}>
@@ -360,7 +349,6 @@ function DashboardPage() {
           </ChartCard>
         </div>
 
-        {/* Recent Employees Table */}
         <div style={{ gridColumn: 'span 7' }}>
           <ChartCard title="Cập nhật nhân sự" subtitle="Hồ sơ nhân sự mới nhất">
             <div style={{ overflowX: 'auto', marginTop: -8 }}>
@@ -378,7 +366,7 @@ function DashboardPage() {
                   {recentEmployees.map((emp) => {
                     const s = STATUS_MAP[emp.status] || { variant: 'default', label: emp.status };
                     return (
-                      <tr key={emp.id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/employees/edit/${emp.id}`)}>
+                      <tr key={emp.id}>
                         <td style={{ padding: '10px 12px', background: 'var(--bg-elevated)', borderRadius: 'var(--radius-md) 0 0 var(--radius-md)' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <div style={{ 
@@ -414,7 +402,152 @@ function DashboardPage() {
       </div>
     </div>
   );
+}
 
+// ============================================================
+// 2. COMPONENT DÀNH CHO STAFF (DASHBOARD CÁ NHÂN)
+// ============================================================
+function StaffDashboard({ empId }) {
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMyProfile = async () => {
+      try {
+        const data = await employeeService.getById(empId);
+        setProfile(data);
+      } catch (error) {
+        console.error('Lỗi lấy hồ sơ:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (empId) fetchMyProfile();
+  }, [empId]);
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
+        <div className="animate-spin" style={{ width: 40, height: 40, border: '4px solid var(--border-normal)', borderTopColor: 'var(--brand-primary)', borderRadius: '50%' }} />
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return <div style={{ padding: 40, textAlign: 'center', color: 'var(--color-danger)' }}>Không thể tải dữ liệu hồ sơ.</div>;
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
+      <div className="animate-fade-in" style={{ 
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
+        marginBottom: 'var(--space-2)', background: 'var(--brand-gradient-soft)',
+        padding: 'var(--space-6)', borderRadius: 'var(--radius-lg)',
+        border: '1px solid var(--border-subtle)'
+      }}>
+        <div>
+          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', marginBottom: 4 }}>
+            Xin chào, <span className="text-gradient">{profile.fullName || profile.full_name}</span>
+          </h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
+            Chúc bạn một ngày làm việc hiệu quả và tràn đầy năng lượng!
+          </p>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 'var(--space-6)', alignItems: 'start' }}>
+        <div className="card-premium animate-fade-in" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
+          <div style={{
+            width: 100, height: 100, borderRadius: '50%', background: 'var(--brand-gradient)',
+            color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 36, fontWeight: 700, margin: '0 auto var(--space-4)',
+            boxShadow: 'var(--shadow-md)'
+          }}>
+            {profile.avatar || (profile.fullName?.charAt(0) ?? 'U')}
+          </div>
+          <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--text-primary)' }}>
+            {profile.fullName || profile.full_name}
+          </h2>
+          <p style={{ color: 'var(--brand-primary)', fontWeight: 600, fontSize: 'var(--font-size-sm)', marginTop: 4 }}>
+            {profile.position}
+          </p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 4 }}>
+            {profile.departmentName}
+          </p>
+
+          <div style={{ marginTop: 'var(--space-5)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--border-subtle)', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <Mail size={16} color="var(--text-muted)" />
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{profile.email}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <Briefcase size={16} color="var(--text-muted)" />
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Mã NV: {profile.emp_code}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 700, color: 'var(--text-primary)' }}>Hoạt động của tôi (Tháng này)</h3>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+            <div className="card-premium animate-fade-in" style={{ padding: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ width: 48, height: 48, borderRadius: 'var(--radius-md)', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--color-success)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Clock size={24} />
+              </div>
+              <div>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 600 }}>Ngày công</p>
+                <p style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-primary)' }}>20.5 <span style={{fontSize: 12, fontWeight: 500, color: 'var(--text-muted)'}}>/ 22</span></p>
+              </div>
+            </div>
+
+            <div className="card-premium animate-fade-in" style={{ padding: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ width: 48, height: 48, borderRadius: 'var(--radius-md)', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--color-warning)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Calendar size={24} />
+              </div>
+              <div>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 600 }}>Phép năm còn lại</p>
+                <p style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-primary)' }}>12 <span style={{fontSize: 12, fontWeight: 500, color: 'var(--text-muted)'}}>ngày</span></p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="card-premium animate-fade-in" style={{ padding: 'var(--space-5)', marginTop: 'var(--space-2)' }}>
+            <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 12 }}>Bảng lương gần nhất</h4>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'var(--bg-elevated)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+              <div>
+                <p style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Lương tháng {new Date().getMonth() === 0 ? 12 : new Date().getMonth()}/{new Date().getMonth() === 0 ? new Date().getFullYear() - 1 : new Date().getFullYear()}</p>
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-success)', marginTop: 4 }}>Đã thanh toán</p>
+              </div>
+              <button style={{ padding: '6px 12px', background: 'transparent', border: '1px solid var(--brand-primary)', color: 'var(--brand-primary)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: 'var(--font-size-xs)', fontWeight: 600 }}>
+                Xem phiếu lương
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// 3. MAIN DASHBOARD PAGE (ROUTER COMPONENT)
+// ============================================================
+function DashboardPage() {
+  const { user } = useAuthStore();
+  
+  // Dựa vào role để render component tương ứng
+  const isStaff = user?.role === 'Staff';
+
+  return (
+    <div className="animate-fade-in">
+      {isStaff ? (
+        <StaffDashboard empId={user?.emp_id} />
+      ) : (
+        <AdminDashboard userName={user?.name || user?.username} />
+      )}
+    </div>
+  );
 }
 
 export default DashboardPage;
