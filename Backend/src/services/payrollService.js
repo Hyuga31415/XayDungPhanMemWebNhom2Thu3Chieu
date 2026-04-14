@@ -52,7 +52,6 @@ const runPayroll = async (month, year, executedByAdminId) => {
 };
 
 const getAllPayrolls = async () => {
-    // JOIN với bảng employees để lấy tên hiển thị ra bảng
     const query = `
         SELECT pr.*, e.full_name as name, e.emp_code
         FROM payroll_records pr
@@ -63,4 +62,85 @@ const getAllPayrolls = async () => {
     return rows;
 };
 
-module.exports = { runPayroll, getAllPayrolls };
+// 1. Lấy Lịch sử lương (Theo Role)
+const getPayrollHistory = async (user) => {
+    if (user.role === 'Admin' || user.role === 'HR') {
+        // Admin/HR: Gom nhóm theo tháng/năm, tính tổng tiền toàn công ty
+        const query = `
+            SELECT 
+                CONCAT(LPAD(month, 2, '0'), '/', year) as monthStr,
+                year, month,
+                SUM(net_salary) as totalPaid,
+                COUNT(id) as employees,
+                MAX(status) as status
+            FROM payroll_records
+            GROUP BY year, month
+            ORDER BY year DESC, month DESC
+        `;
+        const [rows] = await db.query(query);
+        return rows;
+    } else {
+        // Staff: Lấy danh sách phiếu lương của chính mình qua các tháng
+        const query = `
+            SELECT 
+                id as recordId,
+                CONCAT(LPAD(month, 2, '0'), '/', year) as monthStr,
+                year, month,
+                net_salary as totalPaid,
+                1 as employees,
+                status
+            FROM payroll_records
+            WHERE emp_id = ?
+            ORDER BY year DESC, month DESC
+        `;
+        const [rows] = await db.query(query, [user.emp_id]);
+        return rows;
+    }
+};
+
+// 2. Lấy Chi tiết phiếu lương
+const getPayrollDetail = async (recordId, user) => {
+    const query = `
+        SELECT 
+            pr.*, 
+            e.full_name as name, e.emp_code, 
+            d.name as departmentName, 
+            p.title as positionTitle
+        FROM payroll_records pr
+        JOIN employees e ON pr.emp_id = e.id
+        LEFT JOIN departments d ON e.department_id = d.id
+        LEFT JOIN positions p ON e.position_id = p.id
+        WHERE pr.id = ?
+    `;
+    const [rows] = await db.query(query, [recordId]);
+    
+    if (rows.length === 0) throw new Error('NOT_FOUND');
+
+    const record = rows[0];
+
+    // Bảo mật: Nếu là Staff, chỉ được xem phiếu của chính mình
+    if (user.role === 'Staff' && record.emp_id !== user.emp_id) {
+        throw new Error('FORBIDDEN');
+    }
+
+    // Format dữ liệu trả về cho FE dễ dùng
+    return {
+        id: record.id,
+        name: record.name,
+        emp_code: record.emp_code,
+        position: record.positionTitle,
+        department: record.departmentName,
+        period: `${String(record.month).padStart(2, '0')}/${record.year}`,
+        baseSalary: record.base_salary,
+        netSalary: record.net_salary,
+        status: record.status,
+        allowances: [
+            { label: 'Phụ cấp cố định', amount: record.total_allowance }
+        ],
+        deductions: [
+            { label: 'Khấu trừ (Đi muộn/Nghỉ)', amount: record.total_deduction }
+        ]
+    };
+};
+
+module.exports = { runPayroll, getAllPayrolls, getPayrollHistory, getPayrollDetail };

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Bổ sung useNavigate
 import { Search, CheckCircle2, Eye, Play, Download, Clock, Wallet } from 'lucide-react';
 import { formatVnd } from '../../utils/payrollUtils';
 import { Input } from '../../components/ui/Input';
@@ -7,7 +8,6 @@ import Badge from '../../components/ui/Badge';
 import { Table } from '../../components/ui/Table';
 import usePayrollStore from '../../store/usePayrollStore';
 
-// Ánh xạ trạng thái hiển thị và màu sắc
 const STATUS_MAP = {
   'Đã xác nhận': { variant: 'success', label: 'Đã xác nhận' },
   'Chờ duyệt': { variant: 'warning', label: 'Chờ duyệt' },
@@ -19,6 +19,7 @@ const STATUS_MAP = {
 function PayrollManagement() {
   const { payrolls, isLoading, isRunning, fetchPayrolls, runPayroll } = usePayrollStore();
   const [query, setQuery] = useState('');
+  const navigate = useNavigate(); // Khởi tạo navigate
   
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
@@ -49,43 +50,37 @@ function PayrollManagement() {
     );
   }, [query, payrolls]);
 
-  // ============================================================
-  // TÍNH TOÁN THỐNG KÊ 
-  // ============================================================
-  
-  // 1. Tổng quỹ lương
   const totalPayroll = useMemo(() => payrolls.reduce((sum, item) => sum + Number(item.netSalary || 0), 0), [payrolls]);
-  
-  // 2. Số lượng phiếu đã được duyệt
   const approvedCount = useMemo(() => payrolls.filter((item) => item.status !== 'Draft' && item.status !== 'Chờ duyệt').length, [payrolls]);
-
-  // 3. Tiền đã thanh toán (Dựa vào status)
   const paidAmount = useMemo(() => payrolls.reduce((sum, item) => {
     const isPaid = ['Paid', 'Đã chuyển khoản', 'Đã thanh toán'].includes(item.status);
     return isPaid ? sum + Number(item.netSalary || 0) : sum;
   }, 0), [payrolls]);
-
-  // 4. Tiền chờ thanh toán
   const unpaidAmount = totalPayroll - paidAmount;
 
-  // Cấu hình các cột cho bảng
+  // ĐÃ FIX LỖI: Thêm onClick={...} vào nút Chi tiết
   const columns = [
     { key: 'id', title: 'Mã Phiếu', width: 120, render: (val) => <span style={{ fontWeight: 700, color: 'var(--brand-primary)' }}>{val}</span> },
     { key: 'name', title: 'Nhân viên', width: 200, render: (val) => <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{val}</span> },
     { key: 'period', title: 'Kỳ lương', width: 120 },
     { key: 'netSalary', title: 'Thực lĩnh', width: 150, render: (val) => <span style={{ fontWeight: 700, color: 'var(--color-success)' }}>{formatVnd(val)}</span> },
     { key: 'status', title: 'Trạng thái', width: 150, render: (val) => <Badge variant={STATUS_MAP[val]?.variant || 'default'}>{STATUS_MAP[val]?.label || val}</Badge> },
-    { key: 'actions', title: 'Thao tác', width: 120, align: 'center', render: () => (
-      <Button variant="ghost" size="sm" icon={Eye}>Chi tiết</Button>
+    { key: 'actions', title: 'Thao tác', width: 120, align: 'center', render: (_, record) => (
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        icon={Eye} 
+        onClick={() => navigate(`/payroll/detail?id=${record.dbId}`)}
+      >
+        Chi tiết
+      </Button>
     )}
   ];
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
-      {/* ─── KHU VỰC THỐNG KÊ & NÚT CHỐT LƯƠNG ────────────────────────────── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
         
-        {/* Khối chức năng Chốt lương */}
         <div className="card-premium" style={{ padding: 'var(--space-5)', background: 'var(--brand-gradient)', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <h1 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 800 }}>Chốt bảng lương</h1>
@@ -110,7 +105,6 @@ function PayrollManagement() {
           </div>
         </div>
 
-        {/* Khối Phiếu Đã Duyệt */}
         <div className="glass-card" style={{ padding: 'var(--space-5)', display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
           <div style={{ width: 48, height: 48, borderRadius: 'var(--radius-md)', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--color-success)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CheckCircle2 size={24} />
@@ -121,7 +115,6 @@ function PayrollManagement() {
           </div>
         </div>
 
-        {/* Khối Tiền Đã Thanh Toán */}
         <div className="glass-card" style={{ padding: 'var(--space-5)', display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
           <div style={{ width: 48, height: 48, borderRadius: 'var(--radius-md)', background: 'rgba(59, 130, 246, 0.1)', color: 'var(--color-info)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Wallet size={24} />
@@ -132,7 +125,6 @@ function PayrollManagement() {
           </div>
         </div>
 
-        {/* Khối Tiền Chưa Thanh Toán */}
         <div className="glass-card" style={{ padding: 'var(--space-5)', display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
           <div style={{ width: 48, height: 48, borderRadius: 'var(--radius-md)', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--color-warning)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Clock size={24} />
@@ -145,7 +137,6 @@ function PayrollManagement() {
         </div>
       </div>
 
-      {/* ─── KHU VỰC BẢNG DỮ LIỆU ─────────────────────────────────────────── */}
       <div className="glass-card" style={{ padding: 'var(--space-5)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
           <div>
