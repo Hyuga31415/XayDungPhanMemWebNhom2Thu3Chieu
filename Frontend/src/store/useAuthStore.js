@@ -1,55 +1,63 @@
 import { create } from 'zustand';
-import { authService } from '../api/authService';
-import toast from 'react-hot-toast';
+import authService from '../api/authService';
 
-const useAuthStore = create((set, get) => ({
+const useAuthStore = create((set) => ({
   user: null,
-  token: localStorage.getItem('hrm_access_token') || null,
-  isLoading: false,
-  isAuthenticated: !!localStorage.getItem('hrm_access_token'),
+  isAuthenticated: false,
+  isLoading: false,       // Trạng thái loading khi bấm nút Đăng nhập
+  isCheckingAuth: true,   // Trạng thái loading khi F5 tải lại trang để check token
 
+  // 1. Hàm xử lý Đăng nhập
   login: async (username, password) => {
     set({ isLoading: true });
     try {
-      const response = await authService.login(username, password);
-      set({
-        user: response.user,
-        token: response.token,
-        isAuthenticated: true,
-        isLoading: false,
+      const res = await authService.login(username, password);
+      
+      // Lưu token vào localStorage (Khớp với cấu hình axiosClient của bạn)
+      localStorage.setItem('hrm_access_token', res.token);
+      
+      set({ 
+        // Backend trả về username, nhưng UI của bạn (Header) dùng user.name
+        // Ta map lại tên hiển thị cho mượt
+        user: { ...res.user, name: res.user.username }, 
+        isAuthenticated: true, 
+        isLoading: false 
       });
-
-      toast.success('Đăng nhập thành công!');
-      return response;
+      return res;
     } catch (error) {
-      const message = error.message || 'Đăng nhập thất bại';
-      toast.error(message);
       set({ isLoading: false });
-      throw error;
+      throw error; // Ném lỗi ra để LoginPage bắt và hiển thị
     }
   },
 
+  // 2. Hàm xử lý Đăng xuất
   logout: () => {
-    authService.logout();
-    set({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-    });
-    toast.success('Đã đăng xuất');
+    localStorage.removeItem('hrm_access_token');
+    set({ user: null, isAuthenticated: false });
   },
 
-  setUser: (user) => {
-    set({ user });
-  },
+  // 3. Hàm kiểm tra Token khi user F5 trang web
+  checkAuth: async () => {
+    const token = localStorage.getItem('hrm_access_token');
+    if (!token) {
+      set({ isCheckingAuth: false, isAuthenticated: false });
+      return;
+    }
 
-  reset: () => {
-    set({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-    });
-  },
+    try {
+      // Gọi API /auth/me để lấy lại thông tin user dựa trên token
+      const userData = await authService.getMe();
+      set({ 
+        user: { ...userData, name: userData.full_name || userData.username }, 
+        isAuthenticated: true, 
+        isCheckingAuth: false 
+      });
+    } catch (error) {
+      // Token hết hạn hoặc không hợp lệ -> Xóa token cũ
+      localStorage.removeItem('hrm_access_token');
+      set({ user: null, isAuthenticated: false, isCheckingAuth: false });
+    }
+  }
 }));
 
 export default useAuthStore;

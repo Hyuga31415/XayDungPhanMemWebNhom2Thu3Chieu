@@ -1,29 +1,15 @@
 import axiosClient from './axiosClient';
 
 export const authService = {
+  // Gọi API Đăng nhập
   login: async (username, password) => {
-    const response = await axiosClient.post('/auth/login', {
-      username,
-      password,
-    });
-    if (response.token) {
-      localStorage.setItem('hrm_access_token', response.token);
-    }
-    return response;
+    return await axiosClient.post('/auth/login', { username, password });
   },
 
-  /**
-   * Đăng xuất
-  },
-
-  /**
-   * Lấy token hiện tại
-   */
-  
-  /**
-   * Kiểm tra xem có token không
-   */
-  isAuthenticated: () => {
-    return !!localStorage.getItem('hrm_access_token');
-  },
+  // Gọi API lấy thông tin user từ Token (Dùng khi F5 trang)
+  getMe: async () => {
+    return await axiosClient.get('/auth/me');
+  }
 };
+
+export default authService;
