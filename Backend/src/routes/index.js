@@ -2,14 +2,11 @@
 const express = require('express');
 const router = express.Router();
 
-// Import Controllers & Middlewares
-const { login } = require('../controllers/authController');
-// const { verifyToken } = require('../middlewares/authMiddleware');
-const { getPositions } = require('../controllers/employeeController');
-
 // Import các Module Routes
+const authRoutes = require('./authRoutes');
 const employeeRoutes = require('./employeeRoutes');
 const departmentRoutes = require('./departmentRoutes');
+const payrollRoutes = require('./payrollRoutes');
 
 const attendanceRoutes = require('./attendanceRoutes');
 const leaveRoutes = require('./leaveRoutes');
@@ -18,22 +15,28 @@ const leaveRoutes = require('./leaveRoutes');
 // PUBLIC ROUTES (Không cần đăng nhập)
 // ============================================================
 router.post('/auth/login', login);
+// Cần lấy getPositions ra ngoài nếu bạn muốn nó thành public API cho Dropdown
+const { getPositions } = require('../controllers/employeeController');
 
 // ============================================================
-// PROTECTED ROUTES (Cần đăng nhập & Phân quyền)
+// GẮN CÁC MODULE ROUTES
 // ============================================================
-// API lấy danh sách chức vụ (Frontend gọi độc lập tới /positions)
-// router.get('/positions', verifyToken, getPositions);
+
+// 1. Module Xác thực (Login, Get Me...)
+// Tất cả request bắt đầu bằng /auth sẽ đi vào authRoutes
+router.use('/auth', authRoutes);
+
+// 2. Module dùng chung không cần đăng nhập
 router.get('/positions', getPositions);
 
-// Gắn toàn bộ employeeRoutes vào tiền tố /employees
+// 3. Các Module Protected (Bên trong 2 file routes này đã tự gọi verifyToken)
 router.use('/employees', employeeRoutes);
-// Gắn toàn bộ departmentRoutes vào tiền tố /departments
 router.use('/departments', departmentRoutes);
 
 // Gắn attendanceRoutes
 router.use('/attendance', attendanceRoutes);
 // Gắn leaveRoutes
 router.use('/leave', leaveRoutes);
+router.use('/payroll', payrollRoutes);
 
 module.exports = router;

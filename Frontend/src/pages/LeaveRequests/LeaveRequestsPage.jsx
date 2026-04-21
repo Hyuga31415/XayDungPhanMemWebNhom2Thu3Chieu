@@ -3,11 +3,9 @@ import { Plus, Check, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import leaveRequestService from '../../api/leaveRequestService';
 
-const LEAVE_TYPES = [
-  { key: 'Annual', label: 'Nghi phep nam' },
-  { key: 'Sick', label: 'Nghi om' },
-  { key: 'Unpaid', label: 'Nghi khong luong' },
-];
+
+
+const LEAVE_TYPES = ['Nghỉ phép năm', 'Nghỉ ốm', 'Nghỉ không lương', 'Nghỉ không phép'];
 
 function LeaveRequestsPage() {
   const [loading, setLoading] = useState(true);
@@ -119,7 +117,11 @@ function LeaveRequestsPage() {
                     <label className="form-label">Loại nghỉ</label>
                     <select className="form-select" value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}>
                       <option value="">Chọn</option>
-                      {LEAVE_TYPES.map((type) => (<option key={type.key} value={type.key}>{type.label}</option>))}
+                      {LEAVE_TYPES.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
                     </select>
                   </div>
 

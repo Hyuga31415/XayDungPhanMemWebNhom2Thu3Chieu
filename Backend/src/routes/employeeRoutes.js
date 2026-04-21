@@ -2,43 +2,42 @@
 const express = require('express');
 const router = express.Router();
 const employeeController = require('../controllers/employeeController');
-// const { verifyToken, requireRole } = require('../middlewares/authMiddleware');
 
-// // ============================================================
-// // ÁP DỤNG MIDDLEWARE CHO TOÀN BỘ ROUTER NÀY
-// // Mọi request đi vào /api/v1/employees đều phải có token hợp lệ
-// // ============================================================
-// router.use(verifyToken);
+// Import middleware xác thực token và middleware RBAC mới
+const { verifyToken } = require('../middlewares/authMiddleware');
+const { permit, ownOnly } = require('../middlewares/rbac');
 
-// // ============================================================
-// // CÁC ROUTES CƠ BẢN (Ai đăng nhập cũng xem được)
-// // ============================================================
-// // Xem danh sách nhân viên
-// router.get('/', employeeController.getAllEmployees);
+// Bắt buộc đăng nhập cho toàn bộ route này
+router.use(verifyToken);
 
-// // ============================================================
-// // CÁC ROUTES QUẢN TRỊ (Chỉ Admin và HR được phép truy cập)
-// // ============================================================
-// // Thống kê Dashboard (Lưu ý quan trọng: Route tĩnh /stats phải đặt TRƯỚC route động /:id)
-// router.get('/stats', requireRole(['Admin', 'HR']), employeeController.getStats);
+// ============================================================
+// CÁC ROUTES MODULE NHÂN SỰ
+// ============================================================
 
-// // Xem chi tiết 1 nhân viên (Đưa xuống dưới /stats)
-// router.get('/:id', employeeController.getEmployeeById);
+// 1. Thống kê Dashboard & Analytics (Admin, HR)
+// Lưu ý: Đặt route tĩnh /stats lên trước route động /:id
+router.get('/stats', permit('analytics:read'), employeeController.getStats);
 
-// // Thêm nhân viên mới
-// router.post('/', requireRole(['Admin', 'HR']), employeeController.createEmployee);
+// 2. Lấy danh sách nhân viên 
+// API này có phân trang, Staff có thể gọi nhưng Controller phải tự bắt req.user.role == 'Staff' 
+// để đính kèm thêm `WHERE e.id = req.user.emp_id` vào câu SQL (xử lý ở tầng service/controller).
+router.get('/', permit('employee:read'), employeeController.getAllEmployees);
 
-// // Cập nhật thông tin nhân viên
-// router.put('/:id', requireRole(['Admin', 'HR']), employeeController.updateEmployee);
+// 3. Xem chi tiết 1 nhân viên
+// Ai cũng được xem, NHƯNG Staff bị chặn bởi ownOnly nếu id trên URL khác với emp_id của họ
+router.get('/:id', 
+    permit('employee:read'), 
+    ownOnly(req => req.params.id), 
+    employeeController.getEmployeeById
+);
 
-// // Xóa nhân viên
-// router.delete('/:id', requireRole(['Admin', 'HR']), employeeController.deleteEmployee);
+// 4. Thêm nhân viên mới (Admin, HR)
+router.post('/', permit('employee:write'), employeeController.createEmployee);
 
-router.get('/', employeeController.getAllEmployees);
-router.get('/stats', employeeController.getStats); 
-router.get('/:id', employeeController.getEmployeeById);
-router.post('/', employeeController.createEmployee); 
-router.put('/:id', employeeController.updateEmployee); 
-router.delete('/:id', employeeController.deleteEmployee); 
+// 5. Cập nhật thông tin nhân viên (Admin, HR)
+router.put('/:id', permit('employee:write'), employeeController.updateEmployee);
+
+// 6. Xóa nhân viên (Chỉ Admin mới có quyền xóa - theo như file docx quy định)
+router.delete('/:id', permit('employee:delete'), employeeController.deleteEmployee);
 
 module.exports = router;

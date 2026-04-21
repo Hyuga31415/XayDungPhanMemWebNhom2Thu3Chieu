@@ -1,0 +1,85 @@
+/* ============================================================
+   Login Layout Styles – Header + Footer
+   ============================================================ */
+
+.login-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-base);
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+.login-layout-header {
+  padding: var(--space-4) 0;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.login-layout-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.login-layout-logo {
+  transition: opacity var(--transition-fast);
+}
+
+.login-layout-logo:hover {
+  opacity: 0.8;
+}
+
+/* ── Main Content ──────────────────────────────────────────── */
+.login-layout-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-6);
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+.login-layout-footer {
+  padding: var(--space-8) 0;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.login-layout-footer .login-layout-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .login-layout-header {
+    padding: var(--space-3) 0;
+  }
+
+  .login-layout-content {
+    padding: var(--space-4);
+  }
+
+  .login-layout-footer {
+    padding: var(--space-6) 0;
+  }
+
+  .login-layout-container {
+    padding: 0 var(--space-4);
+  }
+
+  .login-layout-footer > .login-layout-container > div {
+    flex-direction: column;
+    gap: var(--space-3) !important;
+  }
+
+  .login-layout-footer > .login-layout-container > div > div {
+    flex-direction: column;
+    gap: var(--space-2) !important;
+  }
+}

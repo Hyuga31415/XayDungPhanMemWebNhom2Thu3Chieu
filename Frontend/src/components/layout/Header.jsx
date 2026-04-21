@@ -1,6 +1,7 @@
-import React from 'react';
-import { Bell, Search } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Bell, Search, LogOut } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import useAuthStore from '../../store/useAuthStore';
 import '../../styles/layout.css';
 
 // ============================================================
@@ -19,7 +20,15 @@ const PAGE_META = {
 
 function Header() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
+  const [showDropdown, setShowDropdown] = useState(false);
   const meta = PAGE_META[pathname] || { title: 'HRM', subtitle: '' };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   return (
     <header className="header">
@@ -48,17 +57,98 @@ function Header() {
         {/* Divider */}
         <div style={{ width: 1, height: 24, background: 'var(--border-subtle)' }} />
 
-        {/* User Avatar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-          <div className="header-avatar">HR</div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.2 }}>
-              Admin
-            </span>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-              HR Manager
-            </span>
-          </div>
+        {/* User Menu Dropdown */}
+        <div style={{ position: 'relative' }}>
+          <button
+            onClick={() => setShowDropdown(!showDropdown)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--space-2)',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+            }}
+          >
+            <div className="header-avatar">{user?.name?.charAt(0) || 'U'}</div>
+            <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.2 }}>
+                {user?.name || 'User'}
+              </span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                {user?.role || 'Member'}
+              </span>
+            </div>
+          </button>
+
+          {/* Dropdown Menu */}
+          {showDropdown && (
+            <div style={{
+              position: 'absolute',
+              top: '100%',
+              right: 0,
+              marginTop: 'var(--space-2)',
+              background: 'var(--bg-elevated)',
+              border: '1px solid var(--border-normal)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: 'var(--shadow-md)',
+              minWidth: '200px',
+              zIndex: 100,
+              overflow: 'hidden',
+            }}>
+              {/* User Info */}
+              <div style={{
+                padding: 'var(--space-3) var(--space-4)',
+                borderBottom: '1px solid var(--border-subtle)',
+              }}>
+                <p style={{
+                  margin: 0,
+                  fontSize: 'var(--font-size-sm)',
+                  fontWeight: 600,
+                  color: 'var(--text-primary)',
+                }}>
+                  {user?.name || 'User'}
+                </p>
+                <p style={{
+                  margin: '4px 0 0',
+                  fontSize: 'var(--font-size-xs)',
+                  color: 'var(--text-muted)',
+                }}>
+                  {user?.email || 'user@example.com'}
+                </p>
+              </div>
+
+              {/* Logout Button */}
+              <button
+                onClick={handleLogout}
+                style={{
+                  width: '100%',
+                  padding: 'var(--space-3) var(--space-4)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-2)',
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--text-secondary)',
+                  fontSize: 'var(--font-size-sm)',
+                  cursor: 'pointer',
+                  transition: 'all var(--transition-fast)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'var(--bg-glass)';
+                  e.currentTarget.style.color = 'var(--color-danger)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = 'var(--text-secondary)';
+                }}
+              >
+                <LogOut size={14} />
+                <span>Đăng xuất</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
