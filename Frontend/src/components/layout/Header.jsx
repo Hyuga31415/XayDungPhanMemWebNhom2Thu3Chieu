@@ -11,11 +11,15 @@ import '../../styles/layout.css';
 const PAGE_META = {
   '/dashboard':   { title: 'Dashboard',     subtitle: 'Tổng quan hệ thống nhân sự' },
   '/employees':   { title: 'Nhân viên',     subtitle: 'Quản lý danh sách nhân viên' },
+  '/profile':     { title: 'Hồ sơ cá nhân', subtitle: 'Thông tin nhân sự của bạn' },
   '/departments': { title: 'Phòng ban',     subtitle: 'Cơ cấu tổ chức doanh nghiệp' },
   '/positions':   { title: 'Chức vụ',      subtitle: 'Danh mục vị trí công việc' },
   '/analytics':   { title: 'Phân tích',    subtitle: 'Báo cáo và chỉ số nhân sự' },
   '/attendance':  { title: 'Chấm công',    subtitle: 'Quản lý thời gian làm việc' },
   '/leave-requests': { title: 'Nghỉ phép', subtitle: 'Yêu cầu và quản lý nghỉ phép' },
+  '/payroll/management': { title: 'Bảng lương', subtitle: 'Quản lý bảng lương theo kỳ' },
+  '/payroll/history': { title: 'Lịch sử lương', subtitle: 'Theo dõi lịch sử chi trả lương' },
+  '/payroll/settings': { title: 'Cấu hình lương', subtitle: 'Thiết lập tham số lương động' },
 };
 
 function Header() {

@@ -2,12 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Check, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import leaveRequestService from '../../api/leaveRequestService';
+import useAuthStore from '../../store/useAuthStore';
 
 
 
-const LEAVE_TYPES = ['Nghỉ phép năm', 'Nghỉ ốm', 'Nghỉ không lương', 'Nghỉ không phép'];
+const LEAVE_TYPES = [
+  { label: 'Nghỉ phép năm', value: 'Annual' },
+  { label: 'Nghỉ ốm', value: 'Sick' },
+  { label: 'Nghỉ không lương', value: 'Unpaid' },
+];
 
 function LeaveRequestsPage() {
+  const { user } = useAuthStore();
+  const isApprover = user?.role === 'Admin' || user?.role === 'HR';
+
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('requests');
   const [requests, setRequests] = useState([]);
@@ -16,12 +24,16 @@ function LeaveRequestsPage() {
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
   useEffect(() => {
-    const timer = setTimeout(async () => {
-      const data = await leaveRequestService.getAll();
-      setRequests(data);
-      setLoading(false);
-    }, 250);
-    return () => clearTimeout(timer);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const data = await leaveRequestService.getAll();
+        setRequests(data);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   const statusBadgeClass = (status) => {
@@ -51,38 +63,50 @@ function LeaveRequestsPage() {
     }
 
     setFormLoading(true);
-    setTimeout(() => {
-      const newRequest = {
-        emp_id: 6,
-        leave_type: formData.type,
-        start_date: formData.startDate,
-        end_date: formData.endDate,
+    const newRequest = {
+      emp_id: Number(user?.emp_id),
+      leave_type: formData.type,
+      start_date: formData.startDate,
+      end_date: formData.endDate,
+    };
+    leaveRequestService.create(newRequest).then((row) => {
+      const normalized = row?.id ? row : {
+        ...newRequest,
+        id: Date.now(),
+        status: 'Pending',
+        employee: user?.name || user?.full_name || 'Tôi',
+        type: LEAVE_TYPES.find((t) => t.value === newRequest.leave_type)?.label || newRequest.leave_type,
+        startDate: newRequest.start_date,
+        endDate: newRequest.end_date,
       };
-      leaveRequestService.create(newRequest).then((row) => {
-        setRequests((prev) => [row, ...prev]);
-      });
+      setRequests((prev) => [normalized, ...prev]);
       setFormData({ type: '', startDate: '', endDate: '', reason: '' });
       toast.success('Yêu cầu đã gửi, đang chờ phê duyệt.');
+      setActiveTab(isApprover ? 'manage' : 'requests');
+    }).catch((error) => {
+      toast.error(error.message || 'Không thể gửi đơn nghỉ phép.');
+    }).finally(() => {
       setFormLoading(false);
-      setActiveTab('manage');
-    }, 800);
+    });
   };
 
   const handleAction = (id, newStatus) => {
     if (!window.confirm(`Xác nhận ${newStatus} yêu cầu?`)) return;
 
     setActionLoadingId(id);
-    setTimeout(() => {
-      leaveRequestService.approveOrReject(id, newStatus, 3).then((row) => {
-        setRequests((prev) => prev.map((item) => (item.id === id ? row : item)));
-      });
+    leaveRequestService.approveOrReject(id, newStatus, user?.emp_id).then((row) => {
+      const normalized = row?.id ? row : { id, status: newStatus };
+      setRequests((prev) => prev.map((item) => (item.id === id ? { ...item, ...normalized, status: normalized.status || newStatus } : item)));
       toast.success(`Da ${newStatus === 'Approved' ? 'phe duyet' : 'tu choi'} yeu cau.`);
+    }).catch((error) => {
+      toast.error(error.message || 'Không thể cập nhật trạng thái đơn nghỉ.');
+    }).finally(() => {
       setActionLoadingId(null);
-    }, 700);
+    });
   };
 
   const pendingRequests = requests.filter((item) => item.status === 'Pending');
-  const myRequests = requests.filter((item) => item.emp_id === 6);
+  const myRequests = requests.filter((item) => Number(item.emp_id) === Number(user?.emp_id));
 
   return (
     <div className="leave-requests-page container py-4">
@@ -99,7 +123,9 @@ function LeaveRequestsPage() {
           <button className={`nav-link ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>Yêu cầu của tôi</button>
         </li>
         <li className="nav-item">
-          <button className={`nav-link ${activeTab === 'manage' ? 'active' : ''}`} onClick={() => setActiveTab('manage')}>Duyệt yêu cầu</button>
+          {isApprover && (
+            <button className={`nav-link ${activeTab === 'manage' ? 'active' : ''}`} onClick={() => setActiveTab('manage')}>Duyệt yêu cầu</button>
+          )}
         </li>
       </ul>
 
@@ -118,8 +144,8 @@ function LeaveRequestsPage() {
                     <select className="form-select" value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}>
                       <option value="">Chọn</option>
                       {LEAVE_TYPES.map((type) => (
-                        <option key={type} value={type}>
-                          {type}
+                        <option key={type.value} value={type.value}>
+                          {type.label}
                         </option>
                       ))}
                     </select>
@@ -178,7 +204,7 @@ function LeaveRequestsPage() {
         </div>
       )}
 
-      {activeTab === 'manage' && (
+      {activeTab === 'manage' && isApprover && (
         <div className="card shadow-sm">
           <div className="card-header d-flex justify-content-between align-items-center">
             <h5 className="mb-0">Danh sách yêu cầu chờ duyệt</h5>

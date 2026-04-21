@@ -10,8 +10,10 @@ const PERMISSIONS = {
     'employee:read':        ['Admin', 'HR', 'Staff'], // Staff bị chặn bởi ownOnly
     'employee:write':       ['Admin', 'HR'],
     'employee:delete':      ['Admin'],
-    'department:read':      ['Admin', 'HR', 'Staff'],
+    'department:read':      ['Admin'],
     'department:write':     ['Admin'],
+    'position:read':        ['Admin', 'HR'],
+    'position:write':       ['Admin'],
   
     // Chấm công
     'attendance:read':      ['Admin', 'HR', 'Staff'], 
@@ -19,11 +21,11 @@ const PERMISSIONS = {
     'attendance:adjust':    ['Admin', 'HR'],
     'leave:request':        ['Admin', 'HR', 'Staff'],
     'leave:approve':        ['Admin', 'HR'],
-    'shift:read':           ['Admin', 'HR', 'Staff'],
+    'shift:read':           ['Admin', 'HR'],
     'shift:write':          ['Admin', 'HR'],
   
     // Payroll
-    'payroll:read':         ['Admin', 'HR', 'Staff'], 
+    'payroll:read':         ['Admin', 'HR'], 
     'payroll:write':        ['Admin'],
     'payroll:config':       ['Admin'],
     'payroll:report':       ['Admin', 'HR'],

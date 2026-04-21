@@ -17,6 +17,6 @@ router.get('/', permit('payroll:read'), payrollController.getAllPayrolls);
 router.get('/history', permit('payroll:history:read'), payrollController.getPayrollHistory);
 
 // API xem chi tiết 1 phiếu lương
-router.get('/:id', permit('payroll:history:read', 'payroll:read'), payrollController.getPayrollDetail);
+router.get('/:id', permit('payroll:history:read'), payrollController.getPayrollDetail);
 
 module.exports = router;

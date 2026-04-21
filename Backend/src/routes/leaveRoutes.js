@@ -1,19 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/leaveController');
+const { verifyToken } = require('../middlewares/authMiddleware');
+const { permit } = require('../middlewares/rbac');
 
-// 🟢 TEST API (rất nên có)
-router.get('/', (req, res) => {
-    res.json({ message: "Leave API is working" });
-});
+router.use(verifyToken);
+
+// 📄 Danh sách đơn nghỉ
+router.get('/', permit('leave:request'), controller.getLeaves);
 
 // 🟢 Tạo đơn nghỉ
-router.post('/', controller.createLeave);
+router.post('/', permit('leave:request'), controller.createLeave);
 
 // ✅ Duyệt đơn
-router.put('/:id/approve', controller.approve);
+router.put('/:id/approve', permit('leave:approve'), controller.approve);
 
 // ❌ Từ chối
-router.put('/:id/reject', controller.reject);
+router.put('/:id/reject', permit('leave:approve'), controller.reject);
 
 module.exports = router;

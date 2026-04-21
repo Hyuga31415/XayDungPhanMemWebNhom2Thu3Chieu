@@ -25,6 +25,7 @@ const formatPayload = (data) => {
     fullName: data.full_name || data.fullName, // Backend destructure 'fullName'
     department_id: Number(data.department_id),
     position_id: Number(data.position_id),
+    change_reason: data.change_reason || undefined,
   };
 };
 
@@ -74,6 +75,16 @@ export const employeeService = {
   // 7. Lấy danh sách chức vụ (Positions) dùng cho Select box
   getPositions: async () => {
     return await axiosClient.get('/positions');
+  },
+
+  // 8. Lấy lịch sử công tác theo nhân viên
+  getJobHistory: async (id) => {
+    return await axiosClient.get(`/employees/${id}/job-history`);
+  },
+
+  // 9. Lấy danh sách hợp đồng theo nhân viên
+  getContracts: async (id) => {
+    return await axiosClient.get(`/employees/${id}/contracts`);
   },
 };
 
