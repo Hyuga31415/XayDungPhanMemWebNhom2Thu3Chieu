@@ -6,7 +6,9 @@ const router = express.Router();
 const authRoutes = require('./authRoutes');
 const employeeRoutes = require('./employeeRoutes');
 const departmentRoutes = require('./departmentRoutes');
+const positionRoutes = require('./positionRoutes');
 const payrollRoutes = require('./payrollRoutes');
+const systemConfigRoutes = require('./systemConfigRoutes');
 
 const attendanceRoutes = require('./attendanceRoutes');
 const leaveRoutes = require('./leaveRoutes');
@@ -14,10 +16,6 @@ const leaveRoutes = require('./leaveRoutes');
 // ============================================================
 // PUBLIC ROUTES (Không cần đăng nhập)
 // ============================================================
-router.post('/auth/login', login);
-// Cần lấy getPositions ra ngoài nếu bạn muốn nó thành public API cho Dropdown
-const { getPositions } = require('../controllers/employeeController');
-
 // ============================================================
 // GẮN CÁC MODULE ROUTES
 // ============================================================
@@ -26,17 +24,16 @@ const { getPositions } = require('../controllers/employeeController');
 // Tất cả request bắt đầu bằng /auth sẽ đi vào authRoutes
 router.use('/auth', authRoutes);
 
-// 2. Module dùng chung không cần đăng nhập
-router.get('/positions', getPositions);
-
-// 3. Các Module Protected (Bên trong 2 file routes này đã tự gọi verifyToken)
+// 2. Các Module Protected (Bên trong các file routes đã tự gọi verifyToken)
 router.use('/employees', employeeRoutes);
 router.use('/departments', departmentRoutes);
+router.use('/positions', positionRoutes);
 
 // Gắn attendanceRoutes
 router.use('/attendance', attendanceRoutes);
 // Gắn leaveRoutes
 router.use('/leave', leaveRoutes);
 router.use('/payroll', payrollRoutes);
+router.use('/system-configs', systemConfigRoutes);
 
 module.exports = router;

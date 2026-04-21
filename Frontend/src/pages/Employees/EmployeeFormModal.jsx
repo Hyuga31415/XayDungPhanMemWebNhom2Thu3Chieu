@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { User, Mail, Calendar, DollarSign } from 'lucide-react';
+import { User, Mail, Calendar } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 import Button from '../../components/ui/Button';
 import { Input, Select } from '../../components/ui/Input';
@@ -21,20 +21,14 @@ const GENDER_OPTIONS = [
   { value: 'female', label: 'Nữ'  },
 ];
 
-function formatSalary(n) {
-  if (!n) return '0 đ';
-  return new Intl.NumberFormat('vi-VN').format(n) + ' đ';
-}
-
 function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }) {
   const { departments, fetchDepartments } = useDepartmentStore();
   
   // State quản lý danh sách chức vụ gọi từ API
   const [positions, setPositions] = useState([]);
-  const [selectedPosition, setSelectedPosition] = useState(null);
 
   const {
-    register, handleSubmit, reset, watch,
+    register, handleSubmit, reset,
     formState: { errors },
   } = useForm();
 
@@ -64,25 +58,13 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
         hire_date:     employee.hire_date,
         status:        employee.status,
       });
-      // Set lại UI mức lương
-      setSelectedPosition(positions.find((p) => p.id === employee.position_id) || null);
     } else {
       reset({
         full_name: '', email: '', gender: 'male',
         department_id: '', position_id: '', hire_date: '', status: 'Active',
       });
-      setSelectedPosition(null);
     }
-  }, [employee, isOpen, reset, positions]);
-
-  // Lắng nghe sự thay đổi của Select "Chức vụ" để hiển thị mức lương tương ứng
-  const watchedPositionId = watch('position_id');
-  useEffect(() => {
-    if (positions.length > 0) {
-      const pos = positions.find((p) => p.id === Number(watchedPositionId));
-      setSelectedPosition(pos || null);
-    }
-  }, [watchedPositionId, positions]);
+  }, [employee, isOpen, reset]);
 
   const handleFormSubmit = (data) => {
     onSubmit(data); // Chuyển thẳng data ra ngoài page xử lý. Payload formatting đã được lo bên employeeService.js
@@ -175,26 +157,9 @@ function EmployeeFormModal({ isOpen, onClose, onSubmit, employee, isSubmitting }
             ))}
           </Select>
 
-          {/* Hiển thị mức lương từ API */}
-          {selectedPosition && (
-            <div style={{ gridColumn: '1 / -1' }}>
-              <div style={{
-                padding: 'var(--space-3) var(--space-4)',
-                background: '#6366f115',
-                border: '1px solid #6366f133',
-                borderRadius: 'var(--radius-md)',
-                display: 'flex', alignItems: 'center', gap: 10,
-              }}>
-                <DollarSign size={15} color="var(--brand-primary)" />
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-                  Mức lương cơ bản:
-                </span>
-                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: 'var(--brand-primary)' }}>
-                  {formatSalary(selectedPosition.base_salary)}
-                </span>
-              </div>
-            </div>
-          )}
+          <div style={{ gridColumn: '1 / -1', fontSize: 12, color: 'var(--text-muted)' }}>
+            Lương cơ bản hiện được quản lý theo hợp đồng riêng của từng nhân viên.
+          </div>
 
           <Input
             label="Ngày vào làm"

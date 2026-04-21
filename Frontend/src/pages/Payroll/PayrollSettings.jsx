@@ -1,95 +1,125 @@
-import React, { useState } from 'react';
-import { Settings, Plus, Trash2, ShieldCheck } from 'lucide-react';
-import { formatVnd } from '../../utils/payrollUtils';
-import { Input } from '../../components/ui/Input';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Save, Settings, RefreshCw } from 'lucide-react';
+import toast from 'react-hot-toast';
 import Button from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import systemConfigService from '../../api/systemConfigService';
 
-function PayrollSettings({ initialSalaryLevels, initialAllowances, initialRules }) {
-  const [salaryLevels, setSalaryLevels] = useState(initialSalaryLevels ?? []);
-  const [allowances, setAllowances] = useState(initialAllowances ?? []);
-  const [rules, setRules] = useState(initialRules ?? []);
+const importantKeys = [
+  'STANDARD_WORK_DAYS',
+  'STANDARD_WORK_HOURS',
+  'LATE_PENALTY_AMOUNT',
+  'BHXH_RATE_EMPLOYEE',
+  'LUNCH_ALLOWANCE_PER_DAY',
+  'TRANSPORT_ALLOWANCE_PER_MONTH',
+  'ATTENDANCE_BONUS_AMOUNT',
+  'OVERTIME_RATE_MULTIPLIER'
+];
 
-  const [newSalaryLabel, setNewSalaryLabel] = useState('');
-  const [newSalaryValue, setNewSalaryValue] = useState('');
+function PayrollSettings() {
+  const [configs, setConfigs] = useState([]);
+  const [draft, setDraft] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleAddSalaryLevel = (e) => {
-    e.preventDefault();
-    if (!newSalaryLabel.trim() || !newSalaryValue) return;
-    setSalaryLevels(prev => [...prev, { id: Date.now(), level: newSalaryLabel, monthly: Number(newSalaryValue) }]);
-    setNewSalaryLabel(''); setNewSalaryValue('');
+  const loadConfigs = async () => {
+    setIsLoading(true);
+    try {
+      const rows = await systemConfigService.getAll();
+      const list = Array.isArray(rows) ? rows : [];
+      setConfigs(list);
+
+      const nextDraft = list.reduce((acc, item) => {
+        acc[item.config_key] = item.config_value ?? '';
+        return acc;
+      }, {});
+      setDraft(nextDraft);
+    } catch (error) {
+      toast.error(error.message || 'Không thể tải cấu hình hệ thống.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadConfigs();
+  }, []);
+
+  const sortedConfigs = useMemo(() => {
+    const clone = [...configs];
+    clone.sort((a, b) => {
+      const indexA = importantKeys.indexOf(a.config_key);
+      const indexB = importantKeys.indexOf(b.config_key);
+      const rankA = indexA === -1 ? 999 : indexA;
+      const rankB = indexB === -1 ? 999 : indexB;
+      if (rankA !== rankB) return rankA - rankB;
+      return a.config_key.localeCompare(b.config_key);
+    });
+    return clone;
+  }, [configs]);
+
+  const handleChange = (key, value) => {
+    setDraft((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const items = sortedConfigs.map((item) => ({
+        config_key: item.config_key,
+        config_value: draft[item.config_key] ?? '',
+        description: item.description || null
+      }));
+
+      await systemConfigService.updateMany(items);
+      toast.success('Đã cập nhật cấu hình hệ thống.');
+      await loadConfigs();
+    } catch (error) {
+      toast.error(error.message || 'Cập nhật cấu hình thất bại.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
-      <div className="card-premium" style={{ padding: 'var(--space-6)', display: 'flex', gap: 'var(--space-4)', alignItems: 'center', background: 'var(--bg-surface)' }}>
-        <div style={{ width: 56, height: 56, borderRadius: 'var(--radius-md)', background: 'var(--brand-gradient)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Settings size={28} />
+      <div className="card-premium" style={{ padding: 'var(--space-6)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+          <div style={{ width: 56, height: 56, borderRadius: 'var(--radius-md)', background: 'var(--brand-gradient)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Settings size={28} />
+          </div>
+          <div>
+            <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: 'var(--text-primary)' }}>Cấu hình hệ thống lương</h1>
+            <p style={{ color: 'var(--text-muted)' }}>Dynamic Form lấy dữ liệu trực tiếp từ bảng system_configs.</p>
+          </div>
         </div>
-        <div>
-          <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: 'var(--text-primary)' }}>Thiết lập Quy tắc Lương</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Cấu hình cấp bậc, phụ cấp và các khoản khấu trừ hệ thống.</p>
+
+        <div style={{ display: 'flex', gap: 10 }}>
+          <Button variant="secondary" icon={RefreshCw} onClick={loadConfigs} loading={isLoading}>Tải lại</Button>
+          <Button icon={Save} onClick={handleSave} loading={isSaving}>Lưu cấu hình</Button>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-5)' }}>
-        
-        {/* Cột 1: Mức lương */}
-        <div className="glass-card" style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 12 }}>Bậc lương chuẩn</h2>
-          
-          <form onSubmit={handleAddSalaryLevel} style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '16px', background: 'var(--bg-base)', borderRadius: 'var(--radius-md)' }}>
-            <Input placeholder="Tên bậc (VD: Senior)" value={newSalaryLabel} onChange={e => setNewSalaryLabel(e.target.value)} />
-            <Input type="number" placeholder="Lương cơ bản (VND)" value={newSalaryValue} onChange={e => setNewSalaryValue(e.target.value)} />
-            <Button type="submit" icon={Plus} size="sm" style={{ width: '100%' }}>Thêm bậc</Button>
-          </form>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1, overflowY: 'auto' }}>
-            {salaryLevels.map(item => (
-              <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)' }}>
-                <div>
-                  <p style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{item.level}</p>
-                  <p style={{ fontSize: 12, color: 'var(--brand-primary)', fontWeight: 600 }}>{formatVnd(item.monthly)}</p>
-                </div>
-                <button onClick={() => setSalaryLevels(p => p.filter(i => i.id !== item.id))} style={{ background: 'transparent', border: 'none', color: 'var(--color-danger)', cursor: 'pointer', padding: 4 }}><Trash2 size={16} /></button>
+      <div className="glass-card" style={{ padding: 'var(--space-5)' }}>
+        {isLoading ? (
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>Đang tải cấu hình...</div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+            {sortedConfigs.map((item) => (
+              <div key={item.id} style={{ padding: 'var(--space-4)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', background: 'var(--bg-elevated)' }}>
+                <p style={{ marginBottom: 8, fontSize: 12, color: 'var(--text-muted)', fontWeight: 700 }}>{item.config_key}</p>
+                <Input
+                  value={draft[item.config_key] ?? ''}
+                  onChange={(e) => handleChange(item.config_key, e.target.value)}
+                  placeholder="Nhập giá trị"
+                />
+                <p style={{ marginTop: 8, fontSize: 12, color: 'var(--text-secondary)' }}>
+                  {item.description || 'Không có mô tả'}
+                </p>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Cột 2: Phụ cấp */}
-        <div className="glass-card" style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 12 }}>Danh mục Phụ cấp</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {allowances.map(item => (
-              <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)' }}>
-                <div>
-                  <p style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{item.name}</p>
-                  <p style={{ fontSize: 12, color: 'var(--color-success)', fontWeight: 600 }}>{item.rate}</p>
-                </div>
-                <button onClick={() => setAllowances(p => p.filter(i => i.id !== item.id))} style={{ background: 'transparent', border: 'none', color: 'var(--color-danger)', cursor: 'pointer', padding: 4 }}><Trash2 size={16} /></button>
-              </div>
-            ))}
-          </div>
-          <Button variant="secondary" icon={Plus} style={{ marginTop: 'auto' }}>Thêm phụ cấp mới</Button>
-        </div>
-
-        {/* Cột 3: Khấu trừ */}
-        <div className="glass-card" style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 12 }}>Quy tắc Khấu trừ</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {rules.map(item => (
-              <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)' }}>
-                <div>
-                  <p style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{item.name}</p>
-                  <p style={{ fontSize: 12, color: 'var(--color-warning)', fontWeight: 600 }}>{item.penalty}</p>
-                </div>
-                <button onClick={() => setRules(p => p.filter(i => i.id !== item.id))} style={{ background: 'transparent', border: 'none', color: 'var(--color-danger)', cursor: 'pointer', padding: 4 }}><Trash2 size={16} /></button>
-              </div>
-            ))}
-          </div>
-          <Button variant="secondary" icon={Plus} style={{ marginTop: 'auto' }}>Thêm quy tắc mới</Button>
-        </div>
-
+        )}
       </div>
     </div>
   );

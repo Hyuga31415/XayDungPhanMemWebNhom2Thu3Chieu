@@ -26,7 +26,7 @@ export const leaveRequestService = {
       await delay();
       return mockRequests.map(toUi);
     }
-    const res = await axiosClient.get('/leave-requests');
+    const res = await axiosClient.get('/leave');
     const list = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
     return list.map(toUi);
   },
@@ -46,7 +46,7 @@ export const leaveRequestService = {
       mockRequests.unshift(newRow);
       return toUi(newRow);
     }
-    return axiosClient.post('/leave-requests', payload);
+    return axiosClient.post('/leave', payload);
   },
 
   approveOrReject: async (id, status, approvedBy) => {
@@ -58,7 +58,10 @@ export const leaveRequestService = {
       row.approved_by = approvedBy || null;
       return toUi(row);
     }
-    return axiosClient.patch(`/leave-requests/${id}`, { status, approved_by: approvedBy || null });
+    if (status === 'Approved') {
+      return axiosClient.put(`/leave/${id}/approve`, {});
+    }
+    return axiosClient.put(`/leave/${id}/reject`, {});
   },
 };
 

@@ -18,6 +18,10 @@ router.use(verifyToken);
 // Lưu ý: Đặt route tĩnh /stats lên trước route động /:id
 router.get('/stats', permit('analytics:read'), employeeController.getStats);
 
+// 1.1. Tab chi tiết nhân viên: Lịch sử công tác và Hợp đồng
+router.get('/:id/job-history', permit('employee:read'), ownOnly(req => req.params.id), employeeController.getJobHistory);
+router.get('/:id/contracts', permit('employee:read'), ownOnly(req => req.params.id), employeeController.getContracts);
+
 // 2. Lấy danh sách nhân viên 
 // API này có phân trang, Staff có thể gọi nhưng Controller phải tự bắt req.user.role == 'Staff' 
 // để đính kèm thêm `WHERE e.id = req.user.emp_id` vào câu SQL (xử lý ở tầng service/controller).

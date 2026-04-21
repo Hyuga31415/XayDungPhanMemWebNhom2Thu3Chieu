@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Search, Filter, Pencil, Trash2, Users, RefreshCw } from 'lucide-react';
+import { Plus, Search, Filter, Pencil, Trash2, Users, RefreshCw, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import useEmployeeStore from '../../store/useEmployeeStore';
 import useDepartmentStore from '../../store/useDepartmentStore';
 import useUIStore from '../../store/useUIStore';
+import useAuthStore from '../../store/useAuthStore';
 import { Table, Pagination } from '../../components/ui/Table';
 import Badge, { STATUS_MAP } from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
@@ -21,6 +23,10 @@ function EmployeeListPage() {
 
   const { departments, fetchDepartments } = useDepartmentStore();
   const { openConfirm } = useUIStore();
+  const { user } = useAuthStore();
+  const navigate = useNavigate();
+
+  const canManageEmployee = user?.role === 'Admin' || user?.role === 'HR';
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
@@ -103,6 +109,16 @@ function EmployeeListPage() {
       render: (_, row) => (
         <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
           <button
+            onClick={() => navigate(`/employees/${row.id}`)}
+            style={{ width: 30, height: 30, borderRadius: 'var(--radius-md)', background: 'var(--bg-glass)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all var(--transition-fast)' }}
+            title="Chi tiết"
+          >
+            <Eye size={13} />
+          </button>
+
+          {canManageEmployee && (
+            <>
+          <button
             onClick={() => openEdit(row)}
             style={{ width: 30, height: 30, borderRadius: 'var(--radius-md)', background: 'var(--bg-glass)', border: '1px solid var(--border-subtle)', color: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all var(--transition-fast)' }}
             title="Chỉnh sửa"
@@ -120,6 +136,8 @@ function EmployeeListPage() {
           >
             <Trash2 size={13} />
           </button>
+            </>
+          )}
         </div>
       ),
     },
@@ -140,7 +158,7 @@ function EmployeeListPage() {
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
           <Button variant="secondary" icon={RefreshCw} onClick={fetchEmployees} size="sm">Làm mới</Button>
-          <Button icon={Plus} onClick={openAdd}>Thêm nhân viên</Button>
+          {canManageEmployee && <Button icon={Plus} onClick={openAdd}>Thêm nhân viên</Button>}
         </div>
       </div>
 

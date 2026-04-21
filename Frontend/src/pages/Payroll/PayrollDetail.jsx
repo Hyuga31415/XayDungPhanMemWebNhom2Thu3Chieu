@@ -65,9 +65,13 @@ function PayrollDetail() {
     return <div style={{ padding: 40, textAlign: 'center' }}>Đang tải chi tiết phiếu lương...</div>;
   }
 
-// Ép kiểu Number() cẩn thận cho tất cả phép cộng
-  const totalAllowance = data.allowances.reduce((s, i) => s + Number(i.amount || 0), 0);
-  const totalDeduction = data.deductions.reduce((s, i) => s + Number(i.amount || 0), 0);
+  const detailLines = Array.isArray(data.payroll_details) ? data.payroll_details : [];
+  const totalAllowance = detailLines
+    .filter((item) => item.component_type === 'Allowance')
+    .reduce((s, i) => s + Number(i.amount || 0), 0);
+  const totalDeduction = detailLines
+    .filter((item) => item.component_type === 'Deduction')
+    .reduce((s, i) => s + Number(i.amount || 0), 0);
   
   const grossSalary = Number(data.baseSalary || 0) + totalAllowance;
 
@@ -112,39 +116,58 @@ function PayrollDetail() {
         </p>
       </div>
 
-      {/* Chi tiết 2 cột */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-5)' }}>
-        {/* Thu nhập */}
-        <div className="glass-card" style={{ padding: 'var(--space-5)' }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', borderBottom: '2px solid var(--color-success)', paddingBottom: 12, marginBottom: 16 }}>THU NHẬP</h2>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px dashed var(--border-subtle)' }}>
-            <span style={{ color: 'var(--text-secondary)' }}>Lương cơ bản</span>
-            <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{formatVnd(data.baseSalary)}</span>
-          </div>
-          {data.allowances.map((item, idx) => (
-            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px dashed var(--border-subtle)' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>{item.label}</span>
-              <span style={{ fontWeight: 600, color: 'var(--color-success)' }}>+ {formatVnd(item.amount)}</span>
-            </div>
-          ))}
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px 0 0', marginTop: 8 }}>
-            <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>Tổng cộng thu nhập</span>
-            <span style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 18 }}>{formatVnd(grossSalary)}</span>
-          </div>
+      {/* Bảng chi tiết phiếu lương theo payroll_details */}
+      <div className="glass-card" style={{ padding: 'var(--space-5)' }}>
+        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14 }}>CHI TIẾT CÁC KHOẢN CỘNG/TRỪ</h2>
+
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: 'left', padding: 10, borderBottom: '1px solid var(--border-normal)', fontSize: 12, color: 'var(--text-muted)' }}>Khoản mục</th>
+                <th style={{ textAlign: 'left', padding: 10, borderBottom: '1px solid var(--border-normal)', fontSize: 12, color: 'var(--text-muted)' }}>Loại</th>
+                <th style={{ textAlign: 'right', padding: 10, borderBottom: '1px solid var(--border-normal)', fontSize: 12, color: 'var(--text-muted)' }}>Số tiền</th>
+                <th style={{ textAlign: 'left', padding: 10, borderBottom: '1px solid var(--border-normal)', fontSize: 12, color: 'var(--text-muted)' }}>Ghi chú</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ padding: 10, borderBottom: '1px dashed var(--border-subtle)', color: 'var(--text-secondary)' }}>Lương cơ bản</td>
+                <td style={{ padding: 10, borderBottom: '1px dashed var(--border-subtle)' }}><Badge variant="default">Base</Badge></td>
+                <td style={{ padding: 10, textAlign: 'right', borderBottom: '1px dashed var(--border-subtle)', fontWeight: 700 }}>{formatVnd(data.baseSalary)}</td>
+                <td style={{ padding: 10, borderBottom: '1px dashed var(--border-subtle)', color: 'var(--text-muted)' }}>Theo hợp đồng</td>
+              </tr>
+
+              {detailLines.map((line) => (
+                <tr key={line.id}>
+                  <td style={{ padding: 10, borderBottom: '1px dashed var(--border-subtle)', color: 'var(--text-secondary)' }}>{line.component_name}</td>
+                  <td style={{ padding: 10, borderBottom: '1px dashed var(--border-subtle)' }}>
+                    <Badge variant={line.component_type === 'Allowance' ? 'success' : 'danger'}>
+                      {line.component_type === 'Allowance' ? 'Cộng' : 'Trừ'}
+                    </Badge>
+                  </td>
+                  <td style={{ padding: 10, textAlign: 'right', borderBottom: '1px dashed var(--border-subtle)', fontWeight: 700, color: line.component_type === 'Allowance' ? 'var(--color-success)' : 'var(--color-danger)' }}>
+                    {line.component_type === 'Allowance' ? '+' : '-'} {formatVnd(line.amount)}
+                  </td>
+                  <td style={{ padding: 10, borderBottom: '1px dashed var(--border-subtle)', color: 'var(--text-muted)' }}>{line.description || '-'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
-        {/* Khấu trừ */}
-        <div className="glass-card" style={{ padding: 'var(--space-5)' }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', borderBottom: '2px solid var(--color-danger)', paddingBottom: 12, marginBottom: 16 }}>KHẤU TRỪ</h2>
-          {data.deductions.map((item, idx) => (
-            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px dashed var(--border-subtle)' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>{item.label}</span>
-              <span style={{ fontWeight: 600, color: 'var(--color-danger)' }}>- {formatVnd(item.amount)}</span>
-            </div>
-          ))}
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px 0 0', marginTop: 8 }}>
-            <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>Tổng cộng khấu trừ</span>
-            <span style={{ fontWeight: 800, color: 'var(--color-danger)', fontSize: 18 }}>{formatVnd(totalDeduction)}</span>
+        <div style={{ marginTop: 'var(--space-4)', display: 'grid', gridTemplateColumns: 'repeat(3, minmax(160px, 1fr))', gap: 12 }}>
+          <div style={{ padding: 12, border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', background: 'var(--bg-elevated)' }}>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Tổng thu nhập</p>
+            <p style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)' }}>{formatVnd(grossSalary)}</p>
+          </div>
+          <div style={{ padding: 12, border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', background: 'var(--bg-elevated)' }}>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Tổng khấu trừ</p>
+            <p style={{ fontSize: 18, fontWeight: 800, color: 'var(--color-danger)' }}>{formatVnd(totalDeduction)}</p>
+          </div>
+          <div style={{ padding: 12, border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', background: 'rgba(16, 185, 129, 0.08)' }}>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Thực lĩnh</p>
+            <p style={{ fontSize: 18, fontWeight: 800, color: 'var(--color-success)' }}>{formatVnd(data.netSalary)}</p>
           </div>
         </div>
       </div>

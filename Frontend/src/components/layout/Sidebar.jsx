@@ -25,9 +25,10 @@ const navItems = [
   {
     section: 'Quản lý nhân sự',
     items: [
+      { to: '/profile', icon: Users, label: 'Hồ sơ của tôi', roles: ['Admin', 'HR', 'Staff'] },
       { to: '/employees', icon: Users, label: 'Nhân viên', roles: ['Admin', 'HR'] },
-      { to: '/departments', icon: Building2, label: 'Phòng ban', roles: ['Admin', 'HR'] },
-      { to: '/positions', icon: Briefcase, label: 'Chức vụ', roles: ['Admin', 'HR'] },
+      { to: '/departments', icon: Building2, label: 'Phòng ban', roles: ['Admin'] },
+      { to: '/positions', icon: Briefcase, label: 'Chức vụ', roles: ['Admin'] },
     ],
   },
   {
@@ -35,7 +36,7 @@ const navItems = [
     items: [
       { to: '/attendance', icon: Clock, label: 'Chấm công', roles: ['Admin', 'HR', 'Staff'] },
       { to: '/leave-requests', icon: Calendar, label: 'Nghỉ phép', roles: ['Admin', 'HR', 'Staff'] },
-      { to: '/shifts', icon: Layers, label: 'Ca làm việc', roles: ['Admin', 'HR', 'Staff'] },
+      { to: '/shifts', icon: Layers, label: 'Ca làm việc', roles: ['Admin', 'HR'] },
     ],
   },
   {

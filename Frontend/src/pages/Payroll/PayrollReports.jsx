@@ -1,9 +1,77 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { BarChart3, Download, TrendingUp, TrendingDown, Info } from 'lucide-react';
 import { formatVnd } from '../../utils/payrollUtils';
 import Button from '../../components/ui/Button';
+import payrollService from '../../api/payrollService';
+
+const defaultReportData = [
+  { title: 'Tổng quỹ lương', value: 0, color: 'var(--color-success)', bg: 'rgba(16, 185, 129, 0.1)', trend: '+0.0%' },
+  { title: 'Tổng phụ cấp', value: 0, color: 'var(--color-info)', bg: 'rgba(59, 130, 246, 0.1)', trend: '+0.0%' },
+  { title: 'Tổng khấu trừ', value: 0, color: 'var(--color-warning)', bg: 'rgba(245, 158, 11, 0.1)', trend: '+0.0%' },
+];
+
+const defaultQuickInsights = [
+  'Chưa có đủ dữ liệu để sinh insight tự động.',
+];
 
 function PayrollReports({ reportData, quickInsights }) {
+  const [rows, setRows] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    const loadPayrollReportData = async () => {
+      setIsLoading(true);
+      setErrorMessage('');
+      try {
+        const res = await payrollService.getAll();
+        const list = Array.isArray(res) ? res : (res?.data || []);
+        setRows(list);
+      } catch (error) {
+        setErrorMessage(error.message || 'Không thể tải dữ liệu báo cáo lương.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPayrollReportData();
+  }, []);
+
+  const analytics = useMemo(() => {
+    if (!rows.length) {
+      return {
+        reportData: defaultReportData,
+        quickInsights: defaultQuickInsights,
+      };
+    }
+
+    const totalPayrollFund = rows.reduce((sum, row) => sum + Number(row.net_salary || 0), 0);
+    const totalAllowance = rows.reduce((sum, row) => sum + Number(row.total_allowance || 0), 0);
+    const totalDeduction = rows.reduce((sum, row) => sum + Number(row.total_deduction || 0), 0);
+    const paidCount = rows.filter((row) => row.status === 'Paid').length;
+    const draftCount = rows.filter((row) => row.status === 'Draft').length;
+
+    const safeReportData = [
+      { title: 'Tổng quỹ lương', value: totalPayrollFund, color: 'var(--color-success)', bg: 'rgba(16, 185, 129, 0.1)', trend: rows.length > 0 ? '+100%' : '+0.0%' },
+      { title: 'Tổng phụ cấp', value: totalAllowance, color: 'var(--color-info)', bg: 'rgba(59, 130, 246, 0.1)', trend: totalPayrollFund > 0 ? `+${((totalAllowance / totalPayrollFund) * 100).toFixed(1)}%` : '+0.0%' },
+      { title: 'Tổng khấu trừ', value: totalDeduction, color: 'var(--color-warning)', bg: 'rgba(245, 158, 11, 0.1)', trend: totalPayrollFund > 0 ? `-${((totalDeduction / totalPayrollFund) * 100).toFixed(1)}%` : '+0.0%' },
+    ];
+
+    const safeQuickInsights = [
+      `Đã tổng hợp ${rows.length} phiếu lương từ dữ liệu hệ thống.`,
+      `Số phiếu đã thanh toán: ${paidCount}, bản nháp/chờ duyệt: ${draftCount}.`,
+      `Tỷ lệ khấu trừ trên quỹ lương: ${totalPayrollFund > 0 ? ((totalDeduction / totalPayrollFund) * 100).toFixed(2) : '0.00'}%.`,
+    ];
+
+    return { reportData: safeReportData, quickInsights: safeQuickInsights };
+  }, [rows]);
+
+  const safeReportData = Array.isArray(reportData) && reportData.length > 0 ? reportData : defaultReportData;
+  const safeQuickInsights = Array.isArray(quickInsights) && quickInsights.length > 0 ? quickInsights : defaultQuickInsights;
+
+  const finalReportData = Array.isArray(reportData) && reportData.length > 0 ? reportData : analytics.reportData;
+  const finalQuickInsights = Array.isArray(quickInsights) && quickInsights.length > 0 ? quickInsights : analytics.quickInsights;
+
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
       {/* Header */}
@@ -16,8 +84,20 @@ function PayrollReports({ reportData, quickInsights }) {
       </div>
 
       {/* KPI Cards */}
+      {errorMessage && (
+        <div className="glass-card" style={{ padding: 'var(--space-4)', color: 'var(--color-danger)', border: '1px solid rgba(239, 68, 68, 0.25)' }}>
+          {errorMessage}
+        </div>
+      )}
+
+      {isLoading && (
+        <div className="glass-card" style={{ padding: 'var(--space-4)', color: 'var(--text-muted)' }}>
+          Đang tải dữ liệu báo cáo lương...
+        </div>
+      )}
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-4)' }}>
-        {reportData.map((item) => {
+        {finalReportData.map((item) => {
           const isUp = item.trend.includes('+');
           return (
             <div key={item.title} className="glass-card" style={{ padding: 'var(--space-6)' }}>
@@ -54,7 +134,7 @@ function PayrollReports({ reportData, quickInsights }) {
             <Info size={18} color="var(--brand-primary)" /> Đánh giá nhanh
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {quickInsights.map((insight, idx) => (
+            {finalQuickInsights.map((insight, idx) => (
               <div key={idx} style={{ padding: '12px 16px', background: 'var(--bg-base)', borderLeft: '3px solid var(--brand-primary)', borderRadius: '0 var(--radius-md) var(--radius-md) 0', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                 {insight}
               </div>
